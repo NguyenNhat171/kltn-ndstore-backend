@@ -3,6 +3,7 @@ package com.example.officepcstore.security.jwt;
 import com.example.officepcstore.models.enity.User;
 
 
+import com.example.officepcstore.security.user.CustomUserDetailsService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,32 +19,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-//@Component
-//@AllArgsConstructor
-//@Slf4j
-//public class JwtFilter  extends OncePerRequestFilter {
-////    private final JwtUtils jwtUtils;
-////    private final CustomUserDetailsService userDetailsService;
-////    @Override
-////    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-////            throws ServletException, IOException {
-////        try {
-////            String jwt = getJwtFromRequest(request);
-////            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-////                User user = jwtUtils.getUserFromJWT(jwt);
-////                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-////                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-////                        userDetails.getAuthorities());
-////                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails( request));
-////                SecurityContextHolder.getContext().setAuthentication(authentication);
-////            }
-////        } catch (Exception e) {
-////            log.error("Cannot set user authentication: {}", e.getMessage());
-////        }
-////        filterChain.doFilter(request, response);
-////    }
-////
-////    private String getJwtFromRequest(HttpServletRequest request) {
-////        return jwtUtils.getJwtFromHeader(request);
-////    }
-//}
+@Component
+@AllArgsConstructor
+@Slf4j
+public class JwtFilter extends OncePerRequestFilter {
+    private final JwtUtils jwtUtils;
+    private final CustomUserDetailsService userDetailsService;
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            String jwt = getJwtFromRequest(request);
+            if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
+                User user = jwtUtils.getUserFromJWT(jwt);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
+                        userDetails.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails( request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            log.error("Cannot set user authentication: {}", e.getMessage());
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private String getJwtFromRequest(HttpServletRequest request) {
+        return jwtUtils.getJwtFromHeader(request);
+    }
+}

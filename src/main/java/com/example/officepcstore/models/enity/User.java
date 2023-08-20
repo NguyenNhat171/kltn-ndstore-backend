@@ -21,66 +21,66 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//@Document(collection = "users")
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
+@Document(collection = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-//    @Id
-//    private String id;
-//
-//    private String name;
-//    @Indexed(unique = true)
-//    private String email;
-//    @JsonIgnore
-//    private String password;
-//    private String phone;
-//    private int province;
-//    private int district;
-//    private int ward;
-//    private String address;
-//
-//    private String role;
-//    private String avatar;
-//    private EnumGender gender;
-//    private EnumSocial provider;
-//
-//    private String state;
-//    @ReadOnlyProperty
-//    @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
-//    @JsonIgnore
-//    @Indexed
-//    private List<Order> orders;
-//    @ReadOnlyProperty
-//    @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
-//    @JsonIgnore
-//    @Indexed
-//    private List<Comment> reviews;
-//    @JsonIgnore
-//    private Token token;
-//    @JsonIgnore
-//    @Indexed
-//    private Map<Object, Integer> recommendRanking = new HashMap<>();
-//    @CreatedDate
-//    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-//    LocalDateTime createdDate;
-//    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-//    @LastModifiedDate
-//    LocalDateTime lastModifiedDate;
-//
-//    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, EnumGender gender, String state, EnumSocial provider) {
-//        this.name = name;
-//        this.email = email;
-//        this.password = password;
-//        this.phone = phone;
-//        this.province = province;
-//        this.district = district;
-//        this.ward = ward;
-//        this.address = address;
-//        this.role = role;
-//        this.avatar = avatar;
-//        this.gender = gender;
-//        this.state = state;
-//        this.provider = provider;
-//    }
+    @Id
+    private String id;
+
+    private String name;
+    @Indexed(unique = true)
+    private String email;
+    @JsonIgnore
+    private String password;
+    private String phone;
+    private int province;
+    private int district;
+    private int ward;
+    private String address;
+
+    private String role;
+    private String avatar;
+    private EnumGender gender;
+    private EnumSocial provider;
+
+    private String state;
+    @ReadOnlyProperty
+    @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
+    @JsonIgnore
+    @Indexed
+    private List<Order> orders;
+    @ReadOnlyProperty
+    @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
+    @JsonIgnore
+    @Indexed
+    private List<Comment> reviews;
+    @JsonIgnore
+    private Token token;
+    @JsonIgnore
+    @Indexed
+    private Map<Object, Integer> recommendRanking = new HashMap<>();
+    @CreatedDate
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    LocalDateTime createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @LastModifiedDate
+    LocalDateTime lastModifiedDate;
+
+    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, EnumGender gender, String state, EnumSocial provider) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.province = province;
+        this.district = district;
+        this.ward = ward;
+        this.address = address;
+        this.role = role;
+        this.avatar = avatar;
+        this.gender = gender;
+        this.state = state;
+        this.provider = provider;
+    }
 }
