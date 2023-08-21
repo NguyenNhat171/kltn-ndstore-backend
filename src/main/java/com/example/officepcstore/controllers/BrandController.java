@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class BrandController {
     private final BrandService brandService;
-    @GetMapping(path = "/categories")
+    @GetMapping(path = "/brands")
     public ResponseEntity<ResponseObjectData> findAll()
     {
         return brandService.findAll();

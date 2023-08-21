@@ -8,9 +8,9 @@ public class Constant {
     public static final String ROLE_USER = "Role_user";
 
     //USER STATE
-    public static final String USER_STATE_ACTIVATED = "activated";
-    public static final String USER_STATE_BLOCK = "blocked";
-    public static final String USER_STATE_UNVERIFIED = "unverified";
+    public static final String USER_ACTIVATED = "activated";
+    public static final String USER_BLOCK = "blocked";
+    public static final String USER_UNVERIFIED = "unverified";
     //ORDER STATE
     public static final String ORDER_STATE_ENABLE = "enable";
     public static final String ORDER_STATE_CANCEL = "cancel";

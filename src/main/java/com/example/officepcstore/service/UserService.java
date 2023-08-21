@@ -32,9 +32,9 @@ public class UserService {
 
     public ResponseEntity<ResponseObjectData> findAll(String state, Pageable pageable) {
         Page<User> users;
-        if (state.equalsIgnoreCase(Constant.USER_STATE_ACTIVATED) ||
-                state.equalsIgnoreCase(Constant.USER_STATE_BLOCK) ||
-                state.equalsIgnoreCase(Constant.USER_STATE_UNVERIFIED))
+        if (state.equalsIgnoreCase(Constant.USER_ACTIVATED) ||
+                state.equalsIgnoreCase(Constant.USER_BLOCK) ||
+                state.equalsIgnoreCase(Constant.USER_UNVERIFIED))
             users = userRepository.findAllByState(state.toLowerCase(), pageable);
         else users = userRepository.findAll(pageable);
         List<UserResponse> userResList = users.stream().map(userMapper::toUserRes).collect(Collectors.toList());
@@ -49,14 +49,14 @@ public class UserService {
     }
 
 
-//    public ResponseEntity<?> findUserById(String id) {
-//        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_STATE_ACTIVATED);
-//        if (user.isPresent()) {
-//            UserResponse res = userMapper.toUserRes(user.get());
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObjectData(true, "Get user success", res));
-//        }
-//        throw new NotFoundException("Can not found user with id " + id );
-//    }
+    public ResponseEntity<?> findUserById(String id) {
+        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVATED);
+        if (user.isPresent()) {
+            UserResponse res = userMapper.toUserRes(user.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get user success", res));
+        }
+        throw new NotFoundException("Can not found user with id " + id );
+    }
 
 }

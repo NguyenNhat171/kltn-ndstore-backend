@@ -2,13 +2,18 @@ package com.example.officepcstore.models.enity;
 
 
 import com.example.officepcstore.config.Constant;
+import com.example.officepcstore.models.enity.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "categories")
@@ -20,24 +25,28 @@ public class Category {
     @Id
     private String id;
 
+    @Indexed(unique = true)
     private String name;
-    private String categoryimage;
+    private String image;
+    private boolean root = true;
     private String state;
     @DocumentReference
-    private List<Category> subCategories;
-    public Category(String name, String state) {
+    @Indexed
+    private List<Category> subCategories = new ArrayList<>();
+    @ReadOnlyProperty
+    @DocumentReference(lookup="{'category':?#{#self._id} }", lazy = true)
+    @JsonIgnore
+    @Indexed
+    private List<Product> products;
+
+    public Category(String name, String image, String state) {
         this.name = name;
+        this.image = image;
         this.state = state;
     }
 
     public List<Category> getSubCategories() {
         subCategories.removeIf(category -> (category.getState().equals(Constant.DISABLE)));
         return subCategories;
-    }
-
-    public Category(String name, String categoryimage, String state) {
-        this.name = name;
-        this.categoryimage = categoryimage;
-        this.state = state;
     }
 }

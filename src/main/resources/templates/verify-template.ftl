@@ -113,7 +113,7 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                 <tr>
                     <td align="center" valign="top" >
-                        <h1 style="margin-TOP: 30px; font-size: 52px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family: Arial, sans-serif;">Electric Shop</h1>
+                        <h1 style="margin-TOP: 30px; font-size: 52px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family: Arial, sans-serif;">PC Shop</h1>
                     </td>
                 </tr>
             </table>
@@ -163,8 +163,12 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Mã xác minh danh cho tài khoản ElectricShop của bạn (
-                            ${email}) là:</p>
+                        <p style="margin: 0;">Xin chào ${email}) </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                        <p style="margin: 0;">Mã xác nhận tài khoản của (${email}) là:</p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -178,7 +182,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td align="center" bgcolor="#ffffff" style="border-radius: 6px; border-color: black">
-                                                <h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family:  Arial, sans-serif; color: #0000CC">${token}</h1>
+                                                <h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family:  Arial, sans-serif; color: #FF0000">${token}</h1>
                                             </td>
                                         </tr>
                                     </table>
@@ -193,7 +197,7 @@
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
                         <p style="margin: 0;">Xin vui lòng   <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email}> vào đây </a>  để xác nhận  <b>không cung cấp mã này cho bất kỳ ai</b> để giữ an toàn cho tài khoản của bạn </p>
-
+                        <p style="margin: 0;"> Mã xác nhận này gửi vào hòm thư của bạn sẽ hết hạn sau 2 phút </p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -201,7 +205,10 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                        <p style="margin: 0;">Trân trọng,<br>Website Electric Shop</p>
+                        <p style="margin: 0;">Nếu bạn có vấn đề trong quá trình xác minh tài khoản, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn
+                            <br>Trân trọng!
+                            <br> Website PC Shop
+                        </p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -229,7 +236,7 @@
                 <!-- start permission -->
                 <tr>
                     <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu ${title} từ email ${email}. Nếu thông tin này không chính xác, bạn có thể xóa email này.</p>
+                        <p style="margin: 0;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu ${title} từ email ${email}. Nếu bạn không yêu cầu, bạn có thể yên tâm bỏ qua email này.</p>
                     </td>
                 </tr>
                 <!-- end permission -->
@@ -237,7 +244,7 @@
                 <!-- start unsubscribe -->
                 <tr>
                     <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">©Electric Shop</p>
+                        <p style="margin: 0;">©PC Shop</p>
                     </td>
                 </tr>
                 <!-- end unsubscribe -->
