@@ -24,17 +24,18 @@ public class MailService {
     private JavaMailSender mailSender;
     private Configuration configuration;
 
-    final String AUTH_TEMPLATE = "auth-template.ftl";
+    final String AUTH_TEMPLATE = "verify-template.ftl";
     final String ORDER_TEMPLATE = "order-template.ftl";
+    final String RESET_TEMPLATE = "reset-template.ftl";
     final String CANCEL_TEMPLATE = "cancel-template.ftl";
     final String FROM_EMAIL = "officecomputershop@gmail.com";
     final String TYPE_EMAIL = "text/html";
-    final String TITLE_EMAIL_AUTH = "Mã xác minh Store Website";
+    final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản Store Website";
+    final String TITLE_EMAIL_RESET = "Mã xác minh lấy lại mật khẩu tại Electric Shop Website";
     final String TITLE_EMAIL_ORDER = "Xác nhận đơn hàng tại  Store Website";
     final String TITLE_EMAIL_CANCEL = "Xác nhận đơn hàng bị hủy tại  Store Website";
 
-    public void sendEmail(String toEmail,
-                          Map<String,Object> model,
+    public void sendEmail(String toEmail, Map<String,Object> model,
                           EnumMailType type) throws MessagingException, IOException, TemplateException {
         log.info(Thread.currentThread().getName()+ "- send email start");
         MimeMessage mimeMailMessage = mailSender.createMimeMessage();
@@ -48,6 +49,10 @@ public class MailService {
         else if (type.equals(EnumMailType.ORDER)){
             template = configuration.getTemplate(ORDER_TEMPLATE);
             model.put("title", TITLE_EMAIL_ORDER);
+        }
+        else if (type.equals(EnumMailType.RESET)){
+            template = configuration.getTemplate(RESET_TEMPLATE);
+            model.put("title", TITLE_EMAIL_RESET);
         }
         else if (type.equals(EnumMailType.CANCEL)){
             template = configuration.getTemplate(CANCEL_TEMPLATE);

@@ -47,7 +47,6 @@ public class CloudinaryConfig {
         ImageUtils.deleteMultipartFile(ImageUtils.convertMultiPartToFile(file));
         return map.get("secure_url").toString();
     }
-
     public void deleteImage(String urlImage) throws IOException {
         if (urlImage != null && urlImage.startsWith("https://res.cloudinary.com/dkekerazm/image/upload")) {
             cloudinary().uploader().destroy("officePC/" + getPublicId(urlImage)

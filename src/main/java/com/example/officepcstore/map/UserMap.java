@@ -1,9 +1,17 @@
 package com.example.officepcstore.map;
 
+import com.example.officepcstore.config.Constant;
+import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.User;
+import com.example.officepcstore.models.enums.EnumGender;
+import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.payload.request.RegisterReq;
 import com.example.officepcstore.payload.response.LoginResponse;
 import com.example.officepcstore.payload.response.UserResponse;
+import com.example.officepcstore.utils.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Locale;
 
 @Service
 public class UserMap {
@@ -19,6 +27,26 @@ public class UserMap {
         }
         return loginRes;
     }
+
+    public User toUser(RegisterReq req) {
+        if (req != null) {
+            EnumGender gender;
+            if (!StringUtils.isPhoneNumberFormat(req.getPhone()))
+                throw new AppException(400, "Phone number is invalid!");
+            try {
+                gender = EnumGender.valueOf(req.getGender());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(400, "Gender is invalid!");
+            }
+            return new User(req.getName(), req.getEmail(), req.getPassword(), req.getPhone(),
+                    req.getProvince(), req.getDistrict(), req.getWard(),
+                    req.getAddress(), Constant.ROLE_USER, null,
+                    gender, Constant.USER_UNVERIFIED, EnumSocial.LOCAL);
+        }
+        return null;
+    }
+
+
     public UserResponse toUserRes(User user) {
         UserResponse userRes = new UserResponse();
         if (user != null) {
@@ -37,22 +65,4 @@ public class UserMap {
         }
         return userRes;
     }
-
-//    public User toUser(RegisterReq req) {
-//        if (req != null) {
-//            EGender gender;
-//            if (!StringUtils.isPhoneNumberFormat(req.getPhone()))
-//                throw new AppException(400, "Phone number is invalid!");
-//            try {
-//                gender = EGender.valueOf(req.getGender().toUpperCase(Locale.ROOT));
-//            } catch (IllegalArgumentException e) {
-//                throw new AppException(400, "Gender is invalid!");
-//            }
-//            return new User(req.getName(), req.getEmail(), req.getPassword(), req.getPhone(),
-//                    req.getProvince(), req.getDistrict(), req.getWard(),
-//                    req.getAddress(), Constants.ROLE_USER, null,
-//                    gender, Constants.USER_STATE_UNVERIFIED, EProvider.LOCAL);
-//        }
-//        return null;
-//    }
 }

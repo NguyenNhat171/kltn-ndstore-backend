@@ -34,12 +34,12 @@ public class User {
     private String email;
     @JsonIgnore
     private String password;
-    private String phone;
+
     private int province;
     private int district;
     private int ward;
     private String address;
-
+    private String phone;
     private String role;
     private String avatar;
     private EnumGender gender;
@@ -55,7 +55,7 @@ public class User {
     @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed
-    private List<Comment> reviews;
+    private List<Comment> comments;
     @JsonIgnore
     private Token token;
     @JsonIgnore

@@ -33,7 +33,7 @@ public class Success extends SavedRequestAwareAuthenticationSuccessHandler {
         CustomOAuth2User oauth2User = (CustomOAuth2User) authentication.getPrincipal();
         EnumSocial provider = EnumSocial.valueOf(oauth2User.getOauth2ClientName().toUpperCase());
 
-        Optional<User> user = userRepository.findUserByEmailAndState(oauth2User.getEmail(), Constant.USER_ACTIVATED);
+        Optional<User> user = userRepository.findUserByEmailAndState(oauth2User.getEmail(), Constant.USER_ACTIVE);
         if (user.isEmpty()) {
             String accessToken = processAddUser(oauth2User, provider);
             response.sendRedirect(generateRedirectURL(true, accessToken, provider, ""));
@@ -58,7 +58,7 @@ public class Success extends SavedRequestAwareAuthenticationSuccessHandler {
     public String processAddUser(CustomOAuth2User oAuth2User, EnumSocial social) {
         User newUser = new User(oAuth2User.getName(), oAuth2User.getEmail(), "",
                 "0909094323", 0, 0, 0, "unknown", Constant.ROLE_USER,
-                oAuth2User.getProfilePicture(), EnumGender.OTHER, Constant.USER_ACTIVATED,social);
+                oAuth2User.getProfilePicture(), EnumGender.OTHER, Constant.USER_ACTIVE,social);
         userRepository.save(newUser);
         String accessToken = jwtUtil.generateTokenFromUserId(newUser);
         LoginResponse res = userMapper.toLoginRes(newUser);
