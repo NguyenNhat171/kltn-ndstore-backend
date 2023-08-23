@@ -6,10 +6,7 @@ import javax.validation.constraints.Email;
 
 @Data
 public class LoginReq {
-
     @Email(message = "Email invalidate")
-    private String username;
+    private String email;
     private String password;
-    private String otp;
-
 }

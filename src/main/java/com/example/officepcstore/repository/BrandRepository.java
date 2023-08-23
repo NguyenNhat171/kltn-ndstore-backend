@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface  BrandRepository extends MongoRepository<Brand, String> {
     List<Brand> findAllByState(String state);
-//    Optional<Brand> findBrandByIdAndState(String id, String state);
+    Optional<Brand> findBrandByIdAndState(String id, String state);
 
 
 }

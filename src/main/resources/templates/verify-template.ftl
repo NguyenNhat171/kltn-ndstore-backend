@@ -197,7 +197,7 @@
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
                         <p style="margin: 0;">Xin vui lòng   <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email}> vào đây </a>  để xác nhận  <b>không cung cấp mã này cho bất kỳ ai</b> để giữ an toàn cho tài khoản của bạn </p>
-                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 5 phút </p>
+                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút </p>
                     </td>
                 </tr>
                 <!-- end copy -->

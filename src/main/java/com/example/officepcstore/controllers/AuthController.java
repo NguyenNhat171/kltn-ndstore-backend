@@ -35,7 +35,7 @@ public class AuthController {
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
 
-    @PostMapping("/verifyotp")
+    @PostMapping("/verifyaccount")
     public ResponseEntity<?> verify(@Valid @RequestBody VerifyReq req) {
         return authService.verifyOTP(req);
     }

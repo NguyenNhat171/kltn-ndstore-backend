@@ -51,29 +51,40 @@ public class AuthService {
 
 
     public ResponseEntity<?> loginAccount(LoginReq req) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-            if (user.getUser().getProvider().equals(EnumSocial.LOCAL)) {
-                LoginResponse res = userMapper.toLoginRes(user.getUser());
+        Optional<User> userChecker = userRepository.findUserByEmail(req.getEmail());
+        if(userChecker.isEmpty())
+        {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Wrong information", ""));
+        }
+        else if (userChecker.get().getState().equals(Constant.USER_BLOCK)) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Your account is block", ""));
+         }
+        else if(userChecker.get().getState().equals(Constant.USER_UNVERIFIED)) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Your account is unconfirm", ""));
+        }
+            else{
+            try {
+                Authentication authentication = authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword()));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+
+                if (user.getUser().getProvider().equals(EnumSocial.LOCAL)) {
+
+                    LoginResponse res = userMapper.toLoginRes(user.getUser());
                     String access_token = jwtUtils.generateTokenFromUserId(user.getUser());
                     res.setAccessToken(access_token);
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Log in successfully ", res)
-                );
-            }
-            else if(user.getUser().getState().equals(Constant.USER_BLOCK))
-            {
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(false, "Your account is block" , ""));
-            }
-            else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.getUser().getProvider() + " account");
-        } catch (BadCredentialsException ex) {
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                            new ResponseObjectData(true, "Log in successfully ", res));
+                } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+                        user.getUser().getProvider() + " account");
+            } catch (BadCredentialsException ex) {
 //            ex.printStackTrace();
-            throw new BadCredentialsException(ex.getMessage());
+                throw new BadCredentialsException(ex.getMessage());
+            }
         }
     }
 
@@ -135,7 +146,7 @@ public class AuthService {
         String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         Map<String, Object> model = new HashMap<>();
         model.put("token", token);
-        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(5)));
+        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(10)));
         userRepository.save(user);
         mailService.sendEmail(user.getEmail(), model, EnumMailType.AUTH);
     }
@@ -144,7 +155,7 @@ public class AuthService {
         String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         Map<String, Object> model = new HashMap<>();
         model.put("token", token);
-        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(30)));
+        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(10)));
         userRepository.save(user);
         mailService.sendEmail(user.getEmail(), model, EnumMailType.RESET);
     }
@@ -201,7 +212,7 @@ public class AuthService {
                     verify = true;
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "OTP with email: " + email + " is " + verify, ""));
+                        new ResponseObjectData(verify, "OTP with email: " + email + " is " + verify, ""));
             } else {
                 user.get().setToken(null);
                 userRepository.save(user.get());

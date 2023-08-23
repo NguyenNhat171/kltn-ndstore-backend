@@ -2,6 +2,7 @@ package com.example.officepcstore.controllers;
 
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.User;
+import com.example.officepcstore.payload.request.ChangePassReq;
 import com.example.officepcstore.payload.request.UserReq;
 import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.service.UserService;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
@@ -36,5 +38,13 @@ public class UserController {
             return userService.updateUser(userId, req);
         throw new AppException(HttpStatus.FORBIDDEN.value(), "Token is invalid");
     }
-
+    @PutMapping(path = "/users/chagepassword/{userId}")
+    public ResponseEntity<?> changePasswordUser (@Valid @RequestBody ChangePassReq req,
+                                                 @PathVariable("userId") String userId,
+                                                 HttpServletRequest request){
+        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+        if (user.getId().equals(userId) || !user.getId().isBlank())
+            return userService.updatePassword(userId, req);
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
+    }
 }
