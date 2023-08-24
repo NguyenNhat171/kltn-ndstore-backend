@@ -34,7 +34,7 @@ public class ProductMap {
         return new Product(req.getName(), req.getDescription(), req.getPrice(),
                 category.get(), brand.get(), Constant.ENABLE, req.getDiscount());
     }
-
+   // toProductListRes
     public AllProductResponse toGetAllProductRes(Product req) {
         List<ProductImage> images = new ArrayList<>();
         String discountString = (req.getPrice()).multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))

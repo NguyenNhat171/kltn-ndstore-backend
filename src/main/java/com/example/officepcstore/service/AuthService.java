@@ -55,7 +55,7 @@ public class AuthService {
         if(userChecker.isEmpty())
         {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(false, "Wrong information", ""));
+                    new ResponseObjectData(false, "Email or Password is wrong", ""));
         }
         else if (userChecker.get().getState().equals(Constant.USER_BLOCK)) {
             return ResponseEntity.status(HttpStatus.OK).body(

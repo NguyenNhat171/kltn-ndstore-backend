@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
-public class AllProductResponse {
+public class AllProductResponse { //ProductListRes
     private String id;
     private String name;
     private String description;
