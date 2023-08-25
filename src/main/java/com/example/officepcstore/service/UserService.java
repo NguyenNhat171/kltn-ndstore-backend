@@ -10,6 +10,7 @@ import com.example.officepcstore.models.enums.EnumSocial;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.ChangePassReq;
 import com.example.officepcstore.payload.request.RegisterReq;
+import com.example.officepcstore.payload.request.ResetForgetPassReq;
 import com.example.officepcstore.payload.request.UserReq;
 import com.example.officepcstore.payload.response.UserResponse;
 import com.example.officepcstore.repository.UserRepository;
@@ -64,8 +65,9 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get user success", res));
         }
-        throw new NotFoundException("Can not found user with id " + id );
+        throw new NotFoundException("Can not found user with id " + id);
     }
+
     @Transactional
     public ResponseEntity<?> addAccount(RegisterReq req) {
         if (userRepository.existsByEmail(req.getEmail()))
@@ -74,15 +76,15 @@ public class UserService {
         User user = userMap.toUser(req);
 
         user.setState(Constant.USER_ACTIVE);
-            try {
-                userRepository.insert(user);
-            } catch (Exception e){
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-            }
+        try {
+            userRepository.insert(user);
+        } catch (Exception e) {
+            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseObjectData(true, "Add admin successfully ", "")
         );
-        }
+    }
 
     public ResponseEntity<?> updateUserAvatar(String id, MultipartFile file) {
         Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
@@ -100,7 +102,7 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update user success", res));
         }
-        throw new NotFoundException("Can not found user with id " + id );
+        throw new NotFoundException("Can not found user with id " + id);
     }
 
     @Transactional
@@ -113,7 +115,7 @@ public class UserService {
             user.get().setProvince(user.get().getProvince());
             user.get().setDistrict(user.get().getDistrict());
             user.get().setAddress(user.get().getAddress());
-           user.get().setAddress(userReq.getAddress());
+            user.get().setAddress(userReq.getAddress());
             userRepository.save(user.get());
             UserResponse userRes = userMap.toUserRes(user.get());
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -125,6 +127,7 @@ public class UserService {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(true, "Cannot update user ", ""));
     }
+
     @Transactional
     public ResponseEntity<?> blockUser(String id) {
         Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
@@ -140,8 +143,9 @@ public class UserService {
     public ResponseEntity<?> updatePassword(String id, ChangePassReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (!user.get().getProvider().equals(EnumSocial.LOCAL)) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getProvider() + " account");
+            if (!user.get().getProvider().equals(EnumSocial.LOCAL))
+                throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+                        user.get().getProvider() + " account");
             if (passwordEncoder.matches(req.getOldPass(), user.get().getPassword())
                     && !req.getNewPass().equals(req.getOldPass())) {
                 user.get().setPassword(passwordEncoder.encode(req.getNewPass()));
@@ -153,6 +157,23 @@ public class UserService {
         }
         throw new NotFoundException("Can not found user with id " + id + " is activated");
     }
+
+    @Transactional
+    public ResponseEntity<?> resetForgetPassword(String id, ResetForgetPassReq req) {
+        Optional<User> foundUser = userRepository.findById(id);
+        if (foundUser.isPresent()) {
+            if (!foundUser.get().getProvider().equals(EnumSocial.LOCAL))
+                throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+                        foundUser.get().getProvider() + " account");
+            foundUser.get().setPassword(passwordEncoder.encode(req.getNewPass()));
+            userRepository.save(foundUser.get());
+            UserResponse userRes = userMap.toUserRes(foundUser.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Update pass user successfully", userRes));
+        }
+        throw new NotFoundException("Can not found user with id " + id + " is activated");
+
     }
+}
 
 

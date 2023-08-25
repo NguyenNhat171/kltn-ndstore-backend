@@ -3,6 +3,7 @@ package com.example.officepcstore.controllers;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.User;
 import com.example.officepcstore.payload.request.ChangePassReq;
+import com.example.officepcstore.payload.request.ResetForgetPassReq;
 import com.example.officepcstore.payload.request.UserReq;
 import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.service.UserService;
@@ -45,6 +46,16 @@ public class UserController {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
             return userService.updatePassword(userId, req);
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
+    }
+
+    @PutMapping(path = "/users/resetpassword/{userId}")
+    public ResponseEntity<?> updateResetPasswordUser ( @RequestBody ResetForgetPassReq resetPassRequest,
+                                                       @PathVariable("userId") String userId,
+                                                       HttpServletRequest request){
+        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+        if (user.getId().equals(userId) || !user.getId().isBlank())
+            return userService.resetForgetPassword(userId,resetPassRequest);
         throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
     }
 }

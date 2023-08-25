@@ -122,7 +122,7 @@ public class AuthService {
     }
 
 
-    public ResponseEntity<?> resetForgetPass(String email) {
+    public ResponseEntity<?> sendMailResetForgetPass(String email) {
         Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             if (user.get().getProvider().equals(EnumSocial.LOCAL)) {
@@ -184,8 +184,6 @@ public class AuthService {
                 if (user.get().getToken().getOtp().equals(otp)) {
                     res.put("id", user.get().getId());
                     res.put("token", jwtUtils.generateTokenFromUserId(user.get()));
-                    user.get().setPassword(user.get().getToken().getOtp());
-                    userRepository.save(user.get());
                     verify = true;
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(

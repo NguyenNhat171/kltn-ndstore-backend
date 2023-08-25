@@ -28,10 +28,10 @@ public class AuthController {
     }
 
     @PostMapping("/forgetpass")
-    public ResponseEntity<?> resetForgetPass(@RequestBody VerifyReq req)
+    public ResponseEntity<?> getOTPResetForgetPass(@RequestParam  (value ="email")String email)
     {
-        if (!req.getEmail().isBlank())
-            return authService.resetForgetPass(req.getEmail());
+        if (!email.isBlank())
+            return authService.sendMailResetForgetPass(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
 

@@ -16,7 +16,7 @@ import javax.validation.Valid;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping(path = "/categories")
+    @GetMapping(path = "/categories/findroot")
     public ResponseEntity<?> findRoot (@RequestParam(value = "root", defaultValue = "true") Boolean root){
         return categoryService.findRoot(root);
     }
@@ -31,7 +31,7 @@ public class CategoryController {
         return categoryService.findAll();
     }
 
-    @PostMapping(path = "/admin/manage/categories", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/admin/manage/createcategories", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addCategory (@ModelAttribute @Valid CategoryReq req){
         return categoryService.addCategory(req);
     }

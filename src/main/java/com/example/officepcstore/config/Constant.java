@@ -5,7 +5,7 @@ public class Constant {
     public static final String DISABLE = "disable";
     //ROLE
     public static final String ROLE_ADMIN = "Role_Admin";
-    public static final String ROLE_USER = "Role_user";
+    public static final String ROLE_USER = "Role_User";
 
     //USER STATE
     public static final String USER_ACTIVE = "activated";
