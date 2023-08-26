@@ -3,6 +3,7 @@ package com.example.officepcstore.controllers;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.payload.request.AddImageReq;
+
 import com.example.officepcstore.payload.request.ProductReq;
 import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.service.ProductService;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -28,7 +31,7 @@ public class ProductController {
 //        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
 //        return productService.findById(id, user.getId());
 //    }
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/products/{id}")
     public ResponseEntity<?> findById (@PathVariable("id") String id){
         return productService.findbyId(id);
     }
@@ -58,7 +61,7 @@ public class ProductController {
         return productService.findAll(state,pageable);
     }
 
-    @PostMapping("/manage/products")
+    @PostMapping("/manage/product/create")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductReq req) {
         return productService.createProduct(req);
     }
@@ -80,9 +83,12 @@ public class ProductController {
 //    }
 
 
+    @PostMapping("/manage/products/create/config/{productId}")
+    public ResponseEntity<?> createProductConfig(@PathVariable("productId") String id,@RequestBody List<Map<String, String>> mapList) {
+        return productService.createProductConfig(id,mapList);
+    }
 
-
-    @PostMapping(value = "/manage/products/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/manage/products/add/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addImages(@PathVariable("productId") String id ,
                                        @ModelAttribute AddImageReq req) {
         return productService.addImagesToProduct(id, req.getFiles());

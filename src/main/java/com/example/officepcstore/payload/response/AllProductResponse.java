@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,6 +23,7 @@ public class AllProductResponse { //ProductListRes
     private BigDecimal OriginPrice;
     private BigDecimal discountPrice;
     private int discount;
+    private long stock;
     private double rate;
     private int rateCount;
     private String categoryId;
@@ -31,4 +34,5 @@ public class AllProductResponse { //ProductListRes
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     LocalDateTime createdDate;
     private List<ProductImage> images;
+    private List<Map<String, String>> productConfiguration;
 }

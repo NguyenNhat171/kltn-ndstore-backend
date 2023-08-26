@@ -8,6 +8,7 @@ public class ProductReq {
     private String name;
     private String description;
     private BigDecimal price;
+    private long stock;
   //  @Range(min = 0, max = 100, message = "Invalid discount! Only from 0 to 100")
     private int discount;
     private String category;

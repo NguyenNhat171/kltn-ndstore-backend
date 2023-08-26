@@ -146,6 +146,27 @@ public class ProductService {
                 new ResponseObjectData(false, "Request is null", "")
         );
     }
+
+    public ResponseEntity<?> createProductConfig(String productId, List<Map<String, String>> mapList) {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isPresent()) {
+//            Map<String, String> resp = new HashMap<>();
+//            resp.put(productConfigurationReq.getNameSetting(), productConfigurationReq.getDescriptionSetting());
+           product.get().setProductConfiguration(mapList);
+            try {
+                productRepository.save(product.get());
+            } catch (Exception e) {
+                throw new AppException(HttpStatus.CONFLICT.value(), "Product  already exists");
+            }
+            ProductResponse res = productMap.toGetProductRes(product.get());
+            return ResponseEntity.status(HttpStatus.CREATED).body(
+                    new ResponseObjectData(true, "Create product successfully ", res)
+            );
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ResponseObjectData(false, "Request is null", "")
+        );
+    }
     @Transactional
     public ResponseEntity<?> addImagesToProduct(String id, List<MultipartFile> files) {
         Optional<Product> product = productRepository.findById(id);
