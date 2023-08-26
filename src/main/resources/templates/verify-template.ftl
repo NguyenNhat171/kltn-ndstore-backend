@@ -181,8 +181,11 @@
                                 <td align="center" bgcolor="#ffffff" style="padding: 12px;">
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td align="center" bgcolor="#ffffff" style="border-radius: 6px; border-color: black">
-                                                <h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family:  Arial, sans-serif; color: #FF0000">${token}</h1>
+                                            <td style="border-radius:8px;background:#ffffff;text-align:center">
+                                                <div style="background:#ffffff;border:2px solid #000000;font-family:'Roboto',sans-serif;font-size:30px;line-height:1.1;text-align:center;text-decoration:none;display:block;border-radius:8px;font-weight:bold;padding:10px 40px">
+                                                    <span style="color:#000000;letter-spacing:5px">${token}</span>
+                                                </div>
+                                            </td>
                                             </td>
                                         </tr>
                                     </table>
@@ -196,8 +199,8 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Xin vui lòng   <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email}> vào đây </a>  để xác nhận  <b>không cung cấp mã này cho bất kỳ ai</b> để giữ an toàn cho tài khoản của bạn </p>
-                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút </p>
+                        <p style="margin: 0;">Xin vui lòng   <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email}> vào đây </a>  để xác nhận  <b>không cung cấp mã này cho bất kỳ ai</b> để giữ an toàn cho tài khoản của bạn. </p>
+                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút. </p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -205,9 +208,9 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                        <p style="margin: 0;">Nếu bạn có vấn đề trong quá trình xác minh tài khoản, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn
+                        <p style="margin: 0;">Nếu bạn có vấn đề trong quá trình xác minh tài khoản, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn.
                             <br>Trân trọng!
-                            <br> Website PC Shop
+                            <br> ND Store
                         </p>
                     </td>
                 </tr>
@@ -244,7 +247,7 @@
                 <!-- start unsubscribe -->
                 <tr>
                     <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">©PC Shop</p>
+                        <p style="margin: 0;">©ND Store</p>
                     </td>
                 </tr>
                 <!-- end unsubscribe -->

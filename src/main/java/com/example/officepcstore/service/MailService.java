@@ -30,9 +30,9 @@ public class MailService {
     final String CANCEL_TEMPLATE = "cancel-template.ftl";
     final String FROM_EMAIL = "officecomputershop@gmail.com";
     final String TYPE_EMAIL = "text/html";
-    final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản Store Website";
-    final String TITLE_EMAIL_RESET = "Mã xác minh lấy lại mật khẩu tại Electric Shop Website";
-    final String TITLE_EMAIL_ORDER = "Xác nhận đơn hàng tại  Store Website";
+    final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản ND Store Website";
+    final String TITLE_EMAIL_RESET = "Thiết lập lại mật khẩu ND Store Website";
+    final String TITLE_EMAIL_ORDER = "Thông báo đơn hàng tại  ND Store Website";
     final String TITLE_EMAIL_CANCEL = "Xác nhận đơn hàng bị hủy tại  Store Website";
 
     public void sendEmail(String toEmail, Map<String,Object> model,

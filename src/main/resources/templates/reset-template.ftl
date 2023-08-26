@@ -96,7 +96,7 @@
 
 <!-- start preheader -->
 <div class="preheader" style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
-    Mã xác minh bạn cần dùng để thay đổi mật khẩu vào Tài khoản Website của mình (${email})</div>
+    Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản của bạn</div>
 <!-- end preheader -->
 
 <!-- start body -->
@@ -113,7 +113,7 @@
             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
                 <tr>
                     <td align="center" valign="top" >
-                        <h1 style="margin-TOP: 30px; font-size: 52px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family: Arial, sans-serif;">Electric Shop</h1>
+                        <h1 style="margin-TOP: 30px; font-size: 52px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family: Arial, sans-serif;">ND Store</h1>
                     </td>
                 </tr>
             </table>
@@ -163,7 +163,7 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Mã xác minh cho tài khoản PCShop của bạn (
+                        <p style="margin: 0;">Hãy sử dụng mã xác minh bên dưới để tiếp tục thiết lập mật khẩu của bạn (
                             ${email}) là:</p>
                     </td>
                 </tr>
@@ -177,8 +177,11 @@
                                 <td align="center" bgcolor="#ffffff" style="padding: 12px;">
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td align="center" bgcolor="#ffffff" style="border-radius: 6px; border-color: black">
-                                                <h1 style="margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family:  Arial, sans-serif; color: #FF0000">${token}</h1>
+                                            <td style="border-radius:8px;background:#ffffff;text-align:center">
+                                                <div style="background:#ffffff;border:2px solid #000000;font-family:'Roboto',sans-serif;font-size:30px;line-height:1.1;text-align:center;text-decoration:none;display:block;border-radius:8px;font-weight:bold;padding:10px 40px">
+                                                    <span style="color:#000000;letter-spacing:5px">${token}</span>
+                                                </div>
+                                            </td>
                                             </td>
                                         </tr>
                                     </table>
@@ -192,7 +195,8 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;"> <b>Không cung cấp mã này cho bất kỳ ai để giữ an toàn cho tài khoản của bạn</b>  </p>
+                        <p style="margin: 0;"> <b>Không cung cấp mã này cho bất kỳ ai để giữ an toàn cho tài khoản của bạn.</b>  </p>
+                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút. </p>
 
                     </td>
                 </tr>
@@ -201,7 +205,10 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                        <p style="margin: 0;">Trân trọng,<br>Website PC Shop</p>
+                        <p style="margin: 0;">Nếu bạn có vấn đề trong quá trình đổi mật khẩu, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn.
+                            <br>Trân trọng!
+                            <br> ND Store
+                        </p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -229,7 +236,7 @@
                 <!-- start permission -->
                 <tr>
                     <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu ${title} từ email ${email}.Nếu bạn không yêu cầu, bạn có thể yên tâm bỏ qua email này.</p>
+                        <p style="margin: 0;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu đổi mật khẩu mới từ email ${email}. Nếu bạn không yêu cầu, bạn có thể yên tâm bỏ qua email này.</p>
                     </td>
                 </tr>
                 <!-- end permission -->
@@ -237,7 +244,7 @@
                 <!-- start unsubscribe -->
                 <tr>
                     <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">©PC Shop</p>
+                        <p style="margin: 0;">©ND Store</p>
                     </td>
                 </tr>
                 <!-- end unsubscribe -->
