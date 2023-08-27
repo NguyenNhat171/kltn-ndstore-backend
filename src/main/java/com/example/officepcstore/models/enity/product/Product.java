@@ -90,7 +90,6 @@ public class  Product {
         this.brand = brand;
         this.state = state;
     }
-
     @Transient
     public int getAllCommentRate() {
         try {

@@ -182,7 +182,7 @@
                                                     <span style="color:#000000;letter-spacing:5px">${token}</span>
                                                 </div>
                                             </td>
-                                            </td>
+
                                         </tr>
                                     </table>
                                 </td>

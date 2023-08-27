@@ -86,6 +86,6 @@ public class ProductMap {
         return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getRate(), req.getAllCommentRate(),
                 req.getCategory().getId(), req.getCategory().getName(),req.getBrand().getId(),
-                req.getBrand().getName(), req.getState(), req.getImages(),req.getProductConfiguration());
+                req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getImages(),req.getProductConfiguration());
     }
 }

@@ -31,6 +31,8 @@ public class ProductResponse {
     private String brandId;
     private String nameBrand;
     private String state;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    LocalDateTime createdDate;
     private List<ProductImage> images;
     private List<Map<String, String>> productConfiguration;
 }
