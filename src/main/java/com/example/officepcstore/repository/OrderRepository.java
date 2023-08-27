@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface OrderRepository extends MongoRepository<Order, String> {
-//    Optional<Order> findOrderByUser_IdAndState(ObjectId userId, String state);
-//    Optional<Order> findOrderByIdAndUser_Id(String orderId, ObjectId userId);
-//    Optional<Order> findOrderByIdAndState(String orderId, String state);
+   Optional<Order> findOrderByUser_IdAndState(ObjectId userId, String state);
+   Optional<Order> findOrderByIdAndUser_Id(String orderId, ObjectId userId);
+   Optional<Order> findOrderByIdAndState(String orderId, String state);
 //    Page<Order> findAllByState(String state, Pageable pageable);
 //    Optional<Order> findOrderByPaymentDetail_PaymentTokenAndState(String token, String state);
 //    Page<Order> findAllByCreatedDateBetweenAndState(LocalDateTime from, LocalDateTime to, String state, Pageable pageable);
