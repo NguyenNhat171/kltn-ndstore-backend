@@ -31,7 +31,7 @@ public class UserMap {
     public User toUser(RegisterReq req) {
         if (req != null) {
             EnumGender gender;
-            if (!StringUtils.isPhoneNumberFormat(req.getPhone()))
+            if (!StringUtils.checkPhoneNumberFormat(req.getPhone()))
                 throw new AppException(400, "Phone number is invalid!");
             try {
                 gender = EnumGender.valueOf(req.getGender());

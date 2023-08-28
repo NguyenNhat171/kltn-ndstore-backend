@@ -29,13 +29,12 @@ public class CategoryService {
     private final CloudinaryConfig cloudinary;
 
 
-    public ResponseEntity<?> findAll() {
+    public ResponseEntity<?> findAllEnable() {
    List<Category> list = categoryRepository.findAllByState(Constant.ENABLE);
-
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Get all category success", list));
-        throw new NotFoundException("Can not found any category");
+                    new ResponseObjectData(true, "List Category Success", list));
+        throw new NotFoundException("Not found category");
     }
 
 
@@ -45,8 +44,8 @@ public class CategoryService {
         else list = categoryRepository.findAllByState(Constant.ENABLE);
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Get all root category success", list));
-        throw new NotFoundException("Can not found any category");
+                    new ResponseObjectData(true, "Get Category With Root", list));
+        throw new NotFoundException("Not found any category");
     }
 
 
@@ -55,7 +54,7 @@ public class CategoryService {
         if (category.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get category success", category));
-        throw new NotFoundException("Can not found category with id: " + id);
+        throw new NotFoundException("Not found category id: " + id);
     }
 
 
@@ -66,12 +65,11 @@ public class CategoryService {
             try {
                 imgUrl = cloudinary.uploadImage(req.getFile(), null);
             } catch (IOException e) {
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload image");
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Upload image Error");
             }
         }
         Category category = new Category(req.getName(), imgUrl , Constant.ENABLE);
         try {
-            // Add child category
             if (!req.getParent_category().equals("-1") && !req.getParent_category().isBlank()){
                 Optional<Category> parentCategory = categoryRepository.findById(req.getParent_category());
                 if (parentCategory.isPresent()) {
@@ -79,10 +77,10 @@ public class CategoryService {
                     categoryRepository.save(category);
                     parentCategory.get().getSubCategories().add(category);
                     categoryRepository.save(parentCategory.get());
-                } else throw new NotFoundException("Can not found category with id: "+req.getParent_category());
+                } else throw new NotFoundException("Not found category id: "+req.getParent_category());
             } else categoryRepository.save(category);
         } catch (MongoWriteException e) {
-            throw new AppException(HttpStatus.CONFLICT.value(), "Category name already exists");
+            throw new AppException(HttpStatus.CONFLICT.value(), "Name exists");
         } catch (Exception e) {
             throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
         }
@@ -96,21 +94,18 @@ public class CategoryService {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isPresent()) {
             category.get().setName(req.getName());
-            if (req.getState().isEmpty() || (!req.getState().equalsIgnoreCase(Constant.ENABLE) &&
-                    !req.getState().equalsIgnoreCase(Constant.DISABLE)))
-                throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid state");
             category.get().setState(req.getState());
             try {
                 categoryRepository.save(category.get());
             } catch (MongoWriteException e) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Category name already exists");
+                throw new AppException(HttpStatus.CONFLICT.value(), "Category exists");
             } catch (Exception e) {
                 throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
             }
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Update category success", category));
+                    new ResponseObjectData(true, "Update complete", category));
         }
-        throw new NotFoundException("Can not found category with id: " + id);
+        throw new NotFoundException("Not found category id: " + id);
     }
 
 
@@ -127,7 +122,7 @@ public class CategoryService {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload image");
                 }
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Update category image success", category));
+                        new ResponseObjectData(true, "Update image complete", category));
             }
         }
         throw new NotFoundException("Can not found category with id: " + id);

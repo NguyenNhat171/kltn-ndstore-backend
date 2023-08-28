@@ -102,7 +102,8 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update user success", res));
         }
-        throw new NotFoundException("Can not found user with id " + id);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(true, "Can not found user with id" +id, " "));
     }
 
     @Transactional
@@ -151,7 +152,7 @@ public class UserService {
                 user.get().setPassword(passwordEncoder.encode(req.getNewPass()));
                 userRepository.save(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Change password success", ""));
+                        new ResponseObjectData(true, "Change password complete", user));
             } else throw new AppException(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Your old password is wrong" +
                     " or same with new password");
         }

@@ -28,7 +28,7 @@ public class CategoryController {
 
     @GetMapping(path = "/admin/manage/categories")
     public ResponseEntity<?> findAll (){
-        return categoryService.findAll();
+        return categoryService.findAllEnable();
     }
 
     @PostMapping(path = "/admin/manage/createcategories", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

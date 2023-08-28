@@ -45,9 +45,9 @@ public class CartService {
             if (order.isPresent()) {
                 CartResponse res = cartMap.getProductCartRes(order.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Get cart success", res));
-            } throw new NotFoundException("Can not found any order with user id: "+userId);
-        } throw new NotFoundException("Can not found user with id: "+userId);
+                        new ResponseObjectData(true, "Get cart complete", res));
+            } throw new NotFoundException("Not found cart  userid: "+userId);
+        } throw new NotFoundException("Not found user with id: "+userId);
     }
 //addAndUpdateProductToCart
     @Transactional
@@ -56,13 +56,16 @@ public class CartService {
         if (user.isPresent()) {
             Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_STATE_ENABLE);
             if (order.isPresent()) {
-                //Check if order already has product option with color
                 Optional<OrderProduct> products = order.get().getItems().stream().filter(
                         p -> p.getItem().getId().equals(req.getProductId())).findFirst();
-                if (products.isPresent()) return countinueUpdateProductInCart(products.get(), req);
-                else return addProductToCartAvailable(order.get(), req);
-            } else return createOrderByCart(user.get(), req);
-        } throw new NotFoundException("Can not found user with id: "+userId);
+                if (products.isPresent())
+                    return countinueUpdateProductInCart(products.get(), req);
+                else
+                    return addProductToCartAvailable(order.get(), req);
+            } else
+                return createOrderByCart(user.get(), req);
+        }
+        throw new NotFoundException("Not found user with id: "+userId);
     }
 //processAddProductToOrder
     @Transactional
@@ -80,23 +83,24 @@ public class CartService {
 //            addScoreToRecommendation(productOption.get().getProduct().getCategory().getId(),
 //                    productOption.get().getProduct().getBrand().getId(), userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ResponseObjectData(true, "Add product to cart first time success", res));
-        } else throw new NotFoundException("Can not found product option with id: "+req.getProductId());
+                    new ResponseObjectData(true, "Product have add to cart first time complete", res));
+        } else throw new NotFoundException("Not found product with id: "+req.getProductId());
     }
 //processAddProductToExistOrder
     private ResponseEntity<?> addProductToCartAvailable(Order order, CartReq req) {
-        if (req.getQuantity() <= 0) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid quantity");
+//        if (req.getQuantity() <= 0)
+//            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid quantity");
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
             checkProductQuantityAndStock(product.get(), req);
-            OrderProduct items = new OrderProduct(product.get(), req.getQuantity(), order);
-            orderProductRepository.insert(items);
-            CartProductResponse res = CartMap.toCartProductRes(items);
+            OrderProduct orderProduct = new OrderProduct(product.get(), req.getQuantity(), order);
+            orderProductRepository.insert(orderProduct);
+            CartProductResponse res = CartMap.toCartProductRes(orderProduct);
 //            addScoreToRecommendation(productOption.get().getProduct().getCategory().getId(),
 //                    productOption.get().getProduct().getBrand().getId(), userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ResponseObjectData(true, "Add product to cart success", res));
-        } else throw new NotFoundException("Can not found product option with id: "+req.getProductId());
+                    new ResponseObjectData(true, "Add product to cart complete", res));
+        } else throw new NotFoundException("Not found product  id: "+req.getProductId());
     }
 
 //    private void addScoreToRecommendation(String catId, String brandId, String userId) {
@@ -111,7 +115,7 @@ public class CartService {
     private void checkProductQuantityAndStock(Product product, CartReq req) {
 
             if (product.getStock() < req.getQuantity()) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds stock on product: "+req.getProductId());
+                throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds stock: "+req.getProductId());
             }
     }
 
@@ -119,30 +123,30 @@ public class CartService {
         if (orderProduct.getQuantity() + req.getQuantity() == 0) {
             orderProductRepository.deleteById(orderProduct.getId());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Delete item "+orderProduct.getId()+" in cart success", ""));
+                    new ResponseObjectData(true, "Remove item "+orderProduct.getId()+" in cart success", ""));
         }
                 long quantity = orderProduct.getQuantity() + req.getQuantity();
                 if (orderProduct.getItem().getStock() >= quantity && quantity > 0) {
                     orderProduct.setQuantity(quantity);
                     orderProductRepository.save(orderProduct);
-                } else throw new AppException(HttpStatus.CONFLICT.value(), "Quantity invalid or exceeds stock on product: "+req.getProductId());
+                } else throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds stock this product: "+req.getProductId());
 
         CartProductResponse res = CartMap.toCartProductRes(orderProduct);
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Update product "+req.getProductId()+" in cart success", res));
+                new ResponseObjectData(true, "Update product "+req.getProductId()+" complete", res));
     }
 
 
-    public ResponseEntity<?> deleteProductFromCart(String userId, String orderProductId) {
+    public ResponseEntity<?> removeProductFromCart(String userId, String orderProductId) {
         Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             Optional<OrderProduct> orderProduct = orderProductRepository.findById(orderProductId);
             if (orderProduct.isPresent() && orderProduct.get().getOrder().getUser().getId().equals(userId)){
                 orderProductRepository.deleteById(orderProductId);
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Delete item "+orderProductId+" in cart success", ""));
+                        new ResponseObjectData(true, "Remove item "+orderProductId+" in cart complete", ""));
             }
-            else throw new AppException(HttpStatus.NOT_FOUND.value(), "Can not found product in your cart");
-        } throw new NotFoundException("Can not found user with id: "+userId);
+            else throw new AppException(HttpStatus.NOT_FOUND.value(), "Not found product in cart");
+        } throw new NotFoundException("Not found user with id: "+userId);
     }
 }
