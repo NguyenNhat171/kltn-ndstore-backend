@@ -32,18 +32,16 @@ public class OrderController {
         return orderService.findOrderById(orderId);
     }
 
-    @PutMapping(path = "/manage/orders/{state}/{orderId}")
-    public ResponseEntity<?> changeStateShip (@PathVariable String state,
-                                          @PathVariable String orderId){
-        return orderService.changeStateShip(state, orderId);
+    @PutMapping(path = "/manage/orders/complete/{orderId}")
+    public ResponseEntity<?> changeStateConfirmDelivery (@PathVariable String orderId){
+        return orderService.setStateConfirmDelivery(orderId);
     }
 
-    @PutMapping(path = "/orders/complete/{orderId}")
-    public ResponseEntity<?> confirmCompleteOrder (@PathVariable String orderId,
-                                          HttpServletRequest request){
-        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-        return orderService.changeStateDone(Constant.ORDER_STATE_COMPLETE, orderId, user.getId());
-    }
+//    @PutMapping(path = "/manage/orders/complete/{orderId}")
+//    public ResponseEntity<?> confirmCompleteOrderByAdmin (@PathVariable String orderId,
+//                                          HttpServletRequest request){
+//        return orderService.changeStateDone( orderId);
+//    }
 
     @PostMapping(path = "/manage/orders/ship/{orderId}")
     public ResponseEntity<?> createShipOrder (@RequestBody CreateShipReq req,

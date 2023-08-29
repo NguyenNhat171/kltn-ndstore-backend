@@ -52,7 +52,7 @@ public class OrderProduct {
     }
 
     public BigDecimal getSubPrice() {
-        if (order.getState().equals(Constant.ORDER_STATE_ENABLE)) {
+        if (order.getState().equals(Constant.ORDER_CART)) {
             BigDecimal originPrice = (item.getPrice().multiply(BigDecimal.valueOf(quantity)));
             String discountString = originPrice.multiply(BigDecimal.valueOf((double) (100- item.getDiscount())/100))
                     .stripTrailingZeros().toPlainString();

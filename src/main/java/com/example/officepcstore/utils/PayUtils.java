@@ -24,7 +24,7 @@ public class PayUtils {
         order.getItems().forEach(item -> {
                 if (isPaid) {
                     if (  item.getItem().getStock() < item.getQuantity()) {
-                        order.setState(Constant.ORDER_STATE_ENABLE);
+                        order.setState(Constant.ORDER_CART);
                         orderRepository.save(order);
                         throw new AppException(HttpStatus.CONFLICT.value(),
                                 "Quantity exceeds available stock this Product:" + item.getItem().getName()+":"+item.getItem().getId()

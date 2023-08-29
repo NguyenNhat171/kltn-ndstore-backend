@@ -12,19 +12,20 @@ public class Constant {
     public static final String USER_BLOCK = "blocked";
     public static final String USER_UNVERIFIED = "unconfimred";
     //ORDER STATE
-    public static final String ORDER_STATE_ENABLE = "enable";
-    public static final String ORDER_STATE_CANCEL = "cancel";
-    public static final String ORDER_STATE_PROCESS = "process";
-    public static final String ORDER_STATE_COMPLETE = "complete";
-    public static final String ORDER_STATE_SHIPPING = "shipping"; //ORDER_STATE_DELIVERY
-    public static final String ORDER_STATE_DELIVERED = "delivered";
-    public static final String ORDER_STATE_PREPARE = "prepare";
-    public static final String ORDER_STATE_PENDING = "pending";
+    public static final String ORDER_CART = "cart"; //ORDER_ENABLE
+    public static final String ORDER_CANCEL = "cancel";
+    public static final String ORDER_PROCESS = "process";
+    public static final String ORDER_COMPLETE = "complete";
+    public static final String ORDER_SHIPPING = "shipping"; //ORDER_STATE_DELIVERY
+//    public static final String ORDER_CONFIRM_DELIVERED = "delivered";
+    public static final String ORDER_PREPARE = "prepare";
+    public static final String ORDER_PENDING = "pending";
+    public static final String ORDER_PAY_ONLINE = "payonline";
     //PAYMENT TYPE
     public static final String PAYBYPAYPAL = "paypal";
-    public static final String PAYMENT_VNPAY = "vnpay";
-    public static final String PAYMENT_COD = "cod";
-    public static final int PAYMENT_TIMEOUT = 10 * 60 * 1000;
+    public static final String PAYBYVNPAY = "vnpay";
+    public static final String PAYBYCOD = "cod";
+    public static final int PAYMENT_TIMEOUT = 10 * 60 * 1500;
     //API GHN
     public static final String URLGHN = "https://dev-online-gateway.ghn.vn/shiip/public-api/";
     //RECOMMEND TYPE

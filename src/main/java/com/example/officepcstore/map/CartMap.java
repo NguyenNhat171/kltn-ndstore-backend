@@ -33,7 +33,7 @@ public class CartMap {
                     orderItem.getQuantity(), orderItem.getSubPrice());
         } catch (Exception e) {
             log.error(e.getMessage());
-            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "get cart item failed");
+            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Cant get product cart");
         }
     }
 

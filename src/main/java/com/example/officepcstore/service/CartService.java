@@ -41,7 +41,7 @@ public class CartService {
     public ResponseEntity<?> getProductFromCart(String userId) {
             Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_STATE_ENABLE);
+            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {
                 CartResponse res = cartMap.getProductCartRes(order.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -54,7 +54,7 @@ public class CartService {
     public ResponseEntity<?> createAndPutProductToCart(String userId, CartReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_STATE_ENABLE);
+            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {
                 Optional<OrderProduct> products = order.get().getItems().stream().filter(
                         p -> p.getItem().getId().equals(req.getProductId())).findFirst();
@@ -75,7 +75,7 @@ public class CartService {
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
             checkProductQuantityAndStock(product.get(), req);
-            Order order = new Order(user, Constant.ORDER_STATE_ENABLE);
+            Order order = new Order(user, Constant.ORDER_CART);
             orderRepository.insert(order);
             OrderProduct orderProduct = new OrderProduct(product.get(), req.getQuantity(), order);
             orderProductRepository.insert(orderProduct );
@@ -103,14 +103,6 @@ public class CartService {
         } else throw new NotFoundException("Not found product  id: "+req.getProductId());
     }
 
-//    private void addScoreToRecommendation(String catId, String brandId, String userId) {
-//        recommendCheckUtils.setCatId(catId);
-//        recommendCheckUtils.setBrandId(brandId);
-//        recommendCheckUtils.setType(Constants.CART_TYPE);
-//        recommendCheckUtils.setUserId(userId);
-//        recommendCheckUtils.setUserRepository(userRepository);
-//        taskScheduler.schedule(recommendCheckUtils, new Date(System.currentTimeMillis()));
-//    }
 
     private void checkProductQuantityAndStock(Product product, CartReq req) {
 
