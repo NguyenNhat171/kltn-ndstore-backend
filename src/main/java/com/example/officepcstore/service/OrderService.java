@@ -79,8 +79,8 @@ public class OrderService {
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
-            if (order.get().getState().equals(Constant.ORDER_PENDING) ||
-                    order.get().getState().equals(Constant.ORDER_PROCESS)) {
+            if (order.get().getState().equals(Constant.ORDER_PAY_COD) || order.get().getState().equals(Constant.ORDER_PAY_ONLINE)
+                    || order.get().getState().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                 order.get().setState(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());
@@ -92,14 +92,16 @@ public class OrderService {
                     "You cannot cancel while the order is still processing!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(false, "Can not found order with id"+ id, ""));
+                new ResponseObjectData(false, "Not found order with id"+ id, ""));
     }
 
 
     public ResponseEntity<?> createShip(CreateShipReq req, String orderId) {
-        Optional<Order> order = orderRepository.findOrderByIdAndState(orderId, Constant.ORDER_PREPARE);
-        if (order.isPresent()) {
-            order.get().setState(Constant.ORDER_SHIPPING);
+        Optional<Order> order = orderRepository.findById(orderId);
+        if(order.isPresent())
+        {
+            if(order.get().getState().equals(Constant.ORDER_PAY_COD) || order.get().getState().equals(Constant.ORDER_PAY_ONLINE))
+                order.get().setState(Constant.ORDER_SHIPPING);
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
             order.get().getShippingDetail().getShipInfo().put("orderCode", objectRes.getString("order_code"));
@@ -109,23 +111,37 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Create shipping complete", order.get().getShippingDetail().getShipInfo()));
         } else return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(false, "Can not found order with id"+ orderId, ""));
+                new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 
 
     public ResponseEntity<?> setStateConfirmDelivery(String orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
         if (order.isPresent()) {
-                if (order.get().getState().equals(Constant.ORDER_SHIPPING)) {
+                if (order.get().getState().equals(Constant.ORDER_PROCESS_DELIVERY)) {
                     order.get().setState(Constant.ORDER_COMPLETE);
-                    order.get().getShippingDetail().getShipInfo().put("deliveredAt", LocalDateTime.now(Clock.systemUTC()));
-                } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
+                    order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
+                } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivered");
+            orderRepository.save(order.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Change state order", " "));
+        }else return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
+    }
+
+    public ResponseEntity<?> setStateProcessDelivery(String orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        if (order.isPresent()) {
+            if (order.get().getState().equals(Constant.ORDER_SHIPPING)) {
+                order.get().setState(Constant.ORDER_PROCESS_DELIVERY);
+                order.get().getShippingDetail().getShipInfo().put("deliveredAt", LocalDateTime.now(Clock.systemUTC()));
+            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
 
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Change state order", " "));
         }else return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(false, "Can not found order with id"+ orderId, ""));
+                new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 
 

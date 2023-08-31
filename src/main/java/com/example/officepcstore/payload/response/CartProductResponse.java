@@ -9,14 +9,15 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartProductResponse {
-    private String itemId;
+    private String itemCartId;
     private String productId;
-    private String name;
+    private long productStock;
+    private String productName;
+    private BigDecimal productPrice;
     private int discount;
     private String image;
-    private BigDecimal price;
+    private BigDecimal originPrice;
     private long quantity;
-   // private long stock;
     private BigDecimal subPrice;
   //  private boolean reviewed;
 }

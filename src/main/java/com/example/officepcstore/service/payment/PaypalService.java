@@ -60,8 +60,8 @@ public class PaypalService extends PaymentSteps {
                     order,
                     "USD",
                     PaypalMethod.PAYPAL,
-                    PaypalForm.ONLINE_SALE,
-                    "Thanh toan hoa don "+ order.getId(),
+                    PaypalForm.sale,
+                    "Thanh toan don hang  "+ order.getId(),
                     cancelUrl,
                     successUrl);
             for (Links links : payment.getLinks()) {
@@ -100,11 +100,8 @@ public class PaypalService extends PaymentSteps {
                     order.get().getPaymentInformation().getPaymentInfo().put("payer", payment.getPayer().getPayerInfo());
                     order.get().getPaymentInformation().getPaymentInfo().put("paymentMethod", payment.getPayer().getPaymentMethod());
                     order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
-                    order.get().setState(Constant.ORDER_PREPARE);
+                    order.get().setState(Constant.ORDER_PAY_ONLINE);
                     orderRepository.save(order.get());
-//                    mailUtils.setOrder(order.get());
-//                    mailUtils.setMailService(mailService);
-//                    taskScheduler.schedule(mailUtils, new Date(System.currentTimeMillis())) ;
                 } else {
                     response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
                     throw new NotFoundException("Can not found order with id: " + id);

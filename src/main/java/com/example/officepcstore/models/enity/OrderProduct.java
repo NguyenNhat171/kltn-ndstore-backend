@@ -41,23 +41,18 @@ public class OrderProduct {
     private boolean reviewed = false;
     @Transient
     private BigDecimal subPrice = BigDecimal.ZERO;
-
-
-
-    @Transient
-    private BigDecimal Price = BigDecimal.ZERO;
+//    @Transient
+//    private BigDecimal Price = BigDecimal.ZERO;
     public BigDecimal getPrice(){
         BigDecimal originPrice = item.getPrice().multiply(BigDecimal.valueOf(quantity));
         return originPrice;
     }
 
     public BigDecimal getSubPrice() {
-        if (order.getState().equals(Constant.ORDER_CART)) {
             BigDecimal originPrice = (item.getPrice().multiply(BigDecimal.valueOf(quantity)));
             String discountString = originPrice.multiply(BigDecimal.valueOf((double) (100- item.getDiscount())/100))
                     .stripTrailingZeros().toPlainString();
             return new BigDecimal(discountString);
-        } else return price.multiply(BigDecimal.valueOf(quantity));
     }
 
     public OrderProduct(Product item, long quantity, Order order) {

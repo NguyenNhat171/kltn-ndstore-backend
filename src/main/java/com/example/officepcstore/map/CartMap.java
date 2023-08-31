@@ -23,11 +23,12 @@ public class CartMap {
     }
 
     public static CartProductResponse toCartProductRes(OrderProduct orderItem) { //toCartItemRes
-        Optional<ProductImage> image = Optional.ofNullable(orderItem.getItem().getImages().get(0));
+        Optional<ProductImage> image = Optional.of(orderItem.getItem().getImages().get(0));
         BigDecimal price = orderItem.getPrice();
 
         try {
-            return new CartProductResponse(orderItem.getId(), orderItem.getItem().getId(),orderItem.getItem().getName(),
+            return new CartProductResponse(orderItem.getId(), orderItem.getItem().getId(),orderItem.getItem().getStock(),orderItem.getItem().getName(),
+                    orderItem.getItem().getPrice(),
                     orderItem.getItem().getDiscount(),
                     image.get().getUrl(), price,
                     orderItem.getQuantity(), orderItem.getSubPrice());
@@ -36,6 +37,8 @@ public class CartMap {
             throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Cant get product cart");
         }
     }
+
+
 
 
 }

@@ -8,8 +8,7 @@ import java.util.*;
 
 public class VnpayConfig {
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnp_Returnurl =
-            "/api/checkout/vnpay/success";
+    public static String vnp_Returnurl = "/api/checkout/vnpay/success";
     public static String vnp_HashSecret = "DGWHNVEMQWHECZRHEYHJSZPYFZKVKCQG";
     public static String vnp_apiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/merchant.html";
     public static String vnp_orderType = "200000";
@@ -54,26 +53,6 @@ public class VnpayConfig {
             ipAddress = "Invalid IP:" + e.getMessage();
         }
         return ipAddress;
-    }
-
-    public static String hashAllFields(Map fields) {
-        List fieldNames = new ArrayList(fields.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder sb = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                sb.append(fieldName);
-                sb.append("=");
-                sb.append(fieldValue);
-            }
-            if (itr.hasNext()) {
-                sb.append("&");
-            }
-        }
-        return hmacSHA512(vnp_HashSecret,sb.toString());
     }
 
 

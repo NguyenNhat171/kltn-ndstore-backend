@@ -57,7 +57,8 @@ public class WebSecurityConfig {
             "/api/brands/**",
             "/api/auth/**",
             "/api/comment/**",
-            "/api/cart/**"
+            "/api/cart/**",
+            "/api/orders/**"
 
     };
     @Value("${app.allow.origin}")

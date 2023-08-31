@@ -15,19 +15,19 @@ import javax.validation.Valid;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/cart")
+@RequestMapping("/api")
 public class CartController {
 
     private final CartService cartService;
     private final JwtUtils jwtUtils;
 
-    @GetMapping(path = "/get/all")
+    @GetMapping(path = "/cart/get/all")
     public ResponseEntity<?> getAllProductFromCart (HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
             return cartService.getProductFromCart(user.getId());
     }
 
-    @PostMapping(path = "/put")
+    @PostMapping(path = "/cart/put")
     public ResponseEntity<?> putProductToCart (@RequestBody @Valid CartReq req,
                                                   HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
@@ -35,7 +35,7 @@ public class CartController {
 
     }
 
-    @DeleteMapping(path = "/remove/{productId}")
+    @DeleteMapping(path = "/cart/remove/{productId}")
     public ResponseEntity<?> removeProductInCart (@PathVariable("productId") String orderItemId,
                                                   HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));

@@ -12,17 +12,25 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class LogisticController {
     private final LogisticService logisticService;
+    @PostMapping(path = "/logistic/fee", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getFeeShip (@RequestBody ShipReq req) {
+
+        return logisticService.calculateFee(req);
+    }
     @PostMapping(path = "/logistic/service", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getService (@RequestBody ShipReq req) {
+
         return logisticService.getService(req);
     }
     @PostMapping(path = "/logistic/detail/{orderId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getDetail (@PathVariable String orderId) {
+
         return logisticService.getDetail(orderId);
     }
 
     @PostMapping(path = "/logistic/province", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getProvince () {
+
         return logisticService.getProvince();
     }
 
@@ -40,8 +48,5 @@ public class LogisticController {
     public ResponseEntity<?> calculateExpectedDeliveryTime (@RequestBody ShipReq req) {
         return logisticService.calculateExpectedDeliveryTime(req);
     }
-    @PostMapping(path = "/logistic/fee", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> calculateFee (@RequestBody ShipReq req) {
-        return logisticService.calculateFee(req);
-    }
+
 }

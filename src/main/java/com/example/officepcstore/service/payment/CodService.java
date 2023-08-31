@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -24,20 +25,21 @@ public class CodService extends PaymentSteps {
     private PayUtils payUtils;
     private final OrderRepository orderRepository;
     private final TaskScheduler taskScheduler;
+
     @Override
     @Transactional
-    public ResponseEntity<?> initializationPayment(HttpServletRequest httpServletRequest, Order order)
-    {
+    public ResponseEntity<?> initializationPayment(HttpServletRequest httpServletRequest, Order order) {
         if (order != null && order.getState().equals(Constant.ORDER_PROCESS)) {
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
             if (checkUpdateQuantityProduct == null) {
-                order.setState(Constant.ORDER_PREPARE);
+                order.setState(Constant.ORDER_PAY_COD);
                 order.getPaymentInformation().getPaymentInfo().put("isPaid", false);
                 orderRepository.save(order);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));
             }
-        } throw new NotFoundException("Can not found order with id: "+ Objects.requireNonNull(order).getId());
+        }
+        throw new NotFoundException("Not found order with id: " + Objects.requireNonNull(order).getId());
     }
 
     @Override
@@ -47,7 +49,17 @@ public class CodService extends PaymentSteps {
 
     @Override
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Payment cancel complete", ""));
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isPresent() && order.get().getState().equals(Constant.ORDER_PAY_COD)) {
+            order.get().setState(Constant.ORDER_CANCEL);
+            orderRepository.save(order.get());
+            String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+            if (checkUpdateQuantityProduct == null) {
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "Payment cancel complete", ""));
+            }
+
+        }  return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found order with id" + id, ""));
     }
 }

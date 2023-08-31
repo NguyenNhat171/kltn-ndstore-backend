@@ -88,8 +88,6 @@ public class CartService {
     }
 //processAddProductToExistOrder
     private ResponseEntity<?> addProductToCartAvailable(Order order, CartReq req) {
-//        if (req.getQuantity() <= 0)
-//            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid quantity");
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
             checkProductQuantityAndStock(product.get(), req);
@@ -107,7 +105,8 @@ public class CartService {
     private void checkProductQuantityAndStock(Product product, CartReq req) {
 
             if (product.getStock() < req.getQuantity()) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds stock: "+req.getProductId());
+                throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds stock: "+req.getProductId()
+                        + " with Product name:"+ product.getName() + " this Product stock:" + product.getStock());
             }
     }
 
@@ -130,10 +129,10 @@ public class CartService {
 
 
     public ResponseEntity<?> removeProductFromCart(String userId, String orderProductId) {
-        Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             Optional<OrderProduct> orderProduct = orderProductRepository.findById(orderProductId);
-            if (orderProduct.isPresent() && orderProduct.get().getOrder().getUser().getId().equals(userId)){
+            if (orderProduct.isPresent()){
                 orderProductRepository.deleteById(orderProductId);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Remove item "+orderProductId+" in cart complete", ""));

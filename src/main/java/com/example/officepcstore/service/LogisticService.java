@@ -80,8 +80,8 @@ public class LogisticService {
             body.addProperty("to_district_id", req.getTo_district_id());
             body.addProperty("to_ward_code", req.getTo_ward_code());
             body.addProperty("weight", req.getWeight());
-            body.addProperty("length",100);
-            body.addProperty("width",50);
+            body.addProperty("length",20);
+            body.addProperty("width",10);
             body.addProperty("height",req.getHeight());
 
             HttpResponse<?> res = HttpConnectTemplate.connectToGHN("v2/shipping-order/fee",
@@ -114,7 +114,7 @@ public class LogisticService {
             JsonObject body = new JsonObject();
             body.addProperty("shop_id", Integer.parseInt(SHOP_ID));
             body.addProperty("to_district", req.getTo_district_id());
-            body.addProperty("from_district", 1447);
+            body.addProperty("from_district", 1451);
 
             HttpResponse<?> res = HttpConnectTemplate.connectToGHN("v2/shipping-order/available-services",
                     body.toString(), TOKEN, SHOP_ID);

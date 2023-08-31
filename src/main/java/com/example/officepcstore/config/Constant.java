@@ -17,10 +17,10 @@ public class Constant {
     public static final String ORDER_PROCESS = "process";
     public static final String ORDER_COMPLETE = "complete";
     public static final String ORDER_SHIPPING = "shipping"; //ORDER_STATE_DELIVERY
-//    public static final String ORDER_CONFIRM_DELIVERED = "delivered";
-    public static final String ORDER_PREPARE = "prepare";
-    public static final String ORDER_PENDING = "pending";
-    public static final String ORDER_PAY_ONLINE = "payonline";
+   public static final String ORDER_PROCESS_DELIVERY = "delivered";
+   // public static final String ORDER_PREPARE = "prepare";
+    public static final String ORDER_PAY_COD = "pendingcod"; // dang xu li
+    public static final String ORDER_PAY_ONLINE = "payonline"; // da thanh toan va dang xu lu
     //PAYMENT TYPE
     public static final String PAYBYPAYPAL = "paypal";
     public static final String PAYBYVNPAY = "vnpay";

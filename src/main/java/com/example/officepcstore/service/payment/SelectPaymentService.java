@@ -35,13 +35,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class SelectPaymentService {
-    public static String URL_PAYMENT = "http://localhost:3000/redirect/payment?success=";
+    public static String URL_PAYMENT = "http://localhost:3000/checkout/order/payment?success=";
     private final ApplicationContext context;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-
+    public PaymentSteps getPaymentSteps(String typesPayment) {
+        switch (typesPayment) {
+            case Constant.PAYBYVNPAY: return context.getBean(VnpayService.class);
+            case Constant.PAYBYCOD: return context.getBean(CodService.class);
+            case Constant.PAYBYPAYPAL: return context.getBean(PaypalService.class);
+            default:
+                return null;
+        }
+    }
     @Transactional
     public ResponseEntity<?>  initializationPayment(HttpServletRequest request, String id, String paymentType, PayReq req) {
         Optional<Order> order;
@@ -63,10 +71,10 @@ public class SelectPaymentService {
             order.get().getShippingDetail().getShipInfo().put("address", req.getAddress());
             order.get().setState(Constant.ORDER_PROCESS);
 
-            order.get().getItems().forEach(item -> item.getItem().setPrice(new BigDecimal((item.getItem().getPrice())
-                    .multiply(BigDecimal.valueOf( (double) (100- item.getItem().getDiscount())/100))
-                    .stripTrailingZeros().toPlainString())));
-            orderProductRepository.saveAll(order.get().getItems());
+//            order.get().getItems().forEach(item -> item.getItem().setPrice(new BigDecimal((item.getItem().getPrice())
+//                    .multiply(BigDecimal.valueOf( (double) (100- item.getItem().getDiscount())/100))
+//                    .stripTrailingZeros().toPlainString())));
+         //   orderProductRepository.saveAll(order.get().getItems());
             orderRepository.save(order.get());
         } catch (NotFoundException e) {
             log.error(e.getMessage());
@@ -124,13 +132,5 @@ public class SelectPaymentService {
             throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission!");
     }
 
-    public PaymentSteps getPaymentSteps(String typesPayment) {
-        switch (typesPayment) {
-            case Constant.PAYBYVNPAY: return context.getBean(VnpayService.class);
-            case Constant.PAYBYCOD: return context.getBean(CodService.class);
-            case Constant.PAYBYPAYPAL: return context.getBean(PaypalService.class);
-            default:
-                return null;
-        }
-    }
+
 }

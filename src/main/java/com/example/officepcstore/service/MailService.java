@@ -23,17 +23,13 @@ import java.util.Objects;
 public class MailService {
     private JavaMailSender mailSender;
     private Configuration configuration;
-
     final String AUTH_TEMPLATE = "verify-template.ftl";
-    final String ORDER_TEMPLATE = "order-template.ftl";
     final String RESET_TEMPLATE = "reset-template.ftl";
-    final String CANCEL_TEMPLATE = "cancel-template.ftl";
-    final String FROM_EMAIL = "officecomputershop@gmail.com";
+    final String STORE_EMAIL = "officecomputershop@gmail.com";
     final String TYPE_EMAIL = "text/html";
-    final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản ND Store Website";
-    final String TITLE_EMAIL_RESET = "Thiết lập lại mật khẩu ND Store Website";
-    final String TITLE_EMAIL_ORDER = "Thông báo đơn hàng tại  ND Store Website";
-    final String TITLE_EMAIL_CANCEL = "Xác nhận đơn hàng bị hủy tại  Store Website";
+    final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản NDStore Website";
+    final String TITLE_EMAIL_RESET = "Thiết lập lại mật khẩu NDStore Website";
+
 
     public void sendEmail(String toEmail, Map<String,Object> model,
                           EnumMailType type) throws MessagingException, IOException, TemplateException {
@@ -46,27 +42,17 @@ public class MailService {
             template = configuration.getTemplate(AUTH_TEMPLATE);
             model.put("title", TITLE_EMAIL_AUTH);
         }
-        else if (type.equals(EnumMailType.ORDER)){
-            template = configuration.getTemplate(ORDER_TEMPLATE);
-            model.put("title", TITLE_EMAIL_ORDER);
-        }
         else if (type.equals(EnumMailType.RESET)){
             template = configuration.getTemplate(RESET_TEMPLATE);
             model.put("title", TITLE_EMAIL_RESET);
         }
-        else if (type.equals(EnumMailType.CANCEL)){
-            template = configuration.getTemplate(CANCEL_TEMPLATE);
-            model.put("title", TITLE_EMAIL_CANCEL);
-        }
         model.put("email", toEmail);
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(Objects.requireNonNull(template),model);
         mimeMailMessage.setContent(html, TYPE_EMAIL);
-
-        helper.setFrom(FROM_EMAIL);
+        helper.setFrom(STORE_EMAIL);
         helper.setTo(toEmail);
         helper.setText(html,true);
         helper.setSubject((String) model.get("title"));
-
         mailSender.send(mimeMailMessage);
         log.info(Thread.currentThread().getName()+ "- send email end");
     }

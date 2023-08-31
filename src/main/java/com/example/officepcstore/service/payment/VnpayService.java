@@ -93,7 +93,7 @@ public class VnpayService extends PaymentSteps{
             order.get().getPaymentInformation().getPaymentInfo().put("bankCode", request.getParameter("vnp_BankCode"));
             order.get().getPaymentInformation().getPaymentInfo().put("transactionNo", request.getParameter("vnp_TransactionNo"));
             order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
-            order.get().setState(Constant.ORDER_PREPARE);
+            order.get().setState(Constant.ORDER_PAY_ONLINE);
             orderRepository.save(order.get());
             response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -121,9 +121,8 @@ public class VnpayService extends PaymentSteps{
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String total = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInfo().get("fee").toString())))
+        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInfo().get("fee").toString())))
                 .multiply(BigDecimal.valueOf(100)));
-
         Map<String, Object> vnp_Params = new HashMap<>();
         vnp_Params.put(VnpayConfig.vnp_Version_k, VnpayConfig.vnp_Version);
         vnp_Params.put(VnpayConfig.vnp_Command_k, VnpayConfig.vnp_Command);
@@ -135,7 +134,7 @@ public class VnpayService extends PaymentSteps{
         vnp_Params.put(VnpayConfig.vnp_Locale, VnpayConfig.vn);
         vnp_Params.put(VnpayConfig.vnp_ReturnUrl, StringUtils.getBaseURL(request) + VnpayConfig.vnp_Returnurl);
         vnp_Params.put(VnpayConfig.vnp_IpAddr, vnp_IpAddr);
-        vnp_Params.put(VnpayConfig.vnp_Amount, total);
+        vnp_Params.put(VnpayConfig.vnp_Amount, totalPriceOrder);
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone(VnpayConfig.GMT));
         SimpleDateFormat formatter = new SimpleDateFormat(VnpayConfig.yyyyMMddHHmmss);

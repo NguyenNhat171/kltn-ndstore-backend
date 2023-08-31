@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartReq {
-    @NotBlank(message = "Product option id is required")
     private String productId;
-    @NotNull(message = "Quantity is required")
     private long quantity;
 }
