@@ -59,7 +59,7 @@ public class PaypalService extends PaymentSteps {
             Payment payment = createPayPalPaymentSandBox(
                     order,
                     "USD",
-                    PaypalMethod.PAYPAL,
+                    PaypalMethod.paypal,
                     PaypalForm.sale,
                     "Thanh toan don hang  "+ order.getId(),
                     cancelUrl,
@@ -67,7 +67,8 @@ public class PaypalService extends PaymentSteps {
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
                     String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-                    if (checkUpdateQuantityProduct == null) {
+                    String checkUpdateSold =payUtils.updateSoldProduct(order,true);
+                    if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                         if (!payment.getTransactions().isEmpty())
                             order.getPaymentInformation().getPaymentInfo().put("amount", payment.getTransactions().get(0).getAmount());
                         order.getPaymentInformation().setPaymentId(payment.getId());
@@ -129,7 +130,8 @@ public class PaypalService extends PaymentSteps {
             order.get().setState(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            if (checkUpdateQuantityProduct == null) {
+            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
+            if (checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
                 response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Cancel payment with Paypal complete", "")

@@ -44,29 +44,32 @@ public class ProductMap {
                 category.get(), brand.get(), Constant.ENABLE);
     }
    // toProductListRes
-//    public AllProductResponse toGetAllProductRes(Product req) {
+
+
+//        public AllProductResponse toGetAllProductRes(Product req) {
 //        List<ProductImage> images = new ArrayList<>();
 //        String discountString = (req.getPrice()).multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
 //                .stripTrailingZeros().toPlainString();
 //        BigDecimal discountPrice = new BigDecimal(discountString);
 //        return new  AllProductResponse(req.getId(), req.getName(), req.getDescription(),
-//                req.getPrice(),discountPrice, req.getDiscount(), req.getRate(),
+//                req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getRate(),
 //                req.getAllCommentRate(), req.getCategory().getId(),
 //                req.getCategory().getName(), req.getBrand().getId(),
-//                req.getBrand().getName(), req.getState(), req.getCreatedDate(), images);
+//                req.getBrand().getName(), req.getState(), req.getCreatedDate(), images,req.getProductConfiguration());
 //    }
 
-        public AllProductResponse toGetAllProductRes(Product req) {
+    public AllProductResponse toGetAllProductRes(Product req) {
         List<ProductImage> images = new ArrayList<>();
         String discountString = (req.getPrice()).multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
                 .stripTrailingZeros().toPlainString();
         BigDecimal discountPrice = new BigDecimal(discountString);
         return new  AllProductResponse(req.getId(), req.getName(), req.getDescription(),
-                req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getRate(),
+                req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getSold(), req.getRate(),
                 req.getAllCommentRate(), req.getCategory().getId(),
                 req.getCategory().getName(), req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(), images,req.getProductConfiguration());
     }
+
 
 
 //    public ProductResponse toGetProductRes(Product req) {
@@ -79,12 +82,22 @@ public class ProductMap {
 //                req.getBrand().getName(), req.getState(), req.getImages());
 //    }
 
+//    public ProductResponse toGetProductRes(Product req) {
+//        String discountString = req.getPrice().multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
+//                .stripTrailingZeros().toPlainString();
+//        BigDecimal discountPrice = new BigDecimal(discountString);
+//        return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
+//                req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getRate(), req.getAllCommentRate(),
+//                req.getCategory().getId(), req.getCategory().getName(),req.getBrand().getId(),
+//                req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getImages(),req.getProductConfiguration());
+//    }
+
     public ProductResponse toGetProductRes(Product req) {
         String discountString = req.getPrice().multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
                 .stripTrailingZeros().toPlainString();
         BigDecimal discountPrice = new BigDecimal(discountString);
         return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
-                req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getRate(), req.getAllCommentRate(),
+                req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getSold(), req.getRate(), req.getAllCommentRate(),
                 req.getCategory().getId(), req.getCategory().getName(),req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getImages(),req.getProductConfiguration());
     }

@@ -69,7 +69,8 @@ public class VnpayService extends PaymentSteps{
         queryUrl += VnpayConfig.vnp_SecureHash + vnp_SecureHash;
         String paymentUrl = VnpayConfig.vnp_PayUrl + "?" + queryUrl;
         String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-        if (checkUpdateQuantityProduct == null) {
+        String checkUpdateSold =payUtils.updateSoldProduct(order,true);
+        if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
             checkTimePayment.setOrderId(order.getId());
             checkTimePayment.setOrderRepository(orderRepository);
            checkTimePayment.setPayUtils(payUtils);
@@ -103,7 +104,8 @@ public class VnpayService extends PaymentSteps{
             order.get().setState(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            if (responseCode.equals(VnpayConfig.responseCancelCode) && checkUpdateQuantityProduct == null) {
+            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
+            if (responseCode.equals(VnpayConfig.responseCancelCode) && checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
                 response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment cancel complete", ""));

@@ -42,6 +42,7 @@ public class  Product {
     private BigDecimal price;
     private int discount = 0;
     private long stock;
+    private long sold = 0;
     @DocumentReference(lazy = true)
     @Indexed
     private Category category;
@@ -90,6 +91,19 @@ public class  Product {
         this.brand = brand;
         this.state = state;
     }
+
+    public Product(String name, String description, BigDecimal price, int discount, long stock, long sold, Category category, Brand brand, String state) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.discount = discount;
+        this.stock = stock;
+        this.sold = sold;
+        this.category = category;
+        this.brand = brand;
+        this.state = state;
+    }
+
     @Transient
     public int getAllCommentRate() {
         try {

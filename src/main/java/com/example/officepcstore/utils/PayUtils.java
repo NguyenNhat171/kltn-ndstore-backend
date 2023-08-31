@@ -40,45 +40,20 @@ public class PayUtils {
         return null;
     }
 
-//    @Synchronized
-//    @Transactional
-//    public String checkStockAndQuantityToUpdateProduct(Order order, boolean isPaid) {
-//        order.getItems().forEach(item -> {
-//            if (isPaid) {
-//                if ( item.getItem().getStock() < item.getQuantity()) {
-//                    order.setState(Constant.ORDER_CART);
-//                    orderRepository.save(order);
-//                    throw new AppException(HttpStatus.CONFLICT.value(),
-//                            "Quantity exceeds available stock this Product:" + item.getItem().getName()+":"+item.getItem().getId()
-//                                    + ":" + item.getItem().getStock());
-//                } else item.getItem().setStock(item.getItem().getStock() + item.getQuantity());
-//            } else item.getItem().setStock(item.getItem().getStock() - item.getQuantity());
-//            try {
-//                productRepository.save(item.getItem());
-//            } catch (MongoWriteException e) {
-//                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when update quantity");
-//            }
-//        });
-//        return null;
-//    }
-
-
-//    @Synchronized
-//    @Transactional
-//    public String updateSoldProduct(Order order, boolean isPaid) {
-//        order.getItems().forEach(item -> {
-//            if (isPaid) {
-//                item.getItem().setStock(item.getItem().getStock() - item.getQuantity());
-//            }
-//            else item.getItem().setStock(item.getItem().getStock() + item.getQuantity());
-//            try {
-//                productRepository.save(item.getItem());
-//            } catch (MongoWriteException e) {
-//                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when update sold");
-//            }
-//        });
-//        return null;
-//    }
-
+    @Synchronized
+    @Transactional
+    public String updateSoldProduct(Order order, boolean isPaid) {
+        order.getItems().forEach(item -> {
+            if (isPaid) {
+            item.getItem().setSold(item.getItem().getSold() + item.getQuantity());
+            } else item.getItem().setSold(item.getItem().getSold() - item.getQuantity());
+            try {
+                productRepository.save(item.getItem());
+            } catch (MongoWriteException e) {
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when update quantity");
+            }
+        });
+        return null;
+    }
 
 }

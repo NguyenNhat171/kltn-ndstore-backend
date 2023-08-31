@@ -1,5 +1,5 @@
 package com.example.officepcstore.service.paymentconfig;
 
 public enum PaypalMethod {
-    PAYPAL, CREDITCARD
+    credit_card, paypal
 }

@@ -24,6 +24,7 @@ public class AllProductResponse { //ProductListRes
     private BigDecimal discountPrice;
     private int discount;
     private long stock;
+    private long sold;
     private double rate;
     private int rateCount;
     private String categoryId;

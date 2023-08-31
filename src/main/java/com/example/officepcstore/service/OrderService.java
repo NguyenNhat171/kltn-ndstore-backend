@@ -82,9 +82,10 @@ public class OrderService {
             if (order.get().getState().equals(Constant.ORDER_PAY_COD) || order.get().getState().equals(Constant.ORDER_PAY_ONLINE)
                     || order.get().getState().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+                String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
                 order.get().setState(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());
-                if (checkUpdateQuantityProduct == null) {
+                if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObjectData(true, "Cancel order successfully", ""));
                 }
