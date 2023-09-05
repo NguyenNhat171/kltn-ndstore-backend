@@ -1,6 +1,5 @@
 package com.example.officepcstore.payload.response;
 
-import com.example.officepcstore.models.enums.EnumGender;
 import lombok.Data;
 
 @Data
@@ -14,7 +13,6 @@ public class UserResponse {
     private Integer district;
     private Integer ward;
     private String address;
-    private EnumGender gender;
     private String role;
     private String state;
 }

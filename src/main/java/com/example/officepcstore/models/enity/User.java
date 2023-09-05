@@ -1,7 +1,6 @@
 package com.example.officepcstore.models.enity;
 
 
-import com.example.officepcstore.models.enums.EnumGender;
 import com.example.officepcstore.models.enums.EnumSocial;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,7 +41,7 @@ public class User {
     private String phone;
     private String role;
     private String avatar;
-    private EnumGender gender;
+
     private EnumSocial provider;
 
     private String state;
@@ -68,7 +67,7 @@ public class User {
     @LastModifiedDate
     LocalDateTime lastModifiedDate;
 
-    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, EnumGender gender, String state, EnumSocial provider) {
+    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String state, EnumSocial provider) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -79,7 +78,6 @@ public class User {
         this.address = address;
         this.role = role;
         this.avatar = avatar;
-        this.gender = gender;
         this.state = state;
         this.provider = provider;
     }

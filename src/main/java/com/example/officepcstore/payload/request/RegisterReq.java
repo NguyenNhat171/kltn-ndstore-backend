@@ -14,6 +14,5 @@ public class RegisterReq {
     private Integer district;
     private Integer ward;
     private String address;
-    private String gender;
     private String role;
 }

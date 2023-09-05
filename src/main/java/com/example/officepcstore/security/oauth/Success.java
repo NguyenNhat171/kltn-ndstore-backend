@@ -4,7 +4,6 @@ package com.example.officepcstore.security.oauth;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.map.UserMap;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.models.enums.EnumGender;
 import com.example.officepcstore.models.enums.EnumSocial;
 import com.example.officepcstore.payload.response.LoginResponse;
 import com.example.officepcstore.repository.UserRepository;
@@ -58,7 +57,7 @@ public class Success extends SavedRequestAwareAuthenticationSuccessHandler {
     public String processAddUser(CustomOAuth2User oAuth2User, EnumSocial social) {
         User newUser = new User(oAuth2User.getName(), oAuth2User.getEmail(), "",
                 " ", 0, 0, 0, "unknown", Constant.ROLE_USER,
-                oAuth2User.getProfilePicture(), EnumGender.OTHER, Constant.USER_ACTIVE,social);
+                oAuth2User.getProfilePicture(), Constant.USER_ACTIVE,social);
         userRepository.save(newUser);
         String accessToken = jwtUtil.generateTokenFromUserId(newUser);
         LoginResponse res = userMapper.toLoginRes(newUser);

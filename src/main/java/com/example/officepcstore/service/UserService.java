@@ -112,7 +112,6 @@ public class UserService {
         if (user.isPresent()) {
             user.get().setName(userReq.getName());
             user.get().setPhone(userReq.getPhone());
-            user.get().setGender(user.get().getGender());
             user.get().setProvince(user.get().getProvince());
             user.get().setDistrict(user.get().getDistrict());
             user.get().setAddress(user.get().getAddress());

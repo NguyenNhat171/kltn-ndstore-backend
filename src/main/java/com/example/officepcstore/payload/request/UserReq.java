@@ -12,6 +12,5 @@ public class UserReq {
     private Integer province;
     private Integer district;
     private Integer ward;
-    private String gender;
     private String password;
 }
