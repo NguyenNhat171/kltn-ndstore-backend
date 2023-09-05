@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -37,7 +38,7 @@ public class UserController {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
             return userService.updateUser(userId, req);
-        throw new AppException(HttpStatus.FORBIDDEN.value(), "Token is invalid");
+        throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
     @PutMapping(path = "/users/chagepassword/{userId}")
     public ResponseEntity<?> changePasswordUser (@Valid @RequestBody ChangePassReq req,
@@ -46,7 +47,7 @@ public class UserController {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
             return userService.updatePassword(userId, req);
-        throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
+        throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
 
     @PutMapping(path = "/users/resetpassword/{userId}")
@@ -56,7 +57,7 @@ public class UserController {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
             return userService.resetForgetPassword(userId,resetPassRequest);
-        throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
+        throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
 
     @GetMapping(path = "/users/{userId}")
@@ -65,7 +66,17 @@ public class UserController {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
             return userService.findUserById(userId);
-        throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission! Token is invalid");
+        throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
+    }
+
+    @PostMapping(path = "/users/update/avatar/{userId}")
+    public ResponseEntity<?> updateAvatarUser (@PathVariable("userId") String userId,
+                                         HttpServletRequest request,
+                                         @RequestParam MultipartFile file){
+        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+        if (user.getId().equals(userId))
+            return userService.updateUserAvatar(userId, file);
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "Not Found Token");
     }
 
 }
