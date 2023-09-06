@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,6 +59,20 @@ public class ProductService {
         throw new NotFoundException("Can not found any product");
     }
 
+    public ResponseEntity<?> findAllProductByUser( Pageable pageable) {
+        Page<Product> products;
+            products = productRepository.findAllByState(Constant.ENABLE,pageable);
+        List<AllProductResponse> listProduct  = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+        ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
+        if (listProductRes != null) {
+            return listProductRes;
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Can not found any product", ""));
+        }
+    }
+
     private ResponseEntity<?> getPageProductRes(Page<Product> products, List<AllProductResponse> resAll) //addPageableToRes
     {
         Map<String, Object> resp = new HashMap<>();
@@ -86,7 +101,7 @@ public class ProductService {
         }
         throw new NotFoundException("Can not found any product with id: "+id);
     }
-    public ResponseEntity<?> findbyId(String id) {
+    public ResponseEntity<?> findById(String id) {
         Optional<Product> product = productRepository.findProductByIdAndState(id, Constant.ENABLE);
         if (product.isPresent()) {
             ProductResponse res = productMap.toGetProductRes(product.get());

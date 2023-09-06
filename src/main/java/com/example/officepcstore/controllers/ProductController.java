@@ -10,6 +10,7 @@ import com.example.officepcstore.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,9 +32,9 @@ public class ProductController {
 //        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
 //        return productService.findById(id, user.getId());
 //    }
-    @GetMapping(path = "/products/{id}")
+    @GetMapping(path = "/products/enable/{id}")
     public ResponseEntity<?> findById (@PathVariable("id") String id){
-        return productService.findbyId(id);
+        return productService.findById(id);
     }
 
     @GetMapping(path = "/products/category/{id}")
@@ -54,6 +55,13 @@ public class ProductController {
     public ResponseEntity<?> findAllByState (@ParameterObject Pageable pageable){
         return productService.findAll(Constant.ENABLE, pageable);
     }
+
+
+    @GetMapping(path = "/products/get/enable/list/all")
+    public ResponseEntity<?> findAllProductByUser (@PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+        return productService.findAllProductByUser(pageable);
+    }
+
 
     @GetMapping(path = "/manage/products")
     public ResponseEntity<?> findAll (@RequestParam(value = "state", defaultValue = "") String state,

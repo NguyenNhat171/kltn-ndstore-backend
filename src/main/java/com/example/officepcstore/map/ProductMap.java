@@ -59,15 +59,14 @@ public class ProductMap {
 //    }
 
     public AllProductResponse toGetAllProductRes(Product req) {
-        List<ProductImage> images = new ArrayList<>();
-        String discountString = (req.getPrice()).multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
+        String discountCalculate = (req.getPrice()).multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
                 .stripTrailingZeros().toPlainString();
-        BigDecimal discountPrice = new BigDecimal(discountString);
+        BigDecimal discountPrice = new BigDecimal(discountCalculate);
         return new  AllProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getSold(), req.getRate(),
                 req.getAllCommentRate(), req.getCategory().getId(),
                 req.getCategory().getName(), req.getBrand().getId(),
-                req.getBrand().getName(), req.getState(), req.getCreatedDate(), images,req.getProductConfiguration());
+                req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getImages(),req.getProductConfiguration());
     }
 
 
@@ -93,9 +92,9 @@ public class ProductMap {
 //    }
 
     public ProductResponse toGetProductRes(Product req) {
-        String discountString = req.getPrice().multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
+        String discountCalculate = req.getPrice().multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
                 .stripTrailingZeros().toPlainString();
-        BigDecimal discountPrice = new BigDecimal(discountString);
+        BigDecimal discountPrice = new BigDecimal(discountCalculate);
         return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getSold(), req.getRate(), req.getAllCommentRate(),
                 req.getCategory().getId(), req.getCategory().getName(),req.getBrand().getId(),
