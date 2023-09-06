@@ -26,12 +26,12 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
 
-    @GetMapping(path = "/admin/manage/users")
+    @GetMapping(path = "/admin/manage/users/get/all")
     public ResponseEntity<?> findAll (@RequestParam(value = "state", defaultValue = "") String state,
                                       @PageableDefault(size = 5, sort = "name") @ParameterObject Pageable pageable){
         return userService.findAll(state, pageable);
     }
-    @PutMapping(path = "/users/{userId}")
+    @PutMapping(path = "/users/edit/profile/{userId}")
     public ResponseEntity<?> updateUser ( @RequestBody UserReq req,
                                           @PathVariable("userId") String userId,
                                           HttpServletRequest request){
@@ -40,7 +40,7 @@ public class UserController {
             return userService.updateUser(userId, req);
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
-    @PutMapping(path = "/users/chagepassword/{userId}")
+    @PutMapping(path = "/users/change/new/password/{userId}")
     public ResponseEntity<?> changePasswordUser (@Valid @RequestBody ChangePassReq req,
                                                  @PathVariable("userId") String userId,
                                                  HttpServletRequest request){
@@ -50,7 +50,7 @@ public class UserController {
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
 
-    @PutMapping(path = "/users/resetpassword/{userId}")
+    @PutMapping(path = "/users/reset/new/password/{userId}")
     public ResponseEntity<?> updateResetPasswordUser ( @RequestBody ResetForgetPassReq resetPassRequest,
                                                        @PathVariable("userId") String userId,
                                                        HttpServletRequest request){

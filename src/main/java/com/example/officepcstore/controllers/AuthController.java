@@ -17,17 +17,17 @@ import javax.validation.Valid;
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
-    @PostMapping("/login")
+    @PostMapping("/login/account")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginRequest) {
         return authService.loginAccount(loginRequest);
     }
 
-    @PostMapping("/register")
+    @PostMapping("/register/account")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterReq registerRequest) {
         return authService.registerAccount(registerRequest);
     }
 
-    @PostMapping("/forgetpass")
+    @PostMapping("/forgetpass/account")
     public ResponseEntity<?> getOTPResetForgetPass(@RequestParam  (value ="email")String email)
     {
         if (!email.isBlank())
@@ -35,16 +35,16 @@ public class AuthController {
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
 
-    @PostMapping("/verifyaccount")
+    @PostMapping("/verifyaccount/account")
     public ResponseEntity<?> verify(@Valid @RequestBody VerifyReq req) {
         return authService.verifyOTP(req);
     }
-    @PostMapping("/getotp")
+    @PostMapping("/getotp/account")
     public ResponseEntity<?> getOTPMail(@RequestParam  (value ="email")String email) {
         if (!email.isBlank()) return authService.sendMailGetOTP(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
-//    @PostMapping("/getotp/reset")
+//    @PostMapping("account/getotp/reset")
 //    public ResponseEntity<?> getOTPMailReset(@RequestParam(value ="email")String email) {
 //        if (!email.isBlank()) return authService.sendMailResetGetOTP(email);
 //        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");

@@ -42,7 +42,7 @@ public class ProductController {
         return productService.findByCategoryIdOrBrandId(id, pageable);
     }
 
-    @GetMapping(path = "/products/search")
+    @GetMapping(path = "/products/find/search")
     public ResponseEntity<?> search (@RequestParam("q") String query,
                                      @PageableDefault(sort = "score") @ParameterObject Pageable pageable){
         if (query.isEmpty() || query.matches(".*[%<>&;'\0-].*"))
@@ -50,7 +50,7 @@ public class ProductController {
         return productService.search(query, pageable);
     }
 
-    @GetMapping(path = "/products")
+    @GetMapping(path = "/products/get/all")
     public ResponseEntity<?> findAllByState (@ParameterObject Pageable pageable){
         return productService.findAll(Constant.ENABLE, pageable);
     }
