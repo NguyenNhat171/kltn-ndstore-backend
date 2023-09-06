@@ -48,29 +48,35 @@ public class ProductService {
     private final RecommendProductUtils recommendCheckUtils;
     private final TaskScheduler taskScheduler;
     private final UserRepository userRepository;
-    public ResponseEntity<?> findAll(String state, Pageable pageable) {
-        Page<Product> products;
-        if (state.equalsIgnoreCase(Constant.ENABLE) || state.equalsIgnoreCase(Constant.DISABLE))
-            products = productRepository.findAllByState(state.toLowerCase(), pageable);
-        else products = productRepository.findAll(pageable);
-        List<AllProductResponse> resList = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-        ResponseEntity<?> resp = getPageProductRes(products, resList);
-        if (resp != null) return resp;
-        throw new NotFoundException("Can not found any product");
-    }
+//    public ResponseEntity<?> findAll(String state, Pageable pageable) {
+//        Page<Product> products;
+//        if (state.equalsIgnoreCase(Constant.ENABLE) || state.equalsIgnoreCase(Constant.DISABLE))
+//            products = productRepository.findAllByState(state.toLowerCase(), pageable);
+//        else products = productRepository.findAll(pageable);
+//        List<AllProductResponse> resList = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+//        ResponseEntity<?> resp = getPageProductRes(products, resList);
+//        if (resp != null) return resp;
+//        throw new NotFoundException("Can not found any product");
+//    }
 
     public ResponseEntity<?> findAllProductByUser( Pageable pageable) {
         Page<Product> products;
             products = productRepository.findAllByState(Constant.ENABLE,pageable);
         List<AllProductResponse> listProduct  = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
-        if (listProductRes != null) {
+        if (listProductRes != null)
             return listProductRes;
-        }
-        else {
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(false, "Can not found any product", ""));
-        }
+        throw new NotFoundException("Not found product");
+    }
+
+    public ResponseEntity<?> findAllProductByAdmin(String state ,Pageable pageable) {
+        Page<Product> products;
+        products = productRepository.findAllByState(state,pageable);
+        List<AllProductResponse> listProduct  = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+        ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
+        if (listProductRes != null)
+            return listProductRes;
+        throw new NotFoundException("Not found product");
     }
 
     private ResponseEntity<?> getPageProductRes(Page<Product> products, List<AllProductResponse> resAll) //addPageableToRes

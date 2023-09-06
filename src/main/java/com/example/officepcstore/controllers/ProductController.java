@@ -51,10 +51,7 @@ public class ProductController {
         return productService.search(query, pageable);
     }
 
-    @GetMapping(path = "/products/get/all")
-    public ResponseEntity<?> findAllByState (@ParameterObject Pageable pageable){
-        return productService.findAll(Constant.ENABLE, pageable);
-    }
+
 
 
     @GetMapping(path = "/products/get/enable/list/all")
@@ -63,10 +60,11 @@ public class ProductController {
     }
 
 
-    @GetMapping(path = "/manage/products")
-    public ResponseEntity<?> findAll (@RequestParam(value = "state", defaultValue = "") String state,
+    @GetMapping(path = "/manage/products/get/list")
+    public ResponseEntity<?> findAllProductByAdmin (@RequestParam(value = "state", defaultValue = "") String state,
+                                                    @PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC)
                                       @ParameterObject Pageable pageable){
-        return productService.findAll(state,pageable);
+        return productService.findAllProductByAdmin(state,pageable);
     }
 
     @PostMapping("/manage/product/create")
