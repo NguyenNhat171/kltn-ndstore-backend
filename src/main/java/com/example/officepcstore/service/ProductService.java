@@ -69,7 +69,7 @@ public class ProductService {
         }
         else {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Can not found any product", ""));
+                    new ResponseObjectData(false, "Can not found any product", ""));
         }
     }
 
