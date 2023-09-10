@@ -37,7 +37,7 @@ public class AccountController {
 
 
     @PostMapping("mail/forget/new/pass/account")
-    public ResponseEntity<?> getResetNewPass( @RequestBody String email)
+    public ResponseEntity<?> getResetNewPass( @RequestParam(value ="email") String email)
     {
         if (!email.isBlank())
             return authService.sendMailResetGetNewPass(email);
