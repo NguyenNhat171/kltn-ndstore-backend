@@ -27,7 +27,7 @@ public class AuthController {
         return authService.registerAccount(registerRequest);
     }
 
-    @PostMapping("/forgetpass/account")
+    @PostMapping("mail/forget/pass/account")
     public ResponseEntity<?> getOTPResetForgetPass(@RequestParam  (value ="email")String email)
     {
         if (!email.isBlank())
@@ -39,7 +39,7 @@ public class AuthController {
     public ResponseEntity<?> verify(@Valid @RequestBody VerifyReq req) {
         return authService.verifyOTP(req);
     }
-    @PostMapping("/getotp/account")
+    @PostMapping("/mail/get/otp/account")
     public ResponseEntity<?> getOTPMail(@RequestParam  (value ="email")String email) {
         if (!email.isBlank()) return authService.sendMailGetOTP(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
