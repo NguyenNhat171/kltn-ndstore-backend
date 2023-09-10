@@ -17,6 +17,7 @@ import com.example.officepcstore.repository.CategoryRepository;
 import com.example.officepcstore.repository.ProductRepository;
 import com.example.officepcstore.repository.UserRepository;
 import com.example.officepcstore.utils.RecommendProductUtils;
+import com.example.officepcstore.utils.StringUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,9 +47,9 @@ public class ProductService {
     private final BrandRepository brandRepository;
     private final ProductMap productMap;
     private final CloudinaryConfig cloudinary;
-    private final RecommendProductUtils recommendCheckUtils;
-    private final TaskScheduler taskScheduler;
-    private final UserRepository userRepository;
+//    private final RecommendProductUtils recommendCheckUtils;
+//    private final TaskScheduler taskScheduler;
+//    private final UserRepository userRepository;
 //    public ResponseEntity<?> findAll(String state, Pageable pageable) {
 //        Page<Product> products;
 //        if (state.equalsIgnoreCase(Constant.ENABLE) || state.equalsIgnoreCase(Constant.DISABLE))
@@ -79,6 +81,18 @@ public class ProductService {
         throw new NotFoundException("Not found product");
     }
 
+    public ResponseEntity<?> filterProductPriceByUser(BigDecimal priceMin, BigDecimal priceMax, Pageable pageable ) {
+        Long priceMinLong = priceMin.longValue();
+        Long priceMaxLong = priceMax.longValue();
+        Page<Product> products = productRepository.findAllByPriceBetweenAndState(priceMinLong,priceMaxLong,Constant.ENABLE,pageable);
+   List<AllProductResponse> listProduct  = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+      ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
+      if (listProductRes != null)
+       return listProductRes;
+      throw new NotFoundException("Not found product");
+    }
+
+
     private ResponseEntity<?> getPageProductRes(Page<Product> products, List<AllProductResponse> resAll) //addPageableToRes
     {
         Map<String, Object> resp = new HashMap<>();
@@ -92,21 +106,21 @@ public class ProductService {
     }
 
 
-    public ResponseEntity<?> findByRecommentUserId(String id, String userId) {
-        Optional<Product> product = productRepository.findProductByIdAndState(id, Constant.ENABLE);
-        if (product.isPresent()) {
-            ProductResponse res = productMap.toGetProductRes(product.get());
-            recommendCheckUtils.setCatId(res.getCategoryId());
-            recommendCheckUtils.setBrandId(res.getBrandId());
-            recommendCheckUtils.setType(Constant.VIEW_TYPE);
-            recommendCheckUtils.setUserId(userId);
-            recommendCheckUtils.setUserRepository(userRepository);
-            taskScheduler.schedule(recommendCheckUtils, new Date(System.currentTimeMillis()));
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Get product success", res));
-        }
-        throw new NotFoundException("Can not found any product with id: "+id);
-    }
+//    public ResponseEntity<?> findByRecommentUserId(String id, String userId) {
+//        Optional<Product> product = productRepository.findProductByIdAndState(id, Constant.ENABLE);
+//        if (product.isPresent()) {
+//            ProductResponse res = productMap.toGetProductRes(product.get());
+//            recommendCheckUtils.setCatId(res.getCategoryId());
+//            recommendCheckUtils.setBrandId(res.getBrandId());
+//            recommendCheckUtils.setType(Constant.VIEW_TYPE);
+//            recommendCheckUtils.setUserId(userId);
+//            recommendCheckUtils.setUserRepository(userRepository);
+//            taskScheduler.schedule(recommendCheckUtils, new Date(System.currentTimeMillis()));
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Get product success", res));
+//        }
+//        throw new NotFoundException("Can not found any product with id: "+id);
+//    }
     public ResponseEntity<?> findById(String id) {
         Optional<Product> product = productRepository.findProductByIdAndState(id, Constant.ENABLE);
         if (product.isPresent()) {

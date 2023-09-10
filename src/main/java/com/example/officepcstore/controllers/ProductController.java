@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +58,14 @@ public class ProductController {
     @GetMapping(path = "/products/get/enable/list/all")
     public ResponseEntity<?> findAllProductByUser (@PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
         return productService.findAllProductByUser(pageable);
+    }
+
+    @GetMapping(path = "/products/get/filer/price/list/all")
+    public ResponseEntity<?> findAllProductFilerPriceByUser (@RequestParam(value = "min" ) BigDecimal min,
+                                                             @RequestParam(value = "max" ) BigDecimal max,
+                                                                 @PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC)
+                                                                 @ParameterObject Pageable pageable){
+        return productService.filterProductPriceByUser(min,max,pageable);
     }
 
 

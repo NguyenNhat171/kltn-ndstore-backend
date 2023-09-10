@@ -121,6 +121,7 @@ public class OrderService {
         if (order.isPresent()) {
                 if (order.get().getState().equals(Constant.ORDER_PROCESS_DELIVERY)) {
                     order.get().setState(Constant.ORDER_COMPLETE);
+                    order.get().setLastModifiedDate(LocalDateTime.now());
                     order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
                 } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivered");
             orderRepository.save(order.get());

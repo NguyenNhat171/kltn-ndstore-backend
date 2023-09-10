@@ -20,7 +20,7 @@ public class ProductResponse {
     private String id;
     private String name;
     private String description;
-    private BigDecimal OriginPrice;
+    private BigDecimal originPrice;
     private BigDecimal discountPrice;
     private int discount;
     private long stock;
