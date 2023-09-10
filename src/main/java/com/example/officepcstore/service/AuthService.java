@@ -111,7 +111,7 @@ public class AuthService {
             try {
                 sendVerifyMail(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Send otp email success", email));
+                        new ResponseObjectData(true, "Send otp email success", " "));
             } catch (Exception e) {
                 e.printStackTrace();
                 log.error(e.getMessage());
@@ -129,7 +129,7 @@ public class AuthService {
                 try {
                     sendVerifyMailReset(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObjectData(true, "Send email reset password success", email));
+                            new ResponseObjectData(true, "Send email reset password success"," "));
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.error(e.getMessage());
@@ -148,7 +148,7 @@ public class AuthService {
                 try {
                     sendMailResetNewPass(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObjectData(true, "Send email reset password success", email));
+                            new ResponseObjectData(true, "Send email reset password success", " "));
                 } catch (Exception e) {
                     e.printStackTrace();
                     log.error(e.getMessage());

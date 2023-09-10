@@ -163,8 +163,8 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Hãy sử dụng mã xác minh bên dưới để tiếp tục thiết lập mật khẩu của bạn (
-                            ${email}) là:</p>
+                        <p style="margin: 0;">Đây là mật khẩu mới của tài khoản
+                            ${email}:</p>
                     </td>
                 </tr>
                 <!-- end copy -->
@@ -195,8 +195,7 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;"> <b>Không cung cấp mã này cho bất kỳ ai để giữ an toàn cho tài khoản của bạn.</b>  </p>
-                        <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút. </p>
+                        <p style="margin: 0;"> <b>Vui lòng đổi lại mật khẩu sau khi đăng nhập.</b>  </p>
 
                     </td>
                 </tr>
