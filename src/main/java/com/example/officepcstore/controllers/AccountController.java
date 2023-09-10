@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AccountController {
     private final AuthService authService;
     @PostMapping("/login/account")
     public ResponseEntity<?> login(@Valid @RequestBody LoginReq loginRequest) {
@@ -28,10 +28,19 @@ public class AuthController {
     }
 
     @PostMapping("mail/forget/pass/account")
-    public ResponseEntity<?> getOTPResetForgetPass(@RequestParam  (value ="email")String email)
+    public ResponseEntity<?> getOTPResetForgetPass(@RequestParam(value ="email")String email)
     {
         if (!email.isBlank())
             return authService.sendMailResetForgetPass(email);
+        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
+    }
+
+
+    @PostMapping("mail/forget/new/pass/account")
+    public ResponseEntity<?> getResetNewPass( @RequestBody String email)
+    {
+        if (!email.isBlank())
+            return authService.sendMailResetGetNewPass(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
 
@@ -49,5 +58,4 @@ public class AuthController {
 //        if (!email.isBlank()) return authService.sendMailResetGetOTP(email);
 //        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
 //    }
-
 }
