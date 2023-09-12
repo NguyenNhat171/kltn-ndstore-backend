@@ -26,8 +26,6 @@ public class UserMap {
 
     public User toUser(RegisterReq req) {
         if (req != null) {
-            if (!StringUtils.checkPhoneNumberFormat(req.getPhone()))
-                throw new AppException(400, "Phone number is invalid!");
             return new User(req.getName(), req.getEmail(), req.getPassword(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),
                     req.getAddress(), Constant.ROLE_USER, null, Constant.USER_UNVERIFIED, EnumSocial.LOCAL);

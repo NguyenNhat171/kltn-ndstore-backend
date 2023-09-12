@@ -106,7 +106,7 @@ public class OrderService {
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
             order.get().getShippingDetail().getShipInfo().put("orderCode", objectRes.getString("order_code"));
-            order.get().getShippingDetail().getShipInfo().put("fee", objectRes.getLong("total_fee"));
+            order.get().getShippingDetail().getShipInfo().put("totalFeeShip", objectRes.getLong("total_fee"));
             order.get().getShippingDetail().getShipInfo().put("expectedDeliveryTime", objectRes.getString("expected_delivery_time"));
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -136,7 +136,7 @@ public class OrderService {
         if (order.isPresent()) {
             if (order.get().getState().equals(Constant.ORDER_SHIPPING)) {
                 order.get().setState(Constant.ORDER_PROCESS_DELIVERY);
-                order.get().getShippingDetail().getShipInfo().put("deliveredAt", LocalDateTime.now(Clock.systemUTC()));
+                order.get().getShippingDetail().getShipInfo().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
 
             orderRepository.save(order.get());

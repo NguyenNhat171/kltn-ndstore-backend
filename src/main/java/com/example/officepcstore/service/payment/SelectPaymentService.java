@@ -35,7 +35,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class SelectPaymentService {
-    public static String URL_PAYMENT = "http://localhost:3000/checkout/order/payment?success=";
+    public static String URL_PAYMENT = "http://localhost:3000/checkout/order/payment?complete=";
     private final ApplicationContext context;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
@@ -65,7 +65,7 @@ public class SelectPaymentService {
             ShippingDetail shippingDetail = new ShippingDetail(req.getName(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),req.getAddress());
             order.get().setShippingDetail(shippingDetail);
-            order.get().getShippingDetail().getShipInfo().put("fee", req.getShipFee());
+            order.get().getShippingDetail().getShipInfo().put("totalFeeShip", req.getShipFee());
             order.get().getShippingDetail().getShipInfo().put("serviceType", req.getServiceType());
             order.get().getShippingDetail().getShipInfo().put("estimatedTime", req.getEstimatedTime());
             order.get().getShippingDetail().getShipInfo().put("address", req.getAddress());

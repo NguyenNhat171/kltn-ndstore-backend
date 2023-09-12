@@ -31,10 +31,6 @@ public class StringUtils {
         return Long.parseLong(tempString);
     }
 
-    public static boolean checkPhoneNumberFormat(String phone) {
-        String regex = "((^(\\+84|84|0|0084){1})(3|5|7|8|9))+([0-9]{8})$";
-        return Pattern.compile(regex).matcher(phone).matches();
-    }
 
     public static String getBaseURL(HttpServletRequest request) {
         String scheme = request.getScheme();
