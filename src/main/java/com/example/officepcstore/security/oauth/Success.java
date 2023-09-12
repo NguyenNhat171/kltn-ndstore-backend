@@ -65,9 +65,9 @@ public class Success extends SavedRequestAwareAuthenticationSuccessHandler {
         return accessToken;
     }
 
-    public String generateRedirectURL(Boolean success, String token, EnumSocial provider, String message) {
+    public String generateRedirectURL(Boolean success, String token, EnumSocial social, String message) {
         logger.debug(message);
         String CLIENT_HOST_REDIRECT = "http://localhost:3000/oauth2/redirect?token=";
-        return CLIENT_HOST_REDIRECT + token + "&success=" + success + "&provider=" + provider.toString();
+        return CLIENT_HOST_REDIRECT + token + "&success=" + success + "&social=" + social.toString();
     }
 }
