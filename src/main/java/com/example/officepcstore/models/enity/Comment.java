@@ -31,11 +31,19 @@ public class Comment {
     @JsonIgnore
     @Indexed
     private Product product;
-    private String enable;
+    private String state;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
     LocalDateTime lastModifiedDate;
+
+    public Comment(String review, double rate, User user, Product product, String state) {
+        this.review = review;
+        this.rate = rate;
+        this.user = user;
+        this.product = product;
+        this.state = state;
+    }
 }

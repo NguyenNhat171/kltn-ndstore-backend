@@ -136,7 +136,7 @@ public class ProductService {
         try {
             Optional<Category> category = categoryRepository.findCategoryByIdAndState(id, Constant.ENABLE);
             if (category.isPresent()) {
-                List<ObjectId> subCat = category.get().getSubCategories().stream().map(c -> new ObjectId(c.getId())).collect(Collectors.toList());
+                List<ObjectId> subCat = category.get().getSubCategory().stream().map(c -> new ObjectId(c.getId())).collect(Collectors.toList());
                 products = productRepository.findProductsByCategory(new ObjectId(id),
                         subCat, pageable);
             } else products = productRepository.findAllByCategory_IdOrBrand_IdAndState(new ObjectId(id),

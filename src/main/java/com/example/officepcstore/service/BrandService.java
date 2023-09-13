@@ -88,8 +88,8 @@ public class BrandService {
             brand.get().setState(state);
             if (file != null && !file.isEmpty()) {
                 try {
-                    String imgUrl = cloudinary.uploadImage(file, brand.get().getImage());
-                    brand.get().setImage(imgUrl);
+                    String imgUrl = cloudinary.uploadImage(file, brand.get().getImageBrand());
+                    brand.get().setImageBrand(imgUrl);
                 } catch (IOException e) {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload image");
                 }

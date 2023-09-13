@@ -21,16 +21,16 @@ public class Brand {
     private String id;
 
     private String name;
-    private String image;
+    private String imageBrand;
     private String state;
     @DocumentReference(lookup="{'brand':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed
     private List<Product> products;
 
-    public Brand(String name, String image, String state) {
+    public Brand(String name, String imageBrand, String state) {
         this.name = name;
-        this.image = image;
+        this.imageBrand = imageBrand;
         this.state = state;
     }
 }

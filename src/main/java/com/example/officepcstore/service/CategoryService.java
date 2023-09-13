@@ -40,7 +40,7 @@ public class CategoryService {
 
     public ResponseEntity<?> findRoot(Boolean root) {
         List<Category> list;
-        if (root) list = categoryRepository.findAllByRoot(true);
+        if (root) list = categoryRepository.findAllByMainCategory(true);
         else list = categoryRepository.findAllByState(Constant.ENABLE);
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -73,9 +73,9 @@ public class CategoryService {
             if (!req.getParent_category().equals("-1") && !req.getParent_category().isBlank()){
                 Optional<Category> parentCategory = categoryRepository.findById(req.getParent_category());
                 if (parentCategory.isPresent()) {
-                    category.setRoot(false);
+                    category.setMainCategory(false);
                     categoryRepository.save(category);
-                    parentCategory.get().getSubCategories().add(category);
+                    parentCategory.get().getSubCategory().add(category);
                     categoryRepository.save(parentCategory.get());
                 } else throw new NotFoundException("Not found category id: "+req.getParent_category());
             } else categoryRepository.save(category);
@@ -115,8 +115,8 @@ public class CategoryService {
         if (category.isPresent()) {
             if (file != null && !file.isEmpty()) {
                 try {
-                    String imgUrl = cloudinary.uploadImage(file, category.get().getImage());
-                    category.get().setImage(imgUrl);
+                    String imgUrl = cloudinary.uploadImage(file, category.get().getImageCategory());
+                    category.get().setImageCategory(imgUrl);
                     categoryRepository.save(category.get());
                 } catch (IOException e) {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload image");
