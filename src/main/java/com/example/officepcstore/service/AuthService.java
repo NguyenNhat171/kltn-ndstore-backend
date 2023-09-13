@@ -72,7 +72,7 @@ public class AuthService {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
-                if (user.getUser().getProvider().equals(EnumSocial.LOCAL)) {
+                if (user.getUser().getSocial().equals(EnumSocial.LOCAL)) {
 
                     LoginResponse res = userMapper.toLoginRes(user.getUser());
                     String access_token = jwtUtils.generateTokenFromUserId(user.getUser());
@@ -80,7 +80,7 @@ public class AuthService {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObjectData(true, "Log in successfully ", res));
                 } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        user.getUser().getProvider() + " account");
+                        user.getUser().getSocial() + " account");
             } catch (BadCredentialsException ex) {
 //            ex.printStackTrace();
                 throw new BadCredentialsException(ex.getMessage());
@@ -125,7 +125,7 @@ public class AuthService {
     public ResponseEntity<?> sendMailResetForgetPass(String email) {
         Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (user.get().getProvider().equals(EnumSocial.LOCAL)) {
+            if (user.get().getSocial().equals(EnumSocial.LOCAL)) {
                 try {
                     sendVerifyMailReset(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
@@ -136,7 +136,7 @@ public class AuthService {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
                 }
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getProvider() + " account");
+                    user.get().getSocial() + " account");
         }
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
@@ -144,7 +144,7 @@ public class AuthService {
     public ResponseEntity<?> sendMailResetGetNewPass(String email) {
         Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (user.get().getProvider().equals(EnumSocial.LOCAL)) {
+            if (user.get().getSocial().equals(EnumSocial.LOCAL)) {
                 try {
                     sendMailResetNewPass(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
@@ -155,7 +155,7 @@ public class AuthService {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
                 }
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getProvider() + " account");
+                    user.get().getSocial() + " account");
         }
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
@@ -205,8 +205,8 @@ public class AuthService {
     private ResponseEntity<?> verifyReset(String email, String otp) {
         Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (!user.get().getProvider().equals(EnumSocial.LOCAL)) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getProvider() + " account");
+            if (!user.get().getSocial().equals(EnumSocial.LOCAL)) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+                    user.get().getSocial() + " account");
             Map<String, Object> res = new HashMap<>();
             boolean verify = false;
             if (LocalDateTime.now().isBefore(user.get().getToken().getExp())) {

@@ -38,18 +38,18 @@ public class Success extends SavedRequestAwareAuthenticationSuccessHandler {
             response.sendRedirect(generateRedirectURL(true, accessToken, provider, ""));
         } else {
             try {
-                if (EnumUtils.isValidEnum(EnumSocial.class, user.get().getProvider().name()) &&
-                        !user.get().getProvider().equals(EnumSocial.LOCAL) &&
-                        provider.equals(user.get().getProvider())) {
+                if (EnumUtils.isValidEnum(EnumSocial.class, user.get().getSocial().name()) &&
+                        !user.get().getSocial().equals(EnumSocial.LOCAL) &&
+                        provider.equals(user.get().getSocial())) {
                     String accessToken = jwtUtil.generateTokenFromUserId(user.get());
                     response.sendRedirect(generateRedirectURL(true, accessToken, provider, ""));
                 } else response.sendRedirect(generateRedirectURL(false, "",
-                        user.get().getProvider(), user.get().getEmail() + " already have an account with +"+
-                                user.get().getProvider() +" method"));
+                        user.get().getSocial(), user.get().getEmail() + " already have an account with +"+
+                                user.get().getSocial() +" method"));
             } catch (NullPointerException e) {
                 response.sendRedirect(generateRedirectURL(false, "",
-                        user.get().getProvider(), user.get().getEmail() + " already have an account with +"+
-                                user.get().getProvider() +" method"));
+                        user.get().getSocial(), user.get().getEmail() + " already have an account with +"+
+                                user.get().getSocial() +" method"));
             }
         }
     }

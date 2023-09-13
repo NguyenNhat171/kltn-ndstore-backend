@@ -42,7 +42,7 @@ public class User {
     private String role;
     private String avatar;
 
-    private EnumSocial provider;
+    private EnumSocial social;
 
     private String state;
     @ReadOnlyProperty
@@ -59,7 +59,7 @@ public class User {
     private Token token;
     @JsonIgnore
     @Indexed
-    private Map<Object, Integer> recommendRanking = new HashMap<>();
+    private Map<Object, Integer> recommendRating = new HashMap<>();
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;
@@ -67,7 +67,7 @@ public class User {
     @LastModifiedDate
     LocalDateTime lastModifiedDate;
 
-    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String state, EnumSocial provider) {
+    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String state, EnumSocial social) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -79,6 +79,6 @@ public class User {
         this.role = role;
         this.avatar = avatar;
         this.state = state;
-        this.provider = provider;
+        this.social = social;
     }
 }

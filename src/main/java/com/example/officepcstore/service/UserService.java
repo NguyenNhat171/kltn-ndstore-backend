@@ -143,9 +143,9 @@ public class UserService {
     public ResponseEntity<?> updatePassword(String id, ChangePassReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (!user.get().getProvider().equals(EnumSocial.LOCAL))
+            if (!user.get().getSocial().equals(EnumSocial.LOCAL))
                 throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        user.get().getProvider() + " account");
+                        user.get().getSocial() + " account");
             if (passwordEncoder.matches(req.getOldPass(), user.get().getPassword())
                     && !req.getNewPass().equals(req.getOldPass())) {
                 user.get().setPassword(passwordEncoder.encode(req.getNewPass()));
@@ -162,9 +162,9 @@ public class UserService {
     public ResponseEntity<?> resetForgetPassword(String id, ResetForgetPassReq req) {
         Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
-            if (!foundUser.get().getProvider().equals(EnumSocial.LOCAL))
+            if (!foundUser.get().getSocial().equals(EnumSocial.LOCAL))
                 throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        foundUser.get().getProvider() + " account");
+                        foundUser.get().getSocial() + " account");
             foundUser.get().setPassword(passwordEncoder.encode(req.getNewPass()));
             userRepository.save(foundUser.get());
             UserResponse userRes = userMap.toUserRes(foundUser.get());
