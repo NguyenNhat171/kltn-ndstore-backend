@@ -156,7 +156,7 @@ public class LogisticService {
         });
         body.add("items", items);
         body.addProperty("payment_type_id", 2);
-        body.addProperty("service_type_id", (int) order.getShippingDetail().getShipInfo().get("serviceType"));
+        body.addProperty("service_type_id", (int) order.getShippingDetail().getShipInformation().get("serviceType"));
         body.addProperty("required_note", "Hàng dễ vỡ");
         body.addProperty("content", "Đơn hàng được mua tại ND Store");
         body.addProperty("client_order_code", order.getId());
@@ -164,13 +164,13 @@ public class LogisticService {
         body.addProperty("width",50);
         body.addProperty("height",height);
         body.addProperty("weight",weight);
-        body.addProperty("to_name", order.getShippingDetail().getReceiverName());
-        body.addProperty("to_phone", order.getShippingDetail().getReceiverPhone());
-        body.addProperty("to_address", order.getShippingDetail().getReceiverAddress());
+        body.addProperty("to_name", order.getShippingDetail().getCustomerName());
+        body.addProperty("to_phone", order.getShippingDetail().getCustomerPhone());
+        body.addProperty("to_address", order.getShippingDetail().getCustomerAddress());
         body.addProperty("cod_amount", order.getTotalPrice().intValue());
         body.addProperty("to_province_name", req.getTo_province_name());
         body.addProperty("to_district_name", req.getTo_district_name());
         body.addProperty("to_ward_name", req.getTo_ward_name());
-        body.addProperty("to_ward_code", order.getShippingDetail().getReceiverWard());
+        body.addProperty("to_ward_code", order.getShippingDetail().getCustomerWard());
     }
 }

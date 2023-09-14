@@ -2,7 +2,7 @@ package com.example.officepcstore.map;
 
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.Order;
-import com.example.officepcstore.models.enity.OrderProduct;
+import com.example.officepcstore.models.enity.OrderedProduct;
 import com.example.officepcstore.models.enity.product.ProductImage;
 import com.example.officepcstore.payload.response.CartProductResponse;
 import com.example.officepcstore.payload.response.CartResponse;
@@ -18,20 +18,20 @@ import java.util.stream.Collectors;
 public class CartMap {
     public CartResponse getProductCartRes (Order order) { // toCartRes
         CartResponse res = new CartResponse(order.getId(), order.getTotalProduct(), order.getTotalPrice(), order.getState());
-        res.setItems(order.getItems().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));
+        res.setItems(order.getOrderedProducts().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));
         return res;
     }
 
-    public static CartProductResponse toCartProductRes(OrderProduct orderItem) { //toCartItemRes
-        Optional<ProductImage> image = Optional.of(orderItem.getItem().getImages().get(0));
-        BigDecimal price = orderItem.getPrice();
+    public static CartProductResponse toCartProductRes(OrderedProduct product) { //toCartItemRes
+        Optional<ProductImage> image = Optional.of(product.getOrderProduct().getImages().get(0));
+        BigDecimal price = product.getPrice();
 
         try {
-            return new CartProductResponse(orderItem.getId(), orderItem.getItem().getId(),orderItem.getItem().getStock(),orderItem.getItem().getName(),
-                    orderItem.getItem().getPrice(),
-                    orderItem.getItem().getDiscount(),
+            return new CartProductResponse(product.getId(), product.getOrderProduct().getId(),product.getOrderProduct().getStock(),product.getOrderProduct().getName(),
+                    product.getOrderProduct().getPrice(),
+                    product.getOrderProduct().getDiscount(),
                     image.get().getUrl(), price,
-                    orderItem.getQuantity(), orderItem.getSubPrice());
+                    product.getQuantity(),product.getSubProductPrice());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Cant get product cart");

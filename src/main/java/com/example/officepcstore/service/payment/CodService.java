@@ -33,7 +33,7 @@ public class CodService extends PaymentSteps {
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
             if (checkUpdateQuantityProduct == null) {
                 order.setState(Constant.ORDER_PAY_COD);
-                order.getPaymentInformation().getPaymentInfo().put("isPaid", false);
+                order.getPaymentInformation().getPayDetails().put("isPaid", false);
                 orderRepository.save(order);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));

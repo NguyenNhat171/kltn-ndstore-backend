@@ -1,6 +1,5 @@
 package com.example.officepcstore.models.enity;
 
-import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.models.enity.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -19,17 +18,17 @@ import java.math.BigDecimal;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
-@Document(collection = "product_list_order")
+@Document(collection = "ordered_products")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderProduct {
+public class OrderedProduct {
     @Id
     private String id;
     @DocumentReference
     @Indexed
-    private Product item;
+    private Product orderProduct;
     @NotNull
     private long quantity;
     @DocumentReference(lazy = true)
@@ -40,23 +39,31 @@ public class OrderProduct {
     private BigDecimal price = BigDecimal.ZERO;
     private boolean reviewed = false;
     @Transient
-    private BigDecimal subPrice = BigDecimal.ZERO;
-//    @Transient
-//    private BigDecimal Price = BigDecimal.ZERO;
+    private BigDecimal subProductPrice = BigDecimal.ZERO;
+
     public BigDecimal getPrice(){
-        BigDecimal originPrice = item.getPrice().multiply(BigDecimal.valueOf(quantity));
+        BigDecimal originPrice =orderProduct.getPrice().multiply(BigDecimal.valueOf(quantity));
         return originPrice;
     }
 
-    public BigDecimal getSubPrice() {
-            BigDecimal originPrice = (item.getPrice().multiply(BigDecimal.valueOf(quantity)));
-            String discountString = originPrice.multiply(BigDecimal.valueOf((double) (100- item.getDiscount())/100))
+
+
+    public BigDecimal getSubProductPrice() {
+            BigDecimal originPrice = (orderProduct.getPrice().multiply(BigDecimal.valueOf(quantity)));
+            String discountString = originPrice.multiply(BigDecimal.valueOf((double) (100- orderProduct.getDiscount())/100))
                     .stripTrailingZeros().toPlainString();
             return new BigDecimal(discountString);
     }
 
-    public OrderProduct(Product item, long quantity, Order order) {
-        this.item = item;
+
+//    public OrderedProduct(Product orderedProduct, long quantity, Order order) {
+//        this.orderedProduct = orderedProduct;
+//        this.quantity = quantity;
+//        this.order = order;
+//    }
+
+    public OrderedProduct(Product orderProduct, long quantity, Order order) {
+        this.orderProduct = orderProduct;
         this.quantity = quantity;
         this.order = order;
     }

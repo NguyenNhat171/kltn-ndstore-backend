@@ -31,13 +31,13 @@ public class UserController {
                                       @PageableDefault(size = 5, sort = "name") @ParameterObject Pageable pageable){
         return userService.findAll(state, pageable);
     }
-    @PutMapping(path = "/users/edit/profile/{userId}")
+    @PutMapping(path = "/users/edit/information/profile/{userId}")
     public ResponseEntity<?> updateUser ( @RequestBody UserReq req,
                                           @PathVariable("userId") String userId,
                                           HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         if (user.getId().equals(userId) || !user.getId().isBlank())
-            return userService.updateUser(userId, req);
+            return userService.updateProfileUser(userId, req);
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
     @PutMapping(path = "/users/change/new/password/{userId}")
@@ -60,7 +60,7 @@ public class UserController {
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
 
-    @GetMapping(path = "/users/{userId}")
+    @GetMapping(path = "/users/get/profile/{userId}")
     public ResponseEntity<?> findUserById (@PathVariable("userId") String userId,
                                            HttpServletRequest request) {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));

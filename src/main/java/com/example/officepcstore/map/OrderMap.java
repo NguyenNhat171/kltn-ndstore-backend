@@ -11,8 +11,8 @@ public class OrderMap {
     //toOrderRes
     public OrderResponse getOrderRes (Order order) {
         Object orderDate = order.getLastModifiedDate();
-        if (order.getPaymentInformation().getPaymentInfo().get("orderDate") != null)
-            orderDate = order.getPaymentInformation().getPaymentInfo().get("orderDate");
+        if (order.getPaymentInformation().getPayDetails().get("invoiceDate") != null)
+            orderDate = order.getPaymentInformation().getPayDetails().get("invoiceDate");
         return new OrderResponse(order.getId(), order.getUser().getId(), order.getUser().getName(),
                 order.getTotalProduct(), order.getTotalPrice(), order.getState(), orderDate);
     }
@@ -20,11 +20,11 @@ public class OrderMap {
     public OrderResponse getOrderDetailRes (Order order) {
         OrderResponse orderRes =  new OrderResponse(order.getId(), order.getUser().getId(), order.getUser().getName(),
                 order.getTotalProduct(), order.getTotalPrice(), order.getState(), order.getLastModifiedDate());
-        if (order.getPaymentInformation().getPaymentInfo().get("orderDate") != null)
-            orderRes.setCreatedDate(order.getPaymentInformation().getPaymentInfo().get("orderDate"));
-        orderRes.setItems(order.getItems().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));
+        if (order.getPaymentInformation().getPayDetails().get("invoiceDate") != null)
+            orderRes.setCreatedDate(order.getPaymentInformation().getPayDetails().get("invoiceDate"));
+        orderRes.setItems(order.getOrderedProducts().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));
         orderRes.setPaymentType(order.getPaymentInformation().getPaymentType());
-        orderRes.setPaymentInfo(order.getPaymentInformation().getPaymentInfo());
+        orderRes.setPaymentInfo(order.getPaymentInformation().getPayDetails());
         orderRes.setShippingDetail(order.getShippingDetail());
         return orderRes;
     }

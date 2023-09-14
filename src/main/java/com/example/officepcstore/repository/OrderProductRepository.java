@@ -1,8 +1,8 @@
 package com.example.officepcstore.repository;
 
 
-import com.example.officepcstore.models.enity.OrderProduct;
+import com.example.officepcstore.models.enity.OrderedProduct;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface OrderProductRepository extends MongoRepository<OrderProduct, String> {
+public interface OrderProductRepository extends MongoRepository<OrderedProduct, String> {
 }

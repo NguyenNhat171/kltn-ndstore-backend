@@ -5,6 +5,7 @@ import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.ProductMap;
+import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.models.enity.product.ProductImage;
@@ -18,6 +19,7 @@ import com.example.officepcstore.repository.ProductRepository;
 import com.example.officepcstore.repository.UserRepository;
 import com.example.officepcstore.utils.RecommendProductUtils;
 import com.example.officepcstore.utils.StringUtils;
+import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -173,6 +175,8 @@ public class ProductService {
                 throw new AppException(HttpStatus.CONFLICT.value(), "Product  already exists");
             }
             ProductResponse res = productMap.toGetProductRes(product);
+            product.setReducedPrice(res.getDiscountPrice());
+            productRepository.save(product);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ResponseObjectData(true, "Create product successfully ", res)
             );
@@ -181,7 +185,53 @@ public class ProductService {
                 new ResponseObjectData(false, "Request is null", "")
         );
     }
+    public ResponseEntity<?> updateProduct(String id, ProductReq productReq) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent() && productReq != null) {
+            if (!productReq.getName().equals(product.get().getName()))
+                product.get().setName(productReq.getName());
+            try {
+                productRepository.save(product.get());
+            } catch (MongoWriteException e) {
+                throw new AppException(HttpStatus.CONFLICT.value(), "Product name already exists");
+            } catch (Exception e) {
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
+            }
+            ProductResponse res = productMap.toGetProductRes(product.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Update product successfully ", res)
+            );
+        }
+        throw new NotFoundException("Can not found product with id: "+id);
+    }
 
+    public void processUpdate(ProductReq req, Product product) {
+        if (!req.getName().equals(product.getName()))
+            product.setName(req.getName());
+        if (!req.getDescription().equals(product.getDescription()))
+            product.setDescription(req.getDescription());
+        if (!req.getPrice().equals(product.getPrice()))
+            product.setPrice(req.getPrice());
+        if (req.getDiscount() != product.getDiscount())
+            product.setDiscount(req.getDiscount());
+        if (!req.getCategory().equals(product.getCategory().getId())) {
+            Optional<Category> category = categoryRepository.findCategoryByIdAndState(req.getCategory(), Constant.ENABLE);
+            if (category.isPresent())
+                product.setCategory(category.get());
+            else throw new NotFoundException("Can not found category with id: "+req.getCategory());
+        }
+        if (!req.getBrand().equals(product.getBrand().getId())) {
+            Optional<Brand> brand = brandRepository.findBrandByIdAndState(req.getBrand(), Constant.ENABLE);
+            if (brand.isPresent())
+                product.setBrand(brand.get());
+            else throw new NotFoundException("Can not found brand with id: "+req.getBrand());
+        }
+        if (req.getState() != null && !req.getState().isEmpty() &&
+                (req.getState().equalsIgnoreCase(Constant.ENABLE) ||
+                        req.getState().equalsIgnoreCase(Constant.DISABLE)))
+            product.setState(req.getState());
+        else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid state");
+    }
     public ResponseEntity<?> createProductConfig(String productId, List<Map<String, String>> mapList) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {

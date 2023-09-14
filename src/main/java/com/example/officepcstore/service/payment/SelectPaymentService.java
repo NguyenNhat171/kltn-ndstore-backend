@@ -60,15 +60,15 @@ public class SelectPaymentService {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
             PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
-            paymentInformation.getPaymentInfo().put("orderDate", LocalDateTime.now(Clock.systemDefaultZone()));
+            paymentInformation.getPayDetails().put("invoiceDate", LocalDateTime.now(Clock.systemDefaultZone()));
             order.get().setPaymentInformation(paymentInformation);
             ShippingDetail shippingDetail = new ShippingDetail(req.getName(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),req.getAddress());
             order.get().setShippingDetail(shippingDetail);
-            order.get().getShippingDetail().getShipInfo().put("totalFeeShip", req.getShipFee());
-            order.get().getShippingDetail().getShipInfo().put("serviceType", req.getServiceType());
-            order.get().getShippingDetail().getShipInfo().put("estimatedTime", req.getEstimatedTime());
-            order.get().getShippingDetail().getShipInfo().put("address", req.getAddress());
+            order.get().getShippingDetail().getShipInformation().put("totalFeeShip", req.getShipFee());
+            order.get().getShippingDetail().getShipInformation().put("serviceType", req.getServiceType());
+            order.get().getShippingDetail().getShipInformation().put("estimatedTime", req.getEstimatedTime());
+            order.get().getShippingDetail().getShipInformation().put("address", req.getAddress());
             order.get().setState(Constant.ORDER_PROCESS);
 
 //            order.get().getItems().forEach(item -> item.getItem().setPrice(new BigDecimal((item.getItem().getPrice())

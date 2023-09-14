@@ -37,7 +37,7 @@ public class VnpayService extends PaymentSteps{
     @Override
     public ResponseEntity<?>  initializationPayment(HttpServletRequest request, Order order) {
         order.setState(Constant.ORDER_PROCESS);
-        order.getPaymentInformation().getPaymentInfo().put("isPaid", false);
+        order.getPaymentInformation().getPayDetails().put("isPaid", false);
         orderRepository.save(order);
         Map<String, Object> vnp_Params = mapVnPayParam(order, request);
 
@@ -90,10 +90,10 @@ public class VnpayService extends PaymentSteps{
             throw new NotFoundException("Can not found order with id: " + id);
         }
         if (responseCode.equals(VnpayConfig.responseSuccessCode)) {
-            order.get().getPaymentInformation().getPaymentInfo().put("amount", request.getParameter(VnpayConfig.vnp_Amount));
-            order.get().getPaymentInformation().getPaymentInfo().put("bankCode", request.getParameter("vnp_BankCode"));
-            order.get().getPaymentInformation().getPaymentInfo().put("transactionNo", request.getParameter("vnp_TransactionNo"));
-            order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
+            order.get().getPaymentInformation().getPayDetails().put("amount", request.getParameter(VnpayConfig.vnp_Amount));
+            order.get().getPaymentInformation().getPayDetails().put("bankCode", request.getParameter("vnp_BankCode"));
+            order.get().getPaymentInformation().getPayDetails().put("transactionNo", request.getParameter("vnp_TransactionNo"));
+            order.get().getPaymentInformation().getPayDetails().put("isPaid", true);
             order.get().setState(Constant.ORDER_PAY_ONLINE);
             orderRepository.save(order.get());
             response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
@@ -123,7 +123,7 @@ public class VnpayService extends PaymentSteps{
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInfo().get("fee").toString())))
+        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInformation().get("totalFeeShip").toString())))
                 .multiply(BigDecimal.valueOf(100)));
         Map<String, Object> vnp_Params = new HashMap<>();
         vnp_Params.put(VnpayConfig.vnp_Version_k, VnpayConfig.vnp_Version);

@@ -26,7 +26,7 @@ public class Order {
     private User user;
     @ReadOnlyProperty
     @DocumentReference(lookup="{'order':?#{#self._id} }", lazy = true)
-    private List<OrderProduct> items = new ArrayList<>();
+    private List<OrderedProduct> orderedProducts = new ArrayList<>();
    private ShippingDetail shippingDetail = new ShippingDetail();
     private PaymentInformation paymentInformation = new PaymentInformation();
     @NotBlank(message = "State is required")
@@ -43,11 +43,11 @@ public class Order {
     private BigDecimal totalPrice;
 
     public long getTotalProduct() {
-        return items.size();
+        return orderedProducts.size();
     }
 
     public BigDecimal getTotalPrice() {
-        totalPrice = items.stream().map(OrderProduct::getSubPrice)
+        totalPrice = orderedProducts.stream().map(OrderedProduct::getSubProductPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return totalPrice;
     }

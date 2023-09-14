@@ -16,5 +16,5 @@ public class PaymentInformation {
     private String paymentId;
     private String paymentType;
     private String paymentToken;
-    private Map<String, Object> paymentInfo = new HashMap<>();
+    private Map<String, Object> payDetails = new HashMap<>();
 }

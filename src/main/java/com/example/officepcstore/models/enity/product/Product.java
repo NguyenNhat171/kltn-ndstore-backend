@@ -40,6 +40,9 @@ public class  Product {
     private String description;
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
+
+    @Field(targetType = DECIMAL128)
+    private BigDecimal reducedPrice;
     private int discount = 0;
     private long stock;
     private long sold = 0;

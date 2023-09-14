@@ -32,7 +32,7 @@ public class CheckTimePayment implements Runnable {
             if (order.isPresent()) {
                 try {
                     if (new Date(System.currentTimeMillis() - Constant.PAYMENT_TIMEOUT).after(
-                            (Date) order.get().getPaymentInformation().getPaymentInfo()
+                            (Date) order.get().getPaymentInformation().getPayDetails()
                                     .get("orderCreateTime"))) {
                         String check = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                         log.info("Back Stock" + (check == null));

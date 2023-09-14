@@ -70,10 +70,10 @@ public class PaypalService extends PaymentSteps {
                     String checkUpdateSold =payUtils.updateSoldProduct(order,true);
                     if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                         if (!payment.getTransactions().isEmpty())
-                            order.getPaymentInformation().getPaymentInfo().put("amount", payment.getTransactions().get(0).getAmount());
+                            order.getPaymentInformation().getPayDetails().put("amount", payment.getTransactions().get(0).getAmount());
                         order.getPaymentInformation().setPaymentId(payment.getId());
                         order.getPaymentInformation().setPaymentToken((links.getHref().split(PATTERN)[1]));
-                        order.getPaymentInformation().getPaymentInfo().put("isPaid", false);
+                        order.getPaymentInformation().getPayDetails().put("isPaid", false);
                         orderRepository.save(order);
                         checkTimePayment.setOrderId(order.getId());
                         checkTimePayment.setOrderRepository(orderRepository);
@@ -98,9 +98,9 @@ public class PaypalService extends PaymentSteps {
                 String paymentToken = "EC-" + payment.getCart();
                 Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndState(paymentToken, Constant.ORDER_PROCESS);
                 if (order.isPresent()) {
-                    order.get().getPaymentInformation().getPaymentInfo().put("payer", payment.getPayer().getPayerInfo());
-                    order.get().getPaymentInformation().getPaymentInfo().put("paymentMethod", payment.getPayer().getPaymentMethod());
-                    order.get().getPaymentInformation().getPaymentInfo().put("isPaid", true);
+                    order.get().getPaymentInformation().getPayDetails().put("payer", payment.getPayer().getPayerInfo());
+                    order.get().getPaymentInformation().getPayDetails().put("paymentMethod", payment.getPayer().getPaymentMethod());
+                    order.get().getPaymentInformation().getPayDetails().put("isPaid", true);
                     order.get().setState(Constant.ORDER_PAY_ONLINE);
                     orderRepository.save(order.get());
                 } else {
@@ -147,7 +147,7 @@ public class PaypalService extends PaymentSteps {
     public Payment createPayPalPaymentSandBox(Order order, String currency, PaypalMethod method,
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
-        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInfo().get("fee").toString())));
+        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInformation().get("totalFeeShip").toString())));
         Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
         Transaction transaction = new Transaction();
         transaction.setDescription(description);

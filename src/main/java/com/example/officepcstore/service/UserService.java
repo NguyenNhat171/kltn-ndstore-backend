@@ -107,7 +107,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<?> updateUser(String id, UserReq userReq) {
+    public ResponseEntity<?> updateProfileUser(String id, UserReq userReq) {
         Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             user.get().setName(userReq.getName());
