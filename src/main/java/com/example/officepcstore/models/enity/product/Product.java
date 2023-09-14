@@ -59,7 +59,7 @@ public class  Product {
     private List<Comment> comment;
     @Indexed
     private String state;
-    private List<ProductImage> images = new ArrayList<>();
+    private List<ProductImage> productImageList = new ArrayList<>();
 
     @Indexed
     private List<Map<String, String>> productConfiguration = new ArrayList<>();

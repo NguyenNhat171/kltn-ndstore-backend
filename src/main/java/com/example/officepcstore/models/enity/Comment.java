@@ -22,7 +22,7 @@ public class Comment {
     @Id
     private String id;
     private String review;
-    private double rate;
+    private double rateProductQuality;
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
@@ -39,11 +39,5 @@ public class Comment {
     @LastModifiedDate
     LocalDateTime lastModifiedDate;
 
-    public Comment(String review, double rate, User user, Product product, String state) {
-        this.review = review;
-        this.rate = rate;
-        this.user = user;
-        this.product = product;
-        this.state = state;
-    }
+
 }

@@ -42,8 +42,8 @@ public class OrderedProduct {
     private BigDecimal subProductPrice = BigDecimal.ZERO;
 
     public BigDecimal getPrice(){
-        BigDecimal originPrice =orderProduct.getPrice().multiply(BigDecimal.valueOf(quantity));
-        return originPrice;
+        BigDecimal originSubPrice =orderProduct.getPrice().multiply(BigDecimal.valueOf(quantity));
+        return originSubPrice;
     }
 
 

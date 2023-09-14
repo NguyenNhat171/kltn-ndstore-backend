@@ -261,7 +261,7 @@ public class ProductService {
                 files.forEach(f -> {
                     try {
                         String url = cloudinary.uploadImage(f, null);
-                        product.get().getImages().add(new ProductImage(UUID.randomUUID().toString(), url));
+                        product.get().getProductImageList().add(new ProductImage(UUID.randomUUID().toString(), url));
                     } catch (IOException e) {
                         log.error(e.getMessage());
                         throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload images");
@@ -269,7 +269,7 @@ public class ProductService {
                     productRepository.save(product.get());
                 });
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Add image to product successfully", product.get().getImages())
+                        new ResponseObjectData(true, "Add image to product successfully", product.get().getProductImageList())
                 );
             } catch (Exception e) {
                 log.error(e.getMessage());
@@ -281,12 +281,12 @@ public class ProductService {
     @Transactional
     public ResponseEntity<?> deleteImageFromProduct(String id, String imageId) {
         Optional<Product> product = productRepository.findById(id);
-        if (product.isPresent() && !product.get().getImages().isEmpty()) {
+        if (product.isPresent() && !product.get().getProductImageList().isEmpty()) {
             try {
-                Optional<ProductImage> checkDelete = product.get().getImages().stream().filter(i -> i.getId_image().equals(imageId)).findFirst();
+                Optional<ProductImage> checkDelete = product.get().getProductImageList().stream().filter(i -> i.getId_image().equals(imageId)).findFirst();
                 if (checkDelete.isPresent()) {
                     cloudinary.deleteImage(checkDelete.get().getUrl());
-                    product.get().getImages().remove(checkDelete.get());
+                    product.get().getProductImageList().remove(checkDelete.get());
                     productRepository.save(product.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObjectData(true, "Delete image successfully", imageId)
