@@ -84,7 +84,7 @@ public class  Product {
 //    }
 
 
-    public Product(String name, String description, BigDecimal price, int discount, long stock, Category category, Brand brand, String state) {
+    public Product(String name, String description, BigDecimal price, int discount, long stock, Category category, Brand brand, List<Map<String, String>> productConfiguration, String state) {
         this.name = name;
         this.description = description;
         this.price = price;
@@ -92,20 +92,12 @@ public class  Product {
         this.stock = stock;
         this.category = category;
         this.brand = brand;
+        this.productConfiguration = productConfiguration;
         this.state = state;
     }
 
-    public Product(String name, String description, BigDecimal price, int discount, long stock, long sold, Category category, Brand brand, String state) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.discount = discount;
-        this.stock = stock;
-        this.sold = sold;
-        this.category = category;
-        this.brand = brand;
-        this.state = state;
-    }
+
+
 
     @Transient
     public int getAllCommentRate() {

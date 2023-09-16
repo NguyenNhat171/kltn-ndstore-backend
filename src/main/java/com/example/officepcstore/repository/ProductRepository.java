@@ -29,5 +29,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Page<Product> findAllBy(TextCriteria textCriteria, Pageable pageable);
     @Query(value = "{ $or: [{'category' : ?0},{'category':{$in: ?1}}] ," +
             "    'state' : 'enable'}")
-    Page<Product> findProductsByCategory(ObjectId id, List<ObjectId> subCat, Pageable pageable);
+    Page<Product> findProductsByCategory(ObjectId id,  Pageable pageable);
 }

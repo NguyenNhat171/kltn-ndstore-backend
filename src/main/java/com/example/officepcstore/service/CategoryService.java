@@ -29,8 +29,8 @@ public class CategoryService {
     private final CloudinaryConfig cloudinary;
 
 
-    public ResponseEntity<?> findAllEnable() {
-   List<Category> list = categoryRepository.findAllByState(Constant.ENABLE);
+    public ResponseEntity<?> findAll() {
+   List<Category> list = categoryRepository.findAll();
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "List Category Success", list));
@@ -38,13 +38,11 @@ public class CategoryService {
     }
 
 
-    public ResponseEntity<?> findRoot(Boolean root) {
-        List<Category> list;
-        if (root) list = categoryRepository.findAllByMainCategory(true);
-        else list = categoryRepository.findAllByState(Constant.ENABLE);
+    public ResponseEntity<?> findAllByUser() {
+        List<Category> list = categoryRepository.findAllByState(Constant.ENABLE);
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Get Category With Root", list));
+                    new ResponseObjectData(true, "Get CategorySuccess", list));
         throw new NotFoundException("Not found any category");
     }
 
@@ -68,24 +66,11 @@ public class CategoryService {
                 throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Upload image Error");
             }
         }
-        Category category = new Category(req.getName(), imgUrl , Constant.ENABLE);
-        try {
-            if (!req.getParent_category().equals("-1") && !req.getParent_category().isBlank()){
-                Optional<Category> parentCategory = categoryRepository.findById(req.getParent_category());
-                if (parentCategory.isPresent()) {
-                    category.setMainCategory(false);
-                    categoryRepository.save(category);
-                    parentCategory.get().getSubCategory().add(category);
-                    categoryRepository.save(parentCategory.get());
-                } else throw new NotFoundException("Not found category id: "+req.getParent_category());
-            } else categoryRepository.save(category);
-        } catch (MongoWriteException e) {
-            throw new AppException(HttpStatus.CONFLICT.value(), "Name exists");
-        } catch (Exception e) {
-            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-        }
+        Category category = new Category(req.getName(), imgUrl, Constant.ENABLE);
+        categoryRepository.save(category);
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                new ResponseObjectData(true, "create category success", ""));
+                    new ResponseObjectData(true, "create category success", category));
+
     }
 
 
@@ -93,15 +78,9 @@ public class CategoryService {
     public ResponseEntity<?> updateCategory(String id, CategoryReq req) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isPresent()) {
-            category.get().setName(req.getName());
+            category.get().setTitleCategory(req.getName());
             category.get().setState(req.getState());
-            try {
                 categoryRepository.save(category.get());
-            } catch (MongoWriteException e) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Category exists");
-            } catch (Exception e) {
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-            }
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update complete", category));
         }

@@ -26,13 +26,9 @@ public class Category {
     private String id;
 
     @Indexed(unique = true)
-    private String name;
+    private String titleCategory;
     private String imageCategory;
-    private boolean mainCategory = true;
     private String state;
-    @DocumentReference
-    @Indexed
-    private List<Category> subCategory = new ArrayList<>();
     @ReadOnlyProperty
     @DocumentReference(lookup="{'category':?#{#self._id} }", lazy = true)
     @JsonIgnore
@@ -40,14 +36,9 @@ public class Category {
     private List<Product> products;
 
 
-    public Category(String name, String imageCategory, String state) {
-        this.name = name;
+    public Category(String titleCategory, String imageCategory, String state) {
+        this.titleCategory = titleCategory;
         this.imageCategory = imageCategory;
         this.state = state;
-    }
-
-    public List<Category> getSubCategory() {
-       subCategory.removeIf(category -> (category.getState().equals(Constant.DISABLE)));
-        return subCategory;
     }
 }

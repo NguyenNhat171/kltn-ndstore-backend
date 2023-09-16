@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository  extends MongoRepository<Category, String> {
     List<Category> findAllByState(String state);
-    List<Category> findAllByMainCategory(boolean isRoot);
+
     Optional<Category> findCategoryByIdAndState(String id, String state);
 //    @Aggregation("{ $group: { _id : $state, count: { $sum: 1 } } }")
 //    List<StateCountAggregate> countAllByState();

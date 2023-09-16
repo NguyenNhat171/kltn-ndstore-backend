@@ -16,9 +16,9 @@ import javax.validation.Valid;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    @GetMapping(path = "/categories/findroot")
-    public ResponseEntity<?> findRoot (@RequestParam(value = "root", defaultValue = "true") Boolean root){
-        return categoryService.findRoot(root);
+    @GetMapping(path = "/categories/user/get/all")
+    public ResponseEntity<?> findAllCategoryUser(){
+        return categoryService.findAllByUser();
     }
 
     @GetMapping(path = "/categories/{id}")
@@ -28,15 +28,15 @@ public class CategoryController {
 
     @GetMapping(path = "/admin/manage/categories")
     public ResponseEntity<?> findAll (){
-        return categoryService.findAllEnable();
+        return categoryService.findAll();
     }
 
-    @PostMapping(path = "/admin/manage/createcategories", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "/admin/manage/create/new/categories", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addCategory (@ModelAttribute @Valid CategoryReq req){
         return categoryService.addCategory(req);
     }
 
-    @PutMapping(path = "/admin/manage/categories/{id}")
+    @PutMapping(path = "/admin/manage/categories/update/{id}")
     public ResponseEntity<?> updateCategory (@PathVariable("id") String id,
                                              @RequestBody @Valid CategoryReq req){
         return categoryService.updateCategory(id, req);

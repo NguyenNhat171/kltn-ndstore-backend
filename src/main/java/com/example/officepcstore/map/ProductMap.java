@@ -27,14 +27,24 @@ public class ProductMap {
     private final BrandRepository brandRepository;
 
 
-    public Product toProductModel(ProductReq req) {
+//    public Product toProductModel(ProductReq req) {
+//        Optional<Category> category = categoryRepository.findCategoryByIdAndState(req.getCategory(), Constant.ENABLE);
+//        Optional<Brand> brand = brandRepository.findBrandByIdAndState(req.getBrand(), Constant.ENABLE);
+//        if (category.isEmpty() || brand.isEmpty())
+//            throw new NotFoundException(" category or brand not found");
+//        return new Product(req.getName(), req.getDescription(), req.getPrice(),req.getDiscount(), req.getStock(),
+//                category.get(), brand.get(), Constant.ENABLE);
+//    }
+
+    public Product putProductModel(ProductReq req) {
         Optional<Category> category = categoryRepository.findCategoryByIdAndState(req.getCategory(), Constant.ENABLE);
         Optional<Brand> brand = brandRepository.findBrandByIdAndState(req.getBrand(), Constant.ENABLE);
         if (category.isEmpty() || brand.isEmpty())
             throw new NotFoundException(" category or brand not found");
         return new Product(req.getName(), req.getDescription(), req.getPrice(),req.getDiscount(), req.getStock(),
-                category.get(), brand.get(), Constant.ENABLE);
+                category.get(), brand.get(),req.getProductConfiguration(),Constant.ENABLE);
     }
+
 
 
     public AllProductResponse toGetAllProductRes(Product req) {
@@ -44,7 +54,7 @@ public class ProductMap {
         return new  AllProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getSold(), req.getRate(),
                 req.getAllCommentRate(), req.getCategory().getId(),
-                req.getCategory().getName(), req.getBrand().getId(),
+                req.getCategory().getTitleCategory(), req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getProductImageList(),req.getProductConfiguration());
     }
 
@@ -55,7 +65,7 @@ public class ProductMap {
         BigDecimal discountPrice = new BigDecimal(discountCalculate);
         return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getSold(), req.getRate(), req.getAllCommentRate(),
-                req.getCategory().getId(), req.getCategory().getName(),req.getBrand().getId(),
+                req.getCategory().getId(), req.getCategory().getTitleCategory(),req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getProductImageList(),req.getProductConfiguration());
     }
 }
