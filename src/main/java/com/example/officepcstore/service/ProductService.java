@@ -133,22 +133,31 @@ public class ProductService {
         throw new NotFoundException("Can not found any product");
     }
 
-    public ResponseEntity<?> findByCategoryIdOrBrandId(String id, Pageable pageable) {
+    public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
         Page<Product> products;
-        try {
+
             Optional<Category> category = categoryRepository.findCategoryByIdAndState(id, Constant.ENABLE);
             if (category.isPresent()) {
+                products = productRepository.findAllByCategory_IdAndState(new ObjectId(id),Constant.ENABLE, pageable);
+                List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(products, resList);
+                if (resp != null)
+                    return resp;
+            }
+        throw new NotFoundException("Can not found any product with category id: "+id);
+    }
 
-                products = productRepository.findProductsByCategory(new ObjectId(id), pageable);
-            } else products = productRepository.findAllByCategory_IdOrBrand_IdAndState(new ObjectId(id),
-                    new ObjectId(id),Constant.ENABLE, pageable);
-        } catch (Exception e) {
-            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Error when finding");
+
+    public ResponseEntity<?> findByBrandId(String id, Pageable pageable) {
+        Optional<Brand> brand = brandRepository.findBrandByIdAndState(id, Constant.ENABLE);
+        if (brand.isPresent()) {
+            Page<Product>   products = productRepository.findAllByBrand_IdAndState(new ObjectId(id),Constant.ENABLE, pageable);
+            List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+            ResponseEntity<?> resp = getPageProductRes(products, resList);
+            if (resp != null)
+                return resp;
         }
-        List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-        ResponseEntity<?> resp = getPageProductRes(products, resList);
-        if (resp != null) return resp;
-        throw new NotFoundException("Can not found any product with category or brand id: "+id);
+        throw new NotFoundException("Can not found any product with brand id: "+id);
     }
     public ResponseEntity<?> search(String key, Pageable pageable) {
         Page<Product> products;

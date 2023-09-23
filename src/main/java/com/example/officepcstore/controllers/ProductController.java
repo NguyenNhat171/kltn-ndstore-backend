@@ -38,10 +38,15 @@ public class ProductController {
         return productService.findById(id);
     }
 
-    @GetMapping(path = "/products/category/{id}")
-    public ResponseEntity<?> findByCategoryIdAndBrandId (@PathVariable("id") String id,
+    @GetMapping(path = "/products/category/get/all/{id}")
+    public ResponseEntity<?> findByCategoryId (@PathVariable("id") String id,
                                                          @ParameterObject Pageable pageable){
-        return productService.findByCategoryIdOrBrandId(id, pageable);
+        return productService.findByCategoryId(id, pageable);
+    }
+    @GetMapping(path = "/products/brand/get/all/{id}")
+    public ResponseEntity<?> findByBrandId (@PathVariable("id") String id,
+                                               @ParameterObject Pageable pageable){
+        return productService.findByBrandId(id, pageable);
     }
 
     @GetMapping(path = "/products/find/search")

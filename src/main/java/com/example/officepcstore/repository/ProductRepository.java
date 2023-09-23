@@ -21,13 +21,14 @@ public interface ProductRepository extends MongoRepository<Product, String> {
    Page <Product> findAllByPriceBetweenAndState( long priceMin,long PriceMax, String state,Pageable pageable);
 //    @Query(value=" {state: {'$nin': ['enable']}}")
 //    Page<Product> findAllByStateNoEnable( Pageable pageable);
-    Page<Product> findAllByCategory_IdOrBrand_IdAndState(ObjectId catId, ObjectId brandId, String state, Pageable pageable);
+ //   Page<Product> findAllByCategory_IdOrBrand_IdAndState(ObjectId catId, ObjectId brandId, String state, Pageable pageable);
 
-    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +
-            "    'state' : 'enable'}")
-    Page<Product> findAllByCategoryOrBrand(List<ObjectId> catIds, List<ObjectId> brandIds, String state, Pageable pageable);
+//    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +
+//            "    'state' : 'enable'}")
+//    Page<Product> findAllByCategoryOrBrand(List<ObjectId> catIds, List<ObjectId> brandIds, String state, Pageable pageable);
     Page<Product> findAllBy(TextCriteria textCriteria, Pageable pageable);
-    @Query(value = "{ $or: [{'category' : ?0},{'category':{$in: ?1}}] ," +
-            "    'state' : 'enable'}")
-    Page<Product> findProductsByCategory(ObjectId id,  Pageable pageable);
+//    @Query(value = "{ $or: [{'category' : ?0},{'category':{$in: ?1}}] ," +
+//            "    'state' : 'enable'}")
+    Page<Product> findAllByCategory_IdAndState(ObjectId id, String state ,Pageable pageable);
+    Page<Product>findAllByBrand_IdAndState(ObjectId id, String state ,Pageable pageable);
 }
