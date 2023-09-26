@@ -46,7 +46,10 @@ public class CartService {
                 CartResponse res = cartMap.getProductCartRes(order.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Get cart complete", res));
-            } throw new NotFoundException("Not found cart  userid: "+userId);
+            }
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Get cart complete", " "));
         } throw new NotFoundException("Not found user with id: "+userId);
     }
 //addAndUpdateProductToCart
