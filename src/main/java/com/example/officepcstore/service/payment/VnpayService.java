@@ -123,7 +123,7 @@ public class VnpayService extends PaymentSteps{
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInformation().get("totalFeeShip").toString())))
+        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())))
                 .multiply(BigDecimal.valueOf(100)));
         Map<String, Object> vnp_Params = new HashMap<>();
         vnp_Params.put(VnpayConfig.vnp_Version_k, VnpayConfig.vnp_Version);

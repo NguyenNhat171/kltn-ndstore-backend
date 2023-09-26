@@ -105,12 +105,12 @@ public class OrderService {
                 order.get().setState(Constant.ORDER_SHIPPING);
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
-            order.get().getShippingDetail().getShipInformation().put("orderCode", objectRes.getString("order_code"));
-            order.get().getShippingDetail().getShipInformation().put("totalFeeShip", objectRes.getLong("total_fee"));
-            order.get().getShippingDetail().getShipInformation().put("expectedDeliveryTime", objectRes.getString("expected_delivery_time"));
+            order.get().getShippingDetail().getServiceShipDetail().put("orderCode", objectRes.getString("order_code"));
+            order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", objectRes.getLong("total_fee"));
+            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", objectRes.getString("expected_delivery_time"));
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Create shipping complete", order.get().getShippingDetail().getShipInformation()));
+                    new ResponseObjectData(true, "Create shipping complete", order.get().getShippingDetail().getServiceShipDetail()));
         } else return ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
@@ -121,7 +121,7 @@ public class OrderService {
         if (order.isPresent()) {
                 if (order.get().getState().equals(Constant.ORDER_PROCESS_DELIVERY)) {
                     order.get().setState(Constant.ORDER_COMPLETE);
-                    order.get().setLastModifiedDate(LocalDateTime.now());
+                    order.get().setLastUpdateStateDate(LocalDateTime.now());
                     order.get().getPaymentInformation().getPayDetails().put("isPaid", true);
                 } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivered");
             orderRepository.save(order.get());
@@ -136,7 +136,7 @@ public class OrderService {
         if (order.isPresent()) {
             if (order.get().getState().equals(Constant.ORDER_SHIPPING)) {
                 order.get().setState(Constant.ORDER_PROCESS_DELIVERY);
-                order.get().getShippingDetail().getShipInformation().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
+                order.get().getShippingDetail().getServiceShipDetail().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
 
             orderRepository.save(order.get());

@@ -163,7 +163,7 @@
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Đây là mật khẩu mới của tài khoản
+                        <p style="margin: 0;">Đây là mã xác nhận của tài khoản
                             ${email}:</p>
                     </td>
                 </tr>

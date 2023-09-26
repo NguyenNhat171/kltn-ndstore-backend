@@ -35,9 +35,10 @@ public class OrderedProduct {
     @JsonIgnore
     @Indexed
     private Order order;
+    @Transient
     @Field(targetType = DECIMAL128)
     private BigDecimal price = BigDecimal.ZERO;
-    private boolean reviewed = false;
+  //  private boolean reviewed = false;
     @Transient
     private BigDecimal subProductPrice = BigDecimal.ZERO;
 

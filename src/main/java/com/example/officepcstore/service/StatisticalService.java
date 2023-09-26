@@ -72,7 +72,7 @@ public class StatisticalService {
             SaleResponse ordersSaleRes = new SaleResponse();
             int quantity = 1;
             for (int i = 0; i <= orderList.getSize() - 1; i++) {
-                String dateFormat = df.format(orderList.getContent().get(i).getLastModifiedDate());
+                String dateFormat = df.format(orderList.getContent().get(i).getLastUpdateStateDate());
                 if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat))
                 {
                     if (i > 0) ordersSaleResList.add(ordersSaleRes);

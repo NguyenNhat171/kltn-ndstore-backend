@@ -15,6 +15,7 @@ public class PayReq {
     private String district;
     private String ward;
 //    private String fullAddress = "";
+    private String note;
     private Long shipFee;
     private Integer serviceType;
     private Long estimatedTime = 0L; //expectedDeliveryTime

@@ -147,7 +147,7 @@ public class PaypalService extends PaymentSteps {
     public Payment createPayPalPaymentSandBox(Order order, String currency, PaypalMethod method,
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
-        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getShipInformation().get("totalFeeShip").toString())));
+        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())));
         Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
         Transaction transaction = new Transaction();
         transaction.setDescription(description);

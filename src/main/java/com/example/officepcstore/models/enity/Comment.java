@@ -34,10 +34,10 @@ public class Comment {
     private String state;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    LocalDateTime createdDate;
+    LocalDateTime commentCreateDate;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
-    LocalDateTime lastModifiedDate;
+    LocalDateTime commentUpdateDate;
 
 
 }

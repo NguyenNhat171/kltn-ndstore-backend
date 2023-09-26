@@ -36,7 +36,7 @@ public class Order {
     LocalDateTime createdDate;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
-    LocalDateTime lastModifiedDate;
+    LocalDateTime lastUpdateStateDate;
     @Transient
     private long totalProduct = 0;
     @Transient

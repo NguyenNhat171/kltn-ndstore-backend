@@ -156,7 +156,7 @@ public class LogisticService {
         });
         body.add("items", items);
         body.addProperty("payment_type_id", 2);
-        body.addProperty("service_type_id", (int) order.getShippingDetail().getShipInformation().get("serviceType"));
+        body.addProperty("service_type_id", (int) order.getShippingDetail().getServiceShipDetail().get("serviceType"));
         body.addProperty("required_note", "Hàng dễ vỡ");
         body.addProperty("content", "Đơn hàng được mua tại ND Store");
         body.addProperty("client_order_code", order.getId());

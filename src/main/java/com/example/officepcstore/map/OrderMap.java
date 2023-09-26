@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class OrderMap {
     //toOrderRes
     public OrderResponse getOrderRes (Order order) {
-        Object orderDate = order.getLastModifiedDate();
+        Object orderDate = order.getLastUpdateStateDate();
         if (order.getPaymentInformation().getPayDetails().get("invoiceDate") != null)
             orderDate = order.getPaymentInformation().getPayDetails().get("invoiceDate");
         return new OrderResponse(order.getId(), order.getUser().getId(), order.getUser().getName(),
@@ -19,7 +19,7 @@ public class OrderMap {
 //toOrderDetailRes
     public OrderResponse getOrderDetailRes (Order order) {
         OrderResponse orderRes =  new OrderResponse(order.getId(), order.getUser().getId(), order.getUser().getName(),
-                order.getTotalProduct(), order.getTotalPrice(), order.getState(), order.getLastModifiedDate());
+                order.getTotalProduct(), order.getTotalPrice(), order.getState(), order.getLastUpdateStateDate());
         if (order.getPaymentInformation().getPayDetails().get("invoiceDate") != null)
             orderRes.setCreatedDate(order.getPaymentInformation().getPayDetails().get("invoiceDate"));
         orderRes.setItems(order.getOrderedProducts().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));

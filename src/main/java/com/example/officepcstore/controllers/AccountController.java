@@ -27,7 +27,7 @@ public class AccountController {
         return authService.registerAccount(registerRequest);
     }
 
-    @PostMapping("mail/forget/pass/account")
+    @PostMapping("mail/forget/pass/account") //User OTP Get Token Reset Pass
     public ResponseEntity<?> getOTPResetForgetPass(@RequestParam(value ="email")String email)
     {
         if (!email.isBlank())
@@ -36,13 +36,13 @@ public class AccountController {
     }
 
 
-    @PostMapping("mail/forget/new/pass/account")
-    public ResponseEntity<?> getResetNewPass( @RequestParam(value ="email") String email)
-    {
-        if (!email.isBlank())
-            return authService.sendMailResetGetNewPass(email);
-        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
-    }
+//    @PostMapping("mail/forget/new/pass/account")
+//    public ResponseEntity<?> getResetNewPass( @RequestParam(value ="email") String email)
+//    {
+//        if (!email.isBlank())
+//            return authService.sendMailResetGetNewPass(email);
+//        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
+//    }
 
     @PostMapping("/verifyaccount/account")
     public ResponseEntity<?> verify(@Valid @RequestBody VerifyReq req) {

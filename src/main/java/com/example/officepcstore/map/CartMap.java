@@ -24,7 +24,6 @@ public class CartMap {
 
     public static CartProductResponse toCartProductRes(OrderedProduct product) { //toCartItemRes
         BigDecimal price = product.getPrice();
-
         try {
             return new CartProductResponse(product.getId(), product.getOrderProduct().getId(),product.getOrderProduct().getStock(),product.getOrderProduct().getName(),
                     product.getOrderProduct().getDiscount(),

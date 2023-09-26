@@ -3,6 +3,9 @@ package com.example.officepcstore.config;
 public class Constant {
     public static final String ENABLE = "enable";
     public static final String DISABLE = "disable";
+
+    public static final String COMMENT_ENABLE = "Comment_Enable";
+    public static final String COMMENT_BLOCK = "Comment_Block";
     //ROLE
     public static final String ROLE_ADMIN = "Role_Admin";
     public static final String ROLE_USER = "Role_User";
