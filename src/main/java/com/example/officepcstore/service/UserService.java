@@ -114,7 +114,7 @@ public class UserService {
             user.get().setPhone(userReq.getPhone());
             user.get().setProvince(user.get().getProvince());
             user.get().setDistrict(user.get().getDistrict());
-            user.get().setAddress(user.get().getAddress());
+            user.get().setWard(user.get().getWard());
             user.get().setAddress(userReq.getAddress());
             userRepository.save(user.get());
             UserResponse userRes = userMap.toUserRes(user.get());
