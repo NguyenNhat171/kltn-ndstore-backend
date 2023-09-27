@@ -62,9 +62,9 @@ public class CartService {
                 Optional<OrderedProduct> products = order.get().getOrderedProducts().stream().filter(
                         p -> p.getOrderProduct().getId().equals(req.getProductId())).findFirst();
                 if (products.isPresent())
-                    return countinueUpdateProductInCart(products.get(), req);
+                    return continueUpdateQuantityProductCart(products.get(), req);
                 else
-                    return addProductToCartAvailable(order.get(), req);
+                    return putProductToCartAvailable(order.get(), req);
             } else
                 return createCart(user.get(), req);
         }
@@ -90,7 +90,7 @@ public class CartService {
         } else throw new NotFoundException("Not found product with id: "+req.getProductId());
     }
 //processAddProductToExistOrder
-    private ResponseEntity<?> addProductToCartAvailable(Order order, CartReq req) {
+    private ResponseEntity<?> putProductToCartAvailable(Order order, CartReq req) {
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
             checkProductQuantityAndStock(product.get(), req);
@@ -113,7 +113,7 @@ public class CartService {
             }
     }
 
-    private ResponseEntity<?> countinueUpdateProductInCart(OrderedProduct orderedProduct, CartReq req) {
+    private ResponseEntity<?> continueUpdateQuantityProductCart(OrderedProduct orderedProduct, CartReq req) {
         if (orderedProduct.getQuantity() + req.getQuantity() == 0) {
             orderProductRepository.deleteById(orderedProduct.getId());
             return ResponseEntity.status(HttpStatus.OK).body(
