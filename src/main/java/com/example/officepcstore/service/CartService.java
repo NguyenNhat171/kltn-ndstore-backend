@@ -66,14 +66,14 @@ public class CartService {
                 else
                     return addProductToCartAvailable(order.get(), req);
             } else
-                return createOrderByCart(user.get(), req);
+                return createCart(user.get(), req);
         }
         throw new NotFoundException("Not found user with id: "+userId);
     }
 //processAddProductToOrder
     @Transactional
     @Synchronized
-    ResponseEntity<?> createOrderByCart(User user, CartReq req) {
+    ResponseEntity<?> createCart(User user, CartReq req) {
         if (req.getQuantity() <= 0) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid quantity");
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
