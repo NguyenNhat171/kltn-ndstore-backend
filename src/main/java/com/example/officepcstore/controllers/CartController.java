@@ -31,7 +31,7 @@ public class CartController {
     public ResponseEntity<?> putProductToCart (@RequestBody @Valid CartReq req,
                                                   HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return cartService.createAndPutProductToCart(user.getId(), req);
+            return cartService.createAndCheckProductInCart(user.getId(), req);
 
     }
 

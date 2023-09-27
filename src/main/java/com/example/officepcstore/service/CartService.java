@@ -54,7 +54,7 @@ public class CartService {
     }
 //addAndUpdateProductToCart
     @Transactional
-    public ResponseEntity<?> createAndPutProductToCart(String userId, CartReq req) {
+    public ResponseEntity<?> createAndCheckProductInCart(String userId, CartReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
