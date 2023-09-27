@@ -112,9 +112,9 @@ public class UserService {
         if (user.isPresent()) {
             user.get().setName(userReq.getName());
             user.get().setPhone(userReq.getPhone());
-            user.get().setProvince(user.get().getProvince());
-            user.get().setDistrict(user.get().getDistrict());
-            user.get().setWard(user.get().getWard());
+            user.get().setProvince(userReq.getProvince());
+            user.get().setDistrict(userReq.getDistrict());
+            user.get().setWard(userReq.getWard());
             user.get().setAddress(userReq.getAddress());
             userRepository.save(user.get());
             UserResponse userRes = userMap.toUserRes(user.get());
