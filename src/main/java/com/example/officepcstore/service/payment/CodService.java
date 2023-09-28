@@ -31,7 +31,8 @@ public class CodService extends PaymentSteps {
     public ResponseEntity<?> initializationPayment(HttpServletRequest httpServletRequest, Order order) {
         if (order != null && order.getState().equals(Constant.ORDER_PROCESS)) {
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-            if (checkUpdateQuantityProduct == null) {
+            String checkUpdateSold =payUtils.updateSoldProduct(order,true);
+            if (checkUpdateQuantityProduct == null && checkUpdateSold==null) {
                 order.setState(Constant.ORDER_PAY_COD);
                 order.getPaymentInformation().getPayDetails().put("isPaid", false);
                 orderRepository.save(order);
@@ -54,7 +55,8 @@ public class CodService extends PaymentSteps {
             order.get().setState(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            if (checkUpdateQuantityProduct == null) {
+            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
+            if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment cancel complete", ""));
             }
