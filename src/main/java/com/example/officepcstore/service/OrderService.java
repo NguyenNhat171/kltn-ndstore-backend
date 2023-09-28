@@ -75,7 +75,31 @@ public class OrderService {
                 new ResponseObjectData(false, "Can not found order with id"+ id, ""));
     }
 
-
+    public ResponseEntity<?> findAllOrderByUserId(String userId, Pageable pageable) {
+        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
+        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailRes).collect(Collectors.toList());
+        Map<String, Object> orderResp = new HashMap<>();
+        orderResp.put("totalOrder", orders.getTotalElements());
+        orderResp.put("listOrder", resList);
+        if(resList.size()>0){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get order success", orderResp));
+        }
+       else return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found any order",orderResp));
+    }
+    public ResponseEntity<?> findAllNoCart( Pageable pageable) {
+        Page<Order> orders = orderRepository.findAllByStateNoCart( pageable);
+        if (orders.isEmpty())
+            throw new NotFoundException("Can not found any orders");
+        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("list", resList);
+        resp.put("totalQuantity", orders.getTotalElements());
+        resp.put("totalPage", orders.getTotalPages());
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(true, "Get orders success", resp));
+    }
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {

@@ -60,7 +60,7 @@ public class SelectPaymentService {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
             PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
-            paymentInformation.getPayDetails().put("invoiceDate", LocalDateTime.now(Clock.systemDefaultZone()));
+//            paymentInformation.getPayDetails().put("invoiceDate", LocalDateTime.now(Clock.systemDefaultZone()));
             order.get().setPaymentInformation(paymentInformation);
             ShippingDetail shippingDetail = new ShippingDetail(req.getName(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),req.getAddress(),req.getNote());
@@ -68,6 +68,7 @@ public class SelectPaymentService {
             order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", req.getShipFee());
             order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
             order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
+            order.get().setInvoiceDate(LocalDateTime.now(Clock.systemDefaultZone()));
     //        order.get().getShippingDetail().getShipInformation().put("address", req.getAddress());
             order.get().setState(Constant.ORDER_PROCESS);
 

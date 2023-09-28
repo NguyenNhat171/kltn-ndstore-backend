@@ -27,6 +27,8 @@ public class OrderResponse {
     private String state;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Object createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+    private Object lastUpdateDate;
     private Map<String, Object> paymentInfo;
 
     public OrderResponse(String id, String userId, String userName, long totalProduct, BigDecimal totalPrice, String state, Object createdDate) {
@@ -37,5 +39,16 @@ public class OrderResponse {
         this.totalPrice = totalPrice;
         this.state = state;
         this.createdDate = createdDate;
+    }
+
+    public OrderResponse(String id, String userId, String userName, long totalProduct, BigDecimal totalPrice, String state, Object createdDate, Object lastUpdateDate) {
+        this.id = id;
+        this.userId = userId;
+        this.userName = userName;
+        this.totalProduct = totalProduct;
+        this.totalPrice = totalPrice;
+        this.state = state;
+        this.createdDate = createdDate;
+        this.lastUpdateDate = lastUpdateDate;
     }
 }

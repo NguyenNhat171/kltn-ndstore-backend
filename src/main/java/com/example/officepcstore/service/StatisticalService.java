@@ -48,7 +48,7 @@ public class StatisticalService {
             e.printStackTrace();
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Incorrect date format");
         }
-        Page<Order> orderList = orderRepository.findAllByCreatedDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
+        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
         switch (type) {
             case "all" -> {
                 orderList = orderRepository.findAllByState(Constant.ORDER_COMPLETE, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastModifiedDate").ascending()));
