@@ -68,7 +68,7 @@ public class SelectPaymentService {
             order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", req.getShipFee());
             order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
             order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
-            order.get().setInvoiceDate(LocalDateTime.now(Clock.systemDefaultZone()));
+            order.get().setInvoiceDate(LocalDateTime.now());
     //        order.get().getShippingDetail().getShipInformation().put("address", req.getAddress());
             order.get().setState(Constant.ORDER_PROCESS);
 
