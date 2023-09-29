@@ -57,16 +57,16 @@ public class OrderController {
     }
 
     @GetMapping(path = "/orders/get/detail/{orderId}")
-    public ResponseEntity<?> userFindOrderByUserId (@PathVariable String orderId,
+    public ResponseEntity<?> userFindDetailOrderByUserId (@PathVariable String orderId,
                                                 HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return orderService.findOrderByUserId(orderId, user.getId());
+            return orderService.findOrderDetailByUserId(orderId, user.getId());
 
     }
 
     @GetMapping(path = "/orders/get/list/user")
-    public ResponseEntity<?> userGetAllOrder (HttpServletRequest request,@SortDefault(sort = "invoiceDate",
-            direction = Sort.Direction.DESC) @ParameterObject Pageable pageable ){
+    public ResponseEntity<?> userGetAllOrder (HttpServletRequest request,
+                                              @PageableDefault(size = 5, sort = "invoiceDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable ){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
             return orderService.findAllOrderByUserId(user.getId(),pageable);
     }

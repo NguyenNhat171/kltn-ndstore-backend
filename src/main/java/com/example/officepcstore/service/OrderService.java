@@ -64,7 +64,7 @@ public class OrderService {
     }
 
 
-    public ResponseEntity<?> findOrderByUserId(String id, String userId) {
+    public ResponseEntity<?> findOrderDetailByUserId(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
             OrderResponse orderResponse = orderMap.getOrderDetailRes(order.get());
@@ -76,9 +76,11 @@ public class OrderService {
     }
 
     public ResponseEntity<?> findAllOrderByUserId(String userId, Pageable pageable) {
-        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
+//        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
+        Page<Order> orders = orderRepository.findOrderByUser_IdAndStateNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailRes).collect(Collectors.toList());
         Map<String, Object> orderResp = new HashMap<>();
+        orderResp.put("totalPage", orders.getTotalPages());
         orderResp.put("totalOrder", orders.getTotalElements());
         orderResp.put("listOrder", resList);
         if(resList.size()>0){
