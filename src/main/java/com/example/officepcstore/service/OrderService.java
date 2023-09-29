@@ -109,6 +109,7 @@ public class OrderService {
                     || order.get().getState().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                 String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
+                order.get().setLastUpdateStateDate(LocalDateTime.now());
                 order.get().setState(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());
                 if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
