@@ -148,7 +148,8 @@ public class PaypalService extends PaymentSteps {
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
         double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())));
-        Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
+       // Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
+        Amount amount = new Amount(currency, String.format(String.valueOf(TotalMoneyVN)));
         Transaction transaction = new Transaction();
         transaction.setDescription(description);
         transaction.setAmount(amount);

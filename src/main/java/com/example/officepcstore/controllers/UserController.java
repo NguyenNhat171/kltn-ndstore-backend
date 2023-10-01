@@ -36,7 +36,7 @@ public class UserController {
                                           @PathVariable("userId") String userId,
                                           HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-        if (user.getId().equals(userId) || !user.getId().isBlank())
+        if (user.getId().equals(userId))
             return userService.updateProfileUser(userId, req);
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
@@ -45,7 +45,7 @@ public class UserController {
                                                  @PathVariable("userId") String userId,
                                                  HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-        if (user.getId().equals(userId) || !user.getId().isBlank())
+        if (user.getId().equals(userId))
             return userService.updatePassword(userId, req);
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
@@ -55,7 +55,7 @@ public class UserController {
                                                        @PathVariable("userId") String userId,
                                                        HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-        if (user.getId().equals(userId) || !user.getId().isBlank())
+        if (user.getId().equals(userId))
             return userService.resetForgetPassword(userId,resetPassRequest);
         throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
     }
@@ -64,9 +64,18 @@ public class UserController {
     public ResponseEntity<?> findUserById (@PathVariable("userId") String userId,
                                            HttpServletRequest request) {
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-        if (user.getId().equals(userId) || !user.getId().isBlank())
+        if (user.getId().equals(userId))
             return userService.findUserById(userId);
-        throw new AppException(HttpStatus.FORBIDDEN.value(),  "Not Found Token");
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "Not Found Token");
+    }
+
+    @GetMapping(path = "/admin/manage/users/get/check/profile/{userId}")
+    public ResponseEntity<?> adminFindUserById (@PathVariable("userId") String userId,
+                                           HttpServletRequest request) {
+        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+        if (user.getId().equals(userId))
+            return userService.checkUserByAdmin(userId);
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "Not Found Token");
     }
 
     @PostMapping(path = "/users/update/avatar/{userId}")

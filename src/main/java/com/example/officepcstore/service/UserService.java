@@ -65,8 +65,21 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get user success", res));
         }
-        throw new NotFoundException("Can not found user with id " + id);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found user", ""));
     }
+
+    public ResponseEntity<?> checkUserByAdmin(String userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            UserResponse res = userMap.toUserRes(user.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get user success", res));
+        }
+       return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found user", ""));
+    }
+
 
     @Transactional
     public ResponseEntity<?> addAccount(RegisterReq req) {
@@ -123,7 +136,6 @@ public class UserService {
             );
 
         }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(true, "Cannot update user ", ""));
     }
