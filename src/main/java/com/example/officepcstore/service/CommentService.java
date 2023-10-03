@@ -30,17 +30,23 @@ public class CommentService {
     private final ProductRepository productRepository;
     private final CommentMap commentMap;
 
-    public ResponseEntity<?> getAllCommentInProduct(String productId, Pageable pageable) {
-        Page<Comment> comments;
-            comments  = commentRepository.findAllByProduct_IdAndState(new ObjectId(productId) , Constant.ENABLE, pageable);
-        if (comments.isEmpty()) throw new NotFoundException("Can not found any review");
-        List<CommentResponse> commentResponseList = comments.getContent().stream().map(commentMap::getCommentResponse).collect(Collectors.toList());
-        Map<String, Object> dataRes = new HashMap<>();
-        dataRes.put("listComment",  commentResponseList);
-        dataRes.put("totalQuantity", comments.getTotalElements());
-        dataRes.put("totalPage", comments.getTotalPages());
-        if (comments.isEmpty()) throw new NotFoundException("Can not found any review");
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Get review by product success ", dataRes));
+    public ResponseEntity<?> getAllCommentProduct(String id, Pageable pageable) {
+        Page<Comment> reviews = commentRepository.findAllByProduct_IdAndState(new ObjectId(id), Constant.COMMENT_ENABLE, pageable);
+        if (reviews.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "No comments yet  ", ""));
+        } else {
+            List<CommentResponse> commentList = reviews.getContent().stream().map(commentMap::getCommentResponse).collect(Collectors.toList());
+            Map<String, Object> commentRes = new HashMap<>();
+            commentRes.put("numberOfComments", reviews.getTotalElements());
+            commentRes.put("allPage", reviews.getTotalPages());
+            commentRes.put("allComment", commentList);
+            if (reviews.isEmpty())
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(false, "No comments yet  ", ""));
+            else
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "All Comment Product success ", commentRes));
+        }
     }
 }
