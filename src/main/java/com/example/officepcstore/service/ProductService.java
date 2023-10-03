@@ -260,20 +260,16 @@ public class ProductService {
 //            product.setState(req.getState());
 //        else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid state");
 //    }
-    public ResponseEntity<?> createProductConfig(String productId, List<Map<String, String>> mapList) {
+    public ResponseEntity<?> updateProductConfig(String productId, List<Map<String, String>> mapList) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
 //            Map<String, String> resp = new HashMap<>();
 //            resp.put(productConfigurationReq.getNameSetting(), productConfigurationReq.getDescriptionSetting());
            product.get().setProductConfiguration(mapList);
-            try {
                 productRepository.save(product.get());
-            } catch (Exception e) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Product  already exists");
-            }
             ProductResponse res = productMap.toGetProductRes(product.get());
             return ResponseEntity.status(HttpStatus.CREATED).body(
-                    new ResponseObjectData(true, "Create product successfully ", res)
+                    new ResponseObjectData(true, "Update product successfully ", res)
             );
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

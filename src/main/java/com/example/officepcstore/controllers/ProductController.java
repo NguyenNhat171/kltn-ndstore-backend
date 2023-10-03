@@ -74,14 +74,14 @@ public class ProductController {
     }
 
 
-    @GetMapping(path = "/manage/products/get/list")
+    @GetMapping(path = "/admin/manage/products/get/list")
     public ResponseEntity<?> findAllProductByAdmin (@RequestParam(value = "state", defaultValue = "") String state,
                                                     @PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC)
                                       @ParameterObject Pageable pageable){
         return productService.findAllProductByAdmin(state,pageable);
     }
 
-    @PostMapping("/manage/product/create")
+    @PostMapping("/admin/manage/product/create")
     public ResponseEntity<?> createProduct(@Valid @RequestBody ProductReq req) {
         return productService.createProduct(req);
     }
@@ -103,18 +103,18 @@ public class ProductController {
 //    }
 
 
-    @PostMapping("/manage/products/create/config/{productId}")
-    public ResponseEntity<?> createProductConfig(@PathVariable("productId") String id,@RequestBody List<Map<String, String>> mapList) {
-        return productService.createProductConfig(id,mapList);
+    @PostMapping("/admin/manage/products/update/config/{productId}")
+    public ResponseEntity<?> updateProductConfig(@PathVariable("productId") String id,@RequestBody List<Map<String, String>> mapList) {
+        return productService.updateProductConfig(id,mapList);
     }
 
-    @PostMapping(value = "/manage/products/add/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/admin/manage/products/add/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addImages(@PathVariable("productId") String id ,
                                        @ModelAttribute AddImageReq req) {
         return productService.addImagesToProduct(id, req.getFiles());
     }
 
-    @DeleteMapping("/manage/products/images/{productId}")
+    @DeleteMapping("/admin/manage/products/images/{productId}")
     public ResponseEntity<?> deleteImage(@PathVariable("productId") String id,
                                          @RequestBody AddImageReq req) {
         return productService.deleteImageFromProduct(id, req.getImage_Id());

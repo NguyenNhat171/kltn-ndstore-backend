@@ -39,21 +39,16 @@ public class UserService {
     private final CloudinaryConfig cloudinary;
     private final PasswordEncoder passwordEncoder;
 
-    public ResponseEntity<ResponseObjectData> findAll(String state, Pageable pageable) {
-        Page<User> users;
-        if (state.equalsIgnoreCase(Constant.USER_ACTIVE) ||
-                state.equalsIgnoreCase(Constant.USER_BLOCK) ||
-                state.equalsIgnoreCase(Constant.USER_UNVERIFIED))
-            users = userRepository.findAllByState(state, pageable);
-        else users = userRepository.findAll(pageable);
+    public ResponseEntity<ResponseObjectData> findAllUserByAdmin( Pageable pageable) {
+        Page<User> users = userRepository.findAll(pageable);
         List<UserResponse> userResList = users.stream().map(userMap::toUserRes).collect(Collectors.toList());
-        Map<String, Object> userresp = new HashMap<>();
-        userresp.put("allPage", users.getTotalPages());
-        userresp.put("allQuantity", users.getTotalElements());
-        userresp.put("list", userResList);
+        Map<String, Object> userRes= new HashMap<>();
+        userRes.put("allPage", users.getTotalPages());
+        userRes.put("allQuantity", users.getTotalElements());
+        userRes.put("listUser", userResList);
         if (userResList.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Get all user success", userresp));
+                    new ResponseObjectData(true, "Get all user success", userRes));
         throw new NotFoundException("Can not found any user");
     }
 
@@ -108,7 +103,7 @@ public class UserService {
                     user.get().setAvatar(imgUrl);
                     userRepository.save(user.get());
                 } catch (IOException e) {
-                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error when upload image");
+                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Error image upload");
                 }
             }
             UserResponse res = userMap.toUserRes(user.get());
@@ -132,7 +127,7 @@ public class UserService {
             userRepository.save(user.get());
             UserResponse userRes = userMap.toUserRes(user.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Update user complete", userRes)
+                    new ResponseObjectData(true, "Update user profile complete", userRes)
             );
 
         }
@@ -150,6 +145,31 @@ public class UserService {
                     new ResponseObjectData(true, "Delete user success", ""));
         }
         throw new NotFoundException("Can not found user with id " + id + " is activated");
+    }
+
+    @Transactional
+    public ResponseEntity<?> changeStateUserByAdmin(String id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            if(user.get().getState().equals(Constant.USER_BLOCK)) {
+                user.get().setState(Constant.USER_ACTIVE);
+                userRepository.save(user.get());
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "Set active user success", user));
+            }
+            else if(user.get().getState().equals(Constant.USER_ACTIVE)) {
+                user.get().setState(Constant.USER_BLOCK);
+                userRepository.save(user.get());
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "set block user success", user));
+            }
+            else
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Not change state user success", ""));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Can not found user with id" +id , ""));
     }
 
     public ResponseEntity<?> updatePassword(String id, ChangePassReq req) {

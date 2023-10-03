@@ -26,10 +26,9 @@ public class UserController {
     private final JwtUtils jwtUtils;
     private final UserService userService;
 
-    @GetMapping(path = "/admin/manage/users/get/all")
-    public ResponseEntity<?> findAll (@RequestParam(value = "state", defaultValue = "") String state,
-                                      @PageableDefault(size = 5, sort = "name") @ParameterObject Pageable pageable){
-        return userService.findAll(state, pageable);
+    @GetMapping(path = "/admin/manage/users/get/all/list")
+    public ResponseEntity<?> findAllUserByAdmin (@PageableDefault(size = 10, sort = "createdDate") @ParameterObject Pageable pageable){
+        return userService.findAllUserByAdmin( pageable);
     }
     @PutMapping(path = "/users/edit/information/profile/{userId}")
     public ResponseEntity<?> updateUser ( @RequestBody UserReq req,
@@ -86,6 +85,12 @@ public class UserController {
         if (user.getId().equals(userId))
             return userService.updateUserAvatar(userId, file);
         throw new AppException(HttpStatus.FORBIDDEN.value(), "Not Found Token");
+    }
+
+    @PutMapping(path = "/admin/manage/users/change/state/{userId}")
+    public ResponseEntity<?> changeStateUserByAdmin (@PathVariable("userId") String userId)
+    {
+            return userService.changeStateUserByAdmin(userId);
     }
 
 }

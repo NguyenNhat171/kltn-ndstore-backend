@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/admin/manage/statistical")
+@RequestMapping("/api")
 public class StatisticalController {
     private final StatisticalService statisticalService;
-    @GetMapping(path = "/sale/total")
+    @GetMapping(path = "/admin/manage/statistical/sale/total")
     public ResponseEntity<?> getStats (@RequestParam(value = "from", defaultValue = "") String from,
                                        @RequestParam(value = "to", defaultValue = "") String to,
                                        @RequestParam("type") String type){
