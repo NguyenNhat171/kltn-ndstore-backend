@@ -64,7 +64,7 @@ public class UserService {
                 new ResponseObjectData(false, "Not found user", ""));
     }
 
-    public ResponseEntity<?> checkUserByAdmin(String userId) {
+    public ResponseEntity<?> findUserByAdmin(String userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             UserResponse res = userMap.toUserRes(user.get());
