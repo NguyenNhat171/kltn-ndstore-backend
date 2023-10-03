@@ -69,7 +69,15 @@ public class UserController {
     }
 
     @GetMapping(path = "/admin/manage/users/get/check/profile/{userId}")
-    public ResponseEntity<?> adminFindUserById (@PathVariable("userId") String userId) {
+    public ResponseEntity<?> adminCheckById (@PathVariable("userId") String userId, HttpServletRequest request) {
+        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+        if (user.getId().equals(userId))
+            return userService.findUserByAdmin(userId);
+        throw new AppException(HttpStatus.FORBIDDEN.value(), "Not Found Token");
+    }
+
+    @GetMapping(path = "/admin/manage/users/find/profile/{userId}")
+    public ResponseEntity<?> findUserByAdmin(@PathVariable("userId") String userId) {
             return userService.findUserByAdmin(userId);
     }
 
