@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
@@ -23,6 +24,7 @@ public class Brand {
     private String name;
     private String imageBrand;
     private String state;
+    @ReadOnlyProperty
     @DocumentReference(lookup="{'brand':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed

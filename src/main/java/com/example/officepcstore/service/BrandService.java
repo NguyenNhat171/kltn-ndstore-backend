@@ -108,7 +108,7 @@ public class BrandService {
 
 
     @Transactional
-    public ResponseEntity<?> updateBrand(String id, BrandReq brandReq) {
+    public ResponseEntity<?> updateDetailBrand(String id, BrandReq brandReq) {
         Optional<Brand> brandFound = brandRepository.findById(id);
         if (brandFound.isPresent()) {
             brandFound.get().setName(brandReq.getName());
@@ -116,7 +116,6 @@ public class BrandService {
             brandRepository.save(brandFound.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update Brand complete", brandFound));
-
         }
         else
             return ResponseEntity.status(HttpStatus.OK).body(

@@ -57,8 +57,8 @@ public class BrandController {
 
 
     @PutMapping(path = "/admin/manage/brands/update/detail/{id}")
-    public ResponseEntity<?> updateBrand (@PathVariable("id") String id,@RequestBody BrandReq brandReq) {
-        return brandService.updateBrand(id, brandReq);
+    public ResponseEntity<?> updateBrand (@PathVariable("id") String id, @RequestBody @Valid BrandReq brandReq) {
+        return brandService.updateDetailBrand(id, brandReq);
     }
 
     @PostMapping(path = "/admin/manage/brand/update/new/image/{id}")
