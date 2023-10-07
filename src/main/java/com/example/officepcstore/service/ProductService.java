@@ -75,6 +75,9 @@ public class ProductService {
 
     public ResponseEntity<?> findAllProductByAdmin(String state ,Pageable pageable) {
         Page<Product> products;
+        if(state == null || state.isBlank())
+           products = productRepository.findAll(pageable);
+        else
         products = productRepository.findAllByState(state,pageable);
         List<AllProductResponse> listProduct  = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
@@ -132,6 +135,18 @@ public class ProductService {
         }
         throw new NotFoundException("Can not found any product");
     }
+    public ResponseEntity<?> findByIdInAdmin(String id) {
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            ProductResponse res = productMap.toGetProductRes(product.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get product Success ", res));
+        }
+        else
+            return  ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found product"+id, ""));
+    }
+
 
     public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
         Page<Product> products;

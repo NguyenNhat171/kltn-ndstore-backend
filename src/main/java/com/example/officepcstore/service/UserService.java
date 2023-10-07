@@ -132,7 +132,7 @@ public class UserService {
 
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObjectData(true, "Cannot update user ", ""));
+                new ResponseObjectData(false, "Cannot update user ", ""));
     }
 
     @Transactional

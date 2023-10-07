@@ -74,11 +74,16 @@ public class ProductController {
     }
 
 
-    @GetMapping(path = "/admin/manage/products/get/list")
+    @GetMapping(path = "/admin/manage/products/get/all/list")
     public ResponseEntity<?> findAllProductByAdmin (@RequestParam(value = "state", defaultValue = "") String state,
                                                     @PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC)
                                       @ParameterObject Pageable pageable){
         return productService.findAllProductByAdmin(state,pageable);
+    }
+
+    @GetMapping(path = "/admin/manage/products/get/detail/{id}")
+    public ResponseEntity<?> findByIdInAdmin (@PathVariable("id") String id){
+        return productService.findByIdInAdmin(id);
     }
 
     @PostMapping("/admin/manage/product/create")

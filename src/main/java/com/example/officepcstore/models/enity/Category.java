@@ -33,7 +33,7 @@ public class Category {
     @DocumentReference(lookup="{'category':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed
-    private List<Product> products;
+    private List<Product> dependentProducts;
 
 
     public Category(String titleCategory, String imageCategory, String state) {

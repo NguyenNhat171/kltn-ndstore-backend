@@ -4,13 +4,19 @@ import com.example.officepcstore.config.CloudinaryConfig;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
+import com.example.officepcstore.map.CategoryMap;
+import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.CategoryReq;
+import com.example.officepcstore.payload.response.BrandResponse;
+import com.example.officepcstore.payload.response.CategoryResponse;
 import com.example.officepcstore.repository.CategoryRepository;
 import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,8 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -27,16 +36,29 @@ import java.util.Optional;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CloudinaryConfig cloudinary;
+private final CategoryMap categoryMap;
 
 
-    public ResponseEntity<?> findAll() {
-   List<Category> list = categoryRepository.findAll();
-        if (list.size() > 0)
+
+
+    public ResponseEntity<ResponseObjectData> findAllByAdmin(String state, Pageable pageable) {
+        Page<Category> listCategory;
+        if(state == null || state.isBlank())
+            listCategory = categoryRepository.findAll(pageable);
+        else
+            listCategory = categoryRepository.findAllByState(state, pageable);
+        List<CategoryResponse> brandResList = listCategory.stream().map(categoryMap::getCategoryResponse).collect(Collectors.toList());
+        Map<String, Object> cateResp = new HashMap<>();
+        cateResp.put("totalPage", listCategory.getTotalPages());
+        cateResp.put("totalCategory", listCategory.getTotalElements());
+        cateResp.put("listCategory",brandResList);
+        if (brandResList.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "List Category Success", list));
-        throw new NotFoundException("Not found category");
+                    new ResponseObjectData(true, "Get all category success", cateResp));
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Not Found any category", ""));
     }
-
 
     public ResponseEntity<?> findAllByUser() {
         List<Category> list = categoryRepository.findAllByState(Constant.ENABLE);
@@ -52,7 +74,19 @@ public class CategoryService {
         if (category.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get category success", category));
-        throw new NotFoundException("Not found category id: " + id);
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Not found category"+id, ""));
+    }
+
+    public ResponseEntity<?> findCategoryByIdInAdmin(String id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent())
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get category success", category));
+        else
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Not found category"+id,""));
     }
 
 
@@ -108,18 +142,28 @@ public class CategoryService {
     }
 
 
-//    @Transactional
-//    public ResponseEntity<?> deactivatedCategory(String id) {
-//        Optional<Category> category = categoryRepository.findById(id);
-//        if (category.isPresent()) {
-//            if (!category.get().getProducts().isEmpty()) throw new AppException(HttpStatus.CONFLICT.value(),
-//                    "There's a product belongs to that category.");
-//            category.get().setState(Constant.DISABLE);
-//            category.get().getSubCategories().forEach(c -> c.setState(Constant.DISABLE));
-//            categoryRepository.saveAll(category.get().getSubCategories());
-//            categoryRepository.save(category.get());
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObjectData(true, "Deactivated category success", id));
-//        } else throw new NotFoundException("Can not found category with id: " + id);
-//    }
+    @Transactional
+    public ResponseEntity<?> changeStateDisableCategory(String id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()) {
+            if (!category.get().getDependentProducts().isEmpty()) throw new AppException(HttpStatus.CONFLICT.value(),
+                    "Exist Product.");
+            category.get().setState(Constant.DISABLE);
+            categoryRepository.save(category.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Deactivated category success", id));
+        } else throw new NotFoundException("Not found category with id: " + id);
+    }
+
+    @Transactional
+    public ResponseEntity<?> changeStateEnableCategory(String id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent() &&category.get().getState().equals(Constant.DISABLE)) {
+
+            category.get().setState(Constant.ENABLE);
+            categoryRepository.save(category.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Deactivated category success", id));
+        } else throw new NotFoundException("Not found category with id: " + id);
+    }
 }
