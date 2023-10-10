@@ -17,4 +17,5 @@ public interface  BrandRepository extends MongoRepository<Brand, String> {
 
     Page<Brand> findAllByState(String state, Pageable pageable);
     Page<Brand> findAll( Pageable pageable);
+
 }

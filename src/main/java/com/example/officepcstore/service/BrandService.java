@@ -8,13 +8,16 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.BrandMap;
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
+import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.BrandReq;
 import com.example.officepcstore.payload.response.BrandResponse;
 import com.example.officepcstore.payload.response.OrderResponse;
 import com.example.officepcstore.repository.BrandRepository;
+import com.example.officepcstore.repository.ProductRepository;
 import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,6 +34,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class BrandService {
     private final BrandRepository brandRepository;
+    private final ProductRepository productRepository;
     private final CloudinaryConfig cloudinary;
     private final BrandMap brandMap;
 
@@ -156,6 +160,23 @@ public class BrandService {
             } else  return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Not found Brand " + id, ""));
         }
+
+
+    @Transactional
+    public ResponseEntity<?> changeStateDisableBrandNew (String id){
+        Optional<Brand> brand = brandRepository.findById(id);
+        List<Product> products = productRepository.findAllByBrand_IdAndState(new ObjectId(id),Constant.ENABLE);
+        if (brand.isPresent()) {
+            if (products.size()>0)
+                throw new AppException(HttpStatus.CONFLICT.value(),
+                        "Product exist");
+            brand.get().setState(Constant.DISABLE);
+            brandRepository.save(brand.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Block brand success with id: " + id, ""));
+        } else  return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found Brand " + id, ""));
+    }
 
     @Transactional
     public ResponseEntity<?> changeStateEnableBrand (String id){

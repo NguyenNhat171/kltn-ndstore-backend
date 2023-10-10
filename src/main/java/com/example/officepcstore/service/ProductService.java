@@ -70,7 +70,9 @@ public class ProductService {
         ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
         if (listProductRes != null)
             return listProductRes;
-        throw new NotFoundException("Not found product");
+        else
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found any product", ""));
     }
 
     public ResponseEntity<?> findAllProductByAdmin(String state ,Pageable pageable) {
@@ -83,7 +85,9 @@ public class ProductService {
         ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
         if (listProductRes != null)
             return listProductRes;
-        throw new NotFoundException("Not found product");
+        else
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found product", ""));
     }
 
     public ResponseEntity<?> filterProductPriceByUser(BigDecimal priceMin, BigDecimal priceMax, Pageable pageable ) {
@@ -94,7 +98,9 @@ public class ProductService {
       ResponseEntity<?> listProductRes = getPageProductRes(products, listProduct);
       if (listProductRes != null)
        return listProductRes;
-      throw new NotFoundException("Not found product");
+      else
+          return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                  new ResponseObjectData(false, "Not found product", ""));
     }
 
 
@@ -133,7 +139,9 @@ public class ProductService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get product Success ", res));
         }
-        throw new NotFoundException("Can not found any product");
+        else
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found product"+id, ""));
     }
     public ResponseEntity<?> findByIdInAdmin(String id) {
         Optional<Product> product = productRepository.findById(id);
@@ -143,11 +151,21 @@ public class ProductService {
                     new ResponseObjectData(true, "Get product Success ", res));
         }
         else
-            return  ResponseEntity.status(HttpStatus.OK).body(
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found product"+id, ""));
     }
 
-
+//    public ResponseEntity<?> filterProductByConfig(List<Map<String, String>> keyValuePairs,Pageable pageable)
+//    {
+//        Page<Product> filteredProducts = productRepository.findByProductConfigurationMultipleKeyValuePairs(keyValuePairs, pageable);
+//        List<AllProductResponse> listProduct  = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+//        ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
+//        if (resp != null)
+//            return resp;
+//        else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObjectData(false, "Not found any product", ""));
+//    }
     public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
         Page<Product> products;
 
@@ -159,7 +177,8 @@ public class ProductService {
                 if (resp != null)
                     return resp;
             }
-        throw new NotFoundException("Can not found any product with category id: "+id);
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObjectData(false, "Not found any product", ""));
     }
 
 
@@ -172,7 +191,8 @@ public class ProductService {
             if (resp != null)
                 return resp;
         }
-        throw new NotFoundException("Can not found any product with brand id: "+id);
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found any product", ""));
     }
     public ResponseEntity<?> search(String key, Pageable pageable) {
         Page<Product> products;
@@ -186,7 +206,9 @@ public class ProductService {
         List<AllProductResponse> resList = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> resp = getPageProductRes(products, resList);
         if (resp != null) return resp;
-        throw new NotFoundException("Can not found any product with: "+key);
+        else
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found any product", ""));
     }
 
     public ResponseEntity<?> createProduct(ProductReq req) {
@@ -208,7 +230,7 @@ public class ProductService {
                 new ResponseObjectData(false, "Request is null", "")
         );
     }
-    public ResponseEntity<?> updateProduct(String id, ProductReq productReq) {
+    public ResponseEntity<?> updateDetailsProduct(String id, ProductReq productReq) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent() && productReq != null) {
 
@@ -221,60 +243,26 @@ public class ProductService {
                 Optional<Category> category = categoryRepository.findCategoryByIdAndState(productReq.getCategory(), Constant.ENABLE);
                 if (category.isPresent())
                     product.get().setCategory(category.get());
-                else throw new NotFoundException("Can not found category with id: "+productReq.getCategory());
+                else throw new NotFoundException("Not found category with id: "+productReq.getCategory());
             }
             if (!productReq.getBrand().equals(product.get().getBrand().getId())) {
                 Optional<Brand> brand = brandRepository.findBrandByIdAndState(productReq.getBrand(), Constant.ENABLE);
                 if (brand.isPresent())
                     product.get().setBrand(brand.get());
-                else throw new NotFoundException("Can not found brand with id: "+productReq.getBrand());
+                else throw new NotFoundException("Not found brand with id: "+productReq.getBrand());
             }
-            if (productReq.getState() != null && !productReq.getState().isEmpty() &&
-                    (productReq.getState().equalsIgnoreCase(Constant.ENABLE) ||
-                            productReq.getState().equalsIgnoreCase(Constant.DISABLE)))
-                product.get().setState(productReq.getState());
-            else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid state");
-
-
-            try {
+            product.get().setState(productReq.getState());
                 productRepository.save(product.get());
-            } catch (MongoWriteException e) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Product name already exists");
-            } catch (Exception e) {
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-            }
             ProductResponse res = productMap.toGetProductRes(product.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update product successfully ", res)
             );
         }
-        throw new NotFoundException("Can not found product with id: "+id);
+       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found product" +id, ""));
     }
 
-//    public void updateProductMake(ProductReq req, Product product) {
-//            product.setName(req.getName());
-//            product.setDescription(req.getDescription());
-//            product.setPrice(req.getPrice());
-//            product.setDiscount(req.getDiscount());
-//            product.setProductConfiguration(req.getProductConfiguration());
-//        if (!req.getCategory().equals(product.getCategory().getId())) {
-//            Optional<Category> category = categoryRepository.findCategoryByIdAndState(req.getCategory(), Constant.ENABLE);
-//            if (category.isPresent())
-//                product.setCategory(category.get());
-//            else throw new NotFoundException("Can not found category with id: "+req.getCategory());
-//        }
-//        if (!req.getBrand().equals(product.getBrand().getId())) {
-//            Optional<Brand> brand = brandRepository.findBrandByIdAndState(req.getBrand(), Constant.ENABLE);
-//            if (brand.isPresent())
-//                product.setBrand(brand.get());
-//            else throw new NotFoundException("Can not found brand with id: "+req.getBrand());
-//        }
-//        if (req.getState() != null && !req.getState().isEmpty() &&
-//                (req.getState().equalsIgnoreCase(Constant.ENABLE) ||
-//                        req.getState().equalsIgnoreCase(Constant.DISABLE)))
-//            product.setState(req.getState());
-//        else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid state");
-//    }
+
     public ResponseEntity<?> updateProductConfig(String productId, List<Map<String, String>> mapList) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {

@@ -91,11 +91,11 @@ public class ProductController {
         return productService.createProduct(req);
     }
 //
-//    @PutMapping("/manage/products/{id}")
-//    public ResponseEntity<?> updateProduct(@PathVariable("id") String id,
-//                                           @Valid @RequestBody ProductReq req) {
-//        return productService.updateProduct(id, req);
-//    }
+    @PutMapping("/admin/manage/products/detail/update/{id}")
+    public ResponseEntity<?> updateDetailProduct(@PathVariable("id") String id,
+                                           @Valid @RequestBody ProductReq req) {
+        return productService.updateDetailsProduct(id, req);
+    }
 //
 //    @DeleteMapping("/manage/products/{id}")
 //    public ResponseEntity<?> deleteProduct(@PathVariable("id") String id) {

@@ -7,14 +7,17 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.CategoryMap;
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
+import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.CategoryReq;
 import com.example.officepcstore.payload.response.BrandResponse;
 import com.example.officepcstore.payload.response.CategoryResponse;
 import com.example.officepcstore.repository.CategoryRepository;
+import com.example.officepcstore.repository.ProductRepository;
 import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -36,6 +39,7 @@ import java.util.stream.Collectors;
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CloudinaryConfig cloudinary;
+    private final ProductRepository productRepository;
 private final CategoryMap categoryMap;
 
 
@@ -154,7 +158,21 @@ private final CategoryMap categoryMap;
                     new ResponseObjectData(true, "Deactivated category success", id));
         } else throw new NotFoundException("Not found category with id: " + id);
     }
-
+    @Transactional
+    public ResponseEntity<?> changeStateDisableCategoryNew (String id){
+        Optional<Category> category = categoryRepository.findById(id);
+        List<Product> products = productRepository.findAllByCategory_IdAndState(new ObjectId(id),Constant.ENABLE);
+        if (category.isPresent()) {
+            if (products.size()>0)
+                throw new AppException(HttpStatus.CONFLICT.value(),
+                        "Product exist");
+            category.get().setState(Constant.DISABLE);
+            categoryRepository.save(category.get());
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Block brand success with id: " + id, ""));
+        } else  return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Not found Brand " + id, ""));
+    }
     @Transactional
     public ResponseEntity<?> changeStateEnableCategory(String id) {
         Optional<Category> category = categoryRepository.findById(id);
