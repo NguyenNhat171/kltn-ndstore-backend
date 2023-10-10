@@ -233,10 +233,10 @@ public class ProductService {
     public ResponseEntity<?> updateDetailsProduct(String id, ProductReq productReq) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent() && productReq != null) {
-
             product.get().setName(productReq.getName());
             product.get().setDescription(productReq.getDescription());
             product.get().setPrice(productReq.getPrice());
+            product.get().setStock(productReq.getStock());
             product.get().setDiscount(productReq.getDiscount());
             product.get().setProductConfiguration(productReq.getProductConfiguration());
             if (!productReq.getCategory().equals(product.get().getCategory().getId())) {
