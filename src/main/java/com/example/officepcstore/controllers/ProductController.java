@@ -57,7 +57,14 @@ public class ProductController {
         return productService.search(query, pageable);
     }
 
-
+//    @GetMapping(path = "/products/find/filter/search/config")
+//    public ResponseEntity<?> filterProductConfig (@RequestParam Map<String, String> config,
+//                                     @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+//
+//        return productService.filterProductByConfig(config, pageable);
+//    }
+//
+//
 
 
     @GetMapping(path = "/products/get/enable/list/all")
@@ -108,21 +115,21 @@ public class ProductController {
 //    }
 
 
-    @PostMapping("/admin/manage/products/update/config/{productId}")
-    public ResponseEntity<?> updateProductConfig(@PathVariable("productId") String id,@RequestBody List<Map<String, String>> mapList) {
-        return productService.updateProductConfig(id,mapList);
+    @PutMapping("/admin/manage/products/update/config/{productId}")
+    public ResponseEntity<?> updateProductConfig(@PathVariable("productId") String productId,@RequestBody List<Map<String, String>> mapList) {
+        return productService.updateProductConfig(productId,mapList);
     }
 
-    @PostMapping(value = "/admin/manage/products/add/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/admin/manage/products/add/new/images/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addImages(@PathVariable("productId") String id ,
                                        @ModelAttribute AddImageReq req) {
         return productService.addImagesToProduct(id, req.getFiles());
     }
 
-    @DeleteMapping("/admin/manage/products/images/{productId}")
+    @DeleteMapping("/admin/manage/products/delete/detail/images/{productId}")
     public ResponseEntity<?> deleteImage(@PathVariable("productId") String id,
                                          @RequestBody AddImageReq req) {
-        return productService.deleteImageFromProduct(id, req.getImage_Id());
+        return productService.deleteAllImageProduct(id, req.getImage_Id());
     }
 
 //    @PutMapping("/manage/products/price")

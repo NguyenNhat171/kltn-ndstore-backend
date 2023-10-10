@@ -24,11 +24,6 @@ public class Brand {
     private String name;
     private String imageBrand;
     private String state;
-    @ReadOnlyProperty
-    @DocumentReference(lookup="{'brand':?#{#self._id} }", lazy = true)
-    @JsonIgnore
-    @Indexed
-    private List<Product> dependentProducts;
 
     public Brand(String name, String imageBrand, String state) {
         this.name = name;

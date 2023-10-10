@@ -155,9 +155,17 @@ public class ProductService {
                 new ResponseObjectData(false, "Not found product"+id, ""));
     }
 
-//    public ResponseEntity<?> filterProductByConfig(List<Map<String, String>> keyValuePairs,Pageable pageable)
+//    public ResponseEntity<?> filterProductByConfig(Map<String, String> optionChoose,Pageable pageable)
 //    {
-//        Page<Product> filteredProducts = productRepository.findByProductConfigurationMultipleKeyValuePairs(keyValuePairs, pageable);
+//
+//        List<Map<String, Object>> configurations = new ArrayList<>();
+//        for (Map.Entry<String, String> entry : optionChoose.entrySet()) {
+//            String key = entry.getKey();
+//            String value = entry.getValue();
+//            Map<String, Object> config = Map.of(key, value);
+//            configurations.add(config);
+//        }
+//        Page<Product> filteredProducts = productRepository.findAllByProductConfiguration(configurations, pageable);
 //        List<AllProductResponse> listProduct  = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
 //        ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
 //        if (resp != null)
@@ -238,7 +246,6 @@ public class ProductService {
             product.get().setPrice(productReq.getPrice());
             product.get().setStock(productReq.getStock());
             product.get().setDiscount(productReq.getDiscount());
-            product.get().setProductConfiguration(productReq.getProductConfiguration());
             if (!productReq.getCategory().equals(product.get().getCategory().getId())) {
                 Optional<Category> category = categoryRepository.findCategoryByIdAndState(productReq.getCategory(), Constant.ENABLE);
                 if (category.isPresent())
@@ -266,8 +273,6 @@ public class ProductService {
     public ResponseEntity<?> updateProductConfig(String productId, List<Map<String, String>> mapList) {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
-//            Map<String, String> resp = new HashMap<>();
-//            resp.put(productConfigurationReq.getNameSetting(), productConfigurationReq.getDescriptionSetting());
            product.get().setProductConfiguration(mapList);
                 productRepository.save(product.get());
             ProductResponse res = productMap.toGetProductRes(product.get());
@@ -280,8 +285,8 @@ public class ProductService {
         );
     }
     @Transactional
-    public ResponseEntity<?> addImagesToProduct(String id, List<MultipartFile> files) {
-        Optional<Product> product = productRepository.findById(id);
+    public ResponseEntity<?> addImagesToProduct(String productId, List<MultipartFile> files) {
+        Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
             try {
                 if (files == null || files.isEmpty() ) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Images is empty");
@@ -296,18 +301,18 @@ public class ProductService {
                     productRepository.save(product.get());
                 });
                 return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Add image to product successfully", product.get().getProductImageList())
+                        new ResponseObjectData(true, "Add image to product complete", product.get().getProductImageList())
                 );
             } catch (Exception e) {
                 log.error(e.getMessage());
                 throw new NotFoundException("Error when save image: " + e.getMessage());
             }
-        } throw new NotFoundException("Can not found product with id: " + id);
+        } throw new NotFoundException("Can not found product with id: " + productId);
     }
 
     @Transactional
-    public ResponseEntity<?> deleteImageFromProduct(String id, String imageId) {
-        Optional<Product> product = productRepository.findById(id);
+    public ResponseEntity<?> deleteAllImageProduct(String productId, String imageId) {
+        Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent() && !product.get().getProductImageList().isEmpty()) {
             try {
                 Optional<ProductImage> checkDelete = product.get().getProductImageList().stream().filter(i -> i.getId_image().equals(imageId)).findFirst();
@@ -316,14 +321,14 @@ public class ProductService {
                     product.get().getProductImageList().remove(checkDelete.get());
                     productRepository.save(product.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObjectData(true, "Delete image successfully", imageId)
+                            new ResponseObjectData(true, "Delete image complete", imageId)
                     );
-                } else throw new NotFoundException("Can not found image in product with id: " + imageId);
+                } else throw new NotFoundException("Not found this id: " + imageId);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                throw new NotFoundException("Can not found product with id: " + id);
+                throw new NotFoundException("Not found this id: " + productId);
             }
-        } throw new NotFoundException("Can not found any image or product with id: " + id);
+        } throw new NotFoundException("Not found this id: " + productId);
     }
 
 }

@@ -29,12 +29,6 @@ public class Category {
     private String titleCategory;
     private String imageCategory;
     private String state;
-    @ReadOnlyProperty
-    @DocumentReference(lookup="{'category':?#{#self._id} }", lazy = true)
-    @JsonIgnore
-    @Indexed
-    private List<Product> dependentProducts;
-
 
     public Category(String titleCategory, String imageCategory, String state) {
         this.titleCategory = titleCategory;

@@ -147,25 +147,13 @@ private final CategoryMap categoryMap;
 
 
     @Transactional
-    public ResponseEntity<?> changeStateDisableCategory(String id) {
-        Optional<Category> category = categoryRepository.findById(id);
-        if (category.isPresent()) {
-            if (!category.get().getDependentProducts().isEmpty()) throw new AppException(HttpStatus.CONFLICT.value(),
-                    "Exist Product.");
-            category.get().setState(Constant.DISABLE);
-            categoryRepository.save(category.get());
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Deactivated category success", id));
-        } else throw new NotFoundException("Not found category with id: " + id);
-    }
-    @Transactional
-    public ResponseEntity<?> changeStateDisableCategoryNew (String id){
+    public ResponseEntity<?> changeStateDisableCategory (String id){
         Optional<Category> category = categoryRepository.findById(id);
         List<Product> products = productRepository.findAllByCategory_IdAndState(new ObjectId(id),Constant.ENABLE);
         if (category.isPresent()) {
             if (products.size()>0)
                 throw new AppException(HttpStatus.CONFLICT.value(),
-                        "Product exist");
+                        "Have Product Depend On");
             category.get().setState(Constant.DISABLE);
             categoryRepository.save(category.get());
             return ResponseEntity.status(HttpStatus.OK).body(

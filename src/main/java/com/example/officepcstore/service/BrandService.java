@@ -145,31 +145,14 @@ public class BrandService {
         throw new NotFoundException("Can not found brand with id: " + id);
     }
 
-
     @Transactional
-        public ResponseEntity<?> changeStateDisableBrand (String id){
-            Optional<Brand> brand = brandRepository.findById(id);
-            if (brand.isPresent()) {
-                if (!brand.get().getDependentProducts().isEmpty())
-                    throw new AppException(HttpStatus.CONFLICT.value(),
-                        "Product exist");
-                brand.get().setState(Constant.DISABLE);
-                brandRepository.save(brand.get());
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Block brand success with id: " + id, ""));
-            } else  return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(false, "Not found Brand " + id, ""));
-        }
-
-
-    @Transactional
-    public ResponseEntity<?> changeStateDisableBrandNew (String id){
+    public ResponseEntity<?> changeStateDisableBrand (String id){
         Optional<Brand> brand = brandRepository.findById(id);
         List<Product> products = productRepository.findAllByBrand_IdAndState(new ObjectId(id),Constant.ENABLE);
         if (brand.isPresent()) {
             if (products.size()>0)
                 throw new AppException(HttpStatus.CONFLICT.value(),
-                        "Product exist");
+                        "Have Product Depend On");
             brand.get().setState(Constant.DISABLE);
             brandRepository.save(brand.get());
             return ResponseEntity.status(HttpStatus.OK).body(

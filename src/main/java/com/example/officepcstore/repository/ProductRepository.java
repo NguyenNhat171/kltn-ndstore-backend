@@ -35,5 +35,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product>findAllByBrand_IdAndState(ObjectId id,String state);
     List<Product>findAllByCategory_IdAndState(ObjectId id,String state);
 
-  //  Page<Product> findByProductConfigurationMultipleKeyValuePairs(List<Map<String, String>> value, Pageable pageable);
+//    Page<Product> findAllByProductConfiguration( List<Map<String, Object>> value, Pageable pageable);
 }
