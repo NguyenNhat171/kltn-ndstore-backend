@@ -137,4 +137,9 @@ public class ProductController {
 //        if (req.getId().contains(",")) return productService.updateMultiplePriceAndDiscount(req);
 //        else return productService.updatePriceAndDiscount(req);
 //    }
+
+    @PutMapping(path = "/admin/manage/products/change/state/{id}")
+    public ResponseEntity<?> changeStateProduct (@PathVariable("id") String id){
+        return productService.changeStateProductByAdmin(id);
+    }
 }

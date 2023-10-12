@@ -7,6 +7,7 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.ProductMap;
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
+import com.example.officepcstore.models.enity.User;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.models.enity.product.ProductImage;
 import com.example.officepcstore.payload.ResponseObjectData;
@@ -331,4 +332,26 @@ public class ProductService {
         } throw new NotFoundException("Not found this id: " + productId);
     }
 
+
+    @Transactional
+    public ResponseEntity<?> changeStateProductByAdmin(String id) {
+        Optional<Product>  product = productRepository.findById(id);
+        if (product.isPresent()) {
+            if(product.get().getState().equals(Constant.DISABLE)) {
+                product.get().setState(Constant.ENABLE);
+                productRepository.save(product.get());
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "Set enable product success", product));
+            }
+            else  {
+                product.get().setState(Constant.DISABLE);
+                productRepository.save(product.get());
+                return ResponseEntity.status(HttpStatus.OK).body(
+                        new ResponseObjectData(true, "Set disable product success", product));
+            }
+
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(false, "Can not found product with id" +id , ""));
+    }
 }

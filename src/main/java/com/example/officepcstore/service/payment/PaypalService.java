@@ -73,7 +73,7 @@ public class PaypalService extends PaymentSteps {
                             order.getPaymentInformation().getPayDetails().put("amount", payment.getTransactions().get(0).getAmount());
                         order.getPaymentInformation().setPaymentId(payment.getId());
                         order.getPaymentInformation().setPaymentToken((links.getHref().split(PATTERN)[1]));
-                        order.getPaymentInformation().getPayDetails().put("isPaid", false);
+                        order.getPaymentInformation().getPayDetails().put("fullPayment", false);
                         orderRepository.save(order);
                         checkTimePayment.setOrderId(order.getId());
                         checkTimePayment.setOrderRepository(orderRepository);
@@ -100,7 +100,7 @@ public class PaypalService extends PaymentSteps {
                 if (order.isPresent()) {
                     order.get().getPaymentInformation().getPayDetails().put("payer", payment.getPayer().getPayerInfo());
                     order.get().getPaymentInformation().getPayDetails().put("paymentMethod", payment.getPayer().getPaymentMethod());
-                    order.get().getPaymentInformation().getPayDetails().put("isPaid", true);
+                    order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
                     order.get().setState(Constant.ORDER_PAY_ONLINE);
                     orderRepository.save(order.get());
                 } else {

@@ -20,9 +20,9 @@ public class PayUtils {
 
     @Synchronized
     @Transactional
-    public String checkStockAndQuantityToUpdateProduct(Order order, boolean isPaid) {
+    public String checkStockAndQuantityToUpdateProduct(Order order, boolean checkPayment) {
         order.getOrderedProducts().forEach(item -> {
-                if (isPaid) {
+                if (checkPayment) {
                     if ( item.getOrderProduct().getStock() < item.getQuantity()) {
                         order.setState(Constant.ORDER_CART);
                         orderRepository.save(order);
@@ -42,9 +42,9 @@ public class PayUtils {
 
     @Synchronized
     @Transactional
-    public String updateSoldProduct(Order order, boolean isPaid) {
+    public String updateSoldProduct(Order order, boolean checkPayment) {
         order.getOrderedProducts().forEach(item -> {
-            if (isPaid) {
+            if (checkPayment) {
             item.getOrderProduct().setSold(item.getOrderProduct().getSold() + item.getQuantity());
             } else item.getOrderProduct().setSold(item.getOrderProduct().getSold() - item.getQuantity());
             try {
