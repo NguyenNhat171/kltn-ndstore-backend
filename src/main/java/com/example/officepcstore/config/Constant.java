@@ -33,6 +33,7 @@ public class Constant {
     public static final String URLGHN = "https://dev-online-gateway.ghn.vn/shiip/public-api/";
     //RECOMMEND TYPE
     public static final String REVIEW_GOOD_TYPE = "review";
+    public static final String SET_SCORE_COMMENT ="comment";
     public static final String VIEW_TYPE = "view";
     public static final String CART_TYPE = "cart";
 }

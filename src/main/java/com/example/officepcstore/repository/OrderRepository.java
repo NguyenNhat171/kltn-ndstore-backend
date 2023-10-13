@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface OrderRepository extends MongoRepository<Order, String> {
+    Optional<Order> findOrderByUser_Id(ObjectId userId);
    Optional<Order> findOrderByUser_IdAndState(ObjectId userId, String state);
 //  Optional<Order> findOrderByIdAndUser_Id(String orderId, ObjectId userId);
     Optional<Order> findOrderByPaymentInformation_PaymentTokenAndState(String token, String state);
@@ -25,4 +26,5 @@ public interface OrderRepository extends MongoRepository<Order, String> {
 
     @Query(value=" {state: {'$nin': ['cart']}}")
     Page<Order> findAllByStateNoCart( Pageable pageable);
+  //  Page<Order>findOrdersByInvoiceDateBetween();
 }

@@ -27,14 +27,14 @@ public class PayUtils {
                         order.setState(Constant.ORDER_CART);
                         orderRepository.save(order);
                         throw new AppException(HttpStatus.CONFLICT.value(),
-                                "Quantity exceeds available stock this Product:" + item.getOrderProduct().getName()+":"+item.getOrderProduct().getId()
+                                "Quantity order this product exceeds stock:" + item.getOrderProduct().getName()+":"+item.getOrderProduct().getId()
                                         + ":" + item.getOrderProduct().getStock());
                     } else item.getOrderProduct().setStock(item.getOrderProduct().getStock() - item.getQuantity());
                 } else item.getOrderProduct().setStock(item.getOrderProduct().getStock() + item.getQuantity());
             try {
                 productRepository.save(item.getOrderProduct());
             } catch (MongoWriteException e) {
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when update quantity");
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Update product quantity fail");
             }
         });
         return null;
@@ -50,7 +50,7 @@ public class PayUtils {
             try {
                 productRepository.save(item.getOrderProduct());
             } catch (MongoWriteException e) {
-                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when update quantity");
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Update sold fail");
             }
         });
         return null;

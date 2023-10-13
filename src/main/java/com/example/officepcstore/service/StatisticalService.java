@@ -4,6 +4,7 @@ import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
+import com.example.officepcstore.payload.response.ProductSaleResponse;
 import com.example.officepcstore.payload.response.SaleResponse;
 import com.example.officepcstore.repository.CategoryRepository;
 import com.example.officepcstore.repository.OrderRepository;
@@ -89,4 +90,30 @@ public class StatisticalService {
         }
         return ordersSaleResList;
     }
+
+
+//    public List<ProductSaleResponse> getOrderProductSales(Page<Order> orderList, String pattern) {
+//        List<ProductSaleResponse> ordersSaleResList = new ArrayList<>();
+//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+//        if (orderList.getSize() > 0) {
+//            ProductSaleResponse ordersSaleRes = new ProductSaleResponse();
+//            int quantity = 1;
+//            for (int i = 0; i <= orderList.getSize() - 1; i++) {
+//                String dateFormat = dateTimeFormatter.format(orderList.getContent().get(i).getLastUpdateStateDate());
+//                if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat))
+//                {
+//                    if (i > 0) ordersSaleResList.add(ordersSaleRes);
+//                    if (dateFormat.isBlank()) dateFormat = "all";
+//                    ordersSaleRes = new SaleResponse(dateFormat,
+//                            orderList.getContent().get(i).getTotalPrice(), quantity);
+//                } else {
+//                    quantity++;
+//                    ordersSaleRes.setAmount(ordersSaleRes.getAmount().add(orderList.getContent().get(i).getTotalPrice()));
+//                    ordersSaleRes.setQuantity(quantity);
+//                }
+//                if (i == orderList.getSize() - 1) ordersSaleResList.add(ordersSaleRes);
+//            }
+//        }
+//        return ordersSaleResList;
+//    }
 }

@@ -56,6 +56,7 @@ public class SelectPaymentService {
         String userId = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request)).getId();
         try {
             order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
+           // order = orderRepository.findOrderByUser_Id(new ObjectId(userId));
             if (order.isEmpty() || !order.get().getId().equals(id)) {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
@@ -69,13 +70,7 @@ public class SelectPaymentService {
             order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
             order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
             order.get().setInvoiceDate(LocalDateTime.now());
-    //        order.get().getShippingDetail().getShipInformation().put("address", req.getAddress());
             order.get().setState(Constant.ORDER_PROCESS);
-
-//            order.get().getItems().forEach(item -> item.getItem().setPrice(new BigDecimal((item.getItem().getPrice())
-//                    .multiply(BigDecimal.valueOf( (double) (100- item.getItem().getDiscount())/100))
-//                    .stripTrailingZeros().toPlainString())));
-         //   orderProductRepository.saveAll(order.get().getItems());
             orderRepository.save(order.get());
         } catch (NotFoundException e) {
             log.error(e.getMessage());
