@@ -24,4 +24,5 @@ public class CartProductResponse {
     private BigDecimal originSubPrice;
     private BigDecimal subPrice;
   //  private boolean reviewed;
+    private String productState;
 }

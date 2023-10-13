@@ -28,7 +28,7 @@ public class CartMap {
             return new CartProductResponse(product.getId(), product.getOrderProduct().getId(),product.getOrderProduct().getStock(),product.getOrderProduct().getName(),
                     product.getOrderProduct().getDiscount(),
                     product.getOrderProduct().getProductImageList(),  product.getOrderProduct().getPrice(),product.getOrderProduct().getReducedPrice(),
-                    product.getQuantity(),price,product.getSubProductPrice());
+                    product.getQuantity(),price,product.getSubProductPrice(),product.getOrderProduct().getState());
         } catch (Exception e) {
             log.error(e.getMessage());
             throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Cant get product cart");
