@@ -57,14 +57,12 @@ public class ProductController {
         return productService.search(query, pageable);
     }
 
-//    @GetMapping(path = "/products/find/filter/search/config")
-//    public ResponseEntity<?> filterProductConfig (@RequestParam Map<String, String> config,
-//                                     @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
-//
-//        return productService.filterProductByConfig(config, pageable);
-//    }
-//
-//
+    @GetMapping(path = "/products/find/filter/search/config")
+    public ResponseEntity<?> filterProductConfig (@RequestParam Map<String, String> query,
+                                     @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+
+        return productService.filterProductByConfig(query, pageable);
+    }
 
 
     @GetMapping(path = "/products/get/enable/list/all")

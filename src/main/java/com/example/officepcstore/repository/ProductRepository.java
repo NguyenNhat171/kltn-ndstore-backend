@@ -35,5 +35,8 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product>findAllByBrand_IdAndState(ObjectId id,String state);
     List<Product>findAllByCategory_IdAndState(ObjectId id,String state);
 
-//    Page<Product> findAllByProductConfiguration( List<Map<String, Object>> value, Pageable pageable);
+
+@Query(value="{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }")
+Page<Product> findAllByProductConfiguration(List<Map<String, String>> queryParams,Pageable pageable);
+
 }

@@ -156,25 +156,36 @@ public class ProductService {
                 new ResponseObjectData(false, "Not found product"+id, ""));
     }
 
-//    public ResponseEntity<?> filterProductByConfig(Map<String, String> optionChoose,Pageable pageable)
-//    {
-//
-//        List<Map<String, Object>> configurations = new ArrayList<>();
-//        for (Map.Entry<String, String> entry : optionChoose.entrySet()) {
-//            String key = entry.getKey();
-//            String value = entry.getValue();
-//            Map<String, Object> config = Map.of(key, value);
-//            configurations.add(config);
-//        }
-//        Page<Product> filteredProducts = productRepository.findAllByProductConfiguration(configurations, pageable);
-//        List<AllProductResponse> listProduct  = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-//        ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
-//        if (resp != null)
-//            return resp;
-//        else
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObjectData(false, "Not found any product", ""));
-//    }
+    public ResponseEntity<?> filterProductByConfig( Map<String, String> optionProduct,Pageable pageable)
+    {
+        List<Map<String, String>> queryParamsList = new ArrayList<>();
+        optionProduct.forEach((key, value) -> {
+            Map<String, String> query = new HashMap<>();
+            if(key.equals("page") || key.equals("size"))
+            {
+             query.remove("page");
+             query.remove("size");
+            }
+            else
+            query.put(key, value);
+            queryParamsList.add(query);
+        });
+        if(optionProduct.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not choose option", ""));
+        }
+        else {
+            Page<Product> filteredProducts = productRepository.findAllByProductConfiguration(queryParamsList, pageable);
+            List<AllProductResponse> listProduct = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+            ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
+            if (resp != null)
+                return resp;
+            else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObjectData(false, "Not found any product", ""));
+        }
+    }
+
     public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
         Page<Product> products;
 
