@@ -3,8 +3,10 @@ package com.example.officepcstore.service;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.Order;
+import com.example.officepcstore.models.enity.OrderedProduct;
+import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
-import com.example.officepcstore.payload.response.ProductSaleResponse;
+import com.example.officepcstore.payload.response.GoodsInventoryResponse;
 import com.example.officepcstore.payload.response.SaleResponse;
 import com.example.officepcstore.repository.CategoryRepository;
 import com.example.officepcstore.repository.OrderRepository;
@@ -24,8 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class StatisticalService {
     public ResponseEntity<?> getTotalSalesRevenue(String from, String to, String type) {
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = LocalDateTime.now();
-        String typeDate= "dd-MM-yyyy";
+        String typeDate = "dd-MM-yyyy";
         DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
         try {
             if (!from.isBlank()) startDate = LocalDate.parse(from, df).atStartOfDay();
@@ -52,17 +53,17 @@ public class StatisticalService {
         Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
         switch (type) {
             case "all" -> {
-                orderList = orderRepository.findAllByState(Constant.ORDER_COMPLETE, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastModifiedDate").ascending()));
+                orderList = orderRepository.findAllByState(Constant.ORDER_COMPLETE, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastUpdateStateDate").ascending()));
                 typeDate = "";
             }
-            case "month" ->typeDate = "MM-yyyy";
+            case "month" -> typeDate = "MM-yyyy";
             case "year" -> typeDate = "yyyy";
         }
         List<SaleResponse> totalSales = getTotalSales(orderList, typeDate);
         return totalSales.size() > 0 ? ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Statistical successful", totalSales )) :
+                new ResponseObjectData(true, "Statistical complete", totalSales)) :
                 ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                        new ResponseObjectData(false, "Statistical Fail", "")
+                        new ResponseObjectData(false, "Cant not Statistical ", "")
                 );
     }
 
@@ -74,8 +75,7 @@ public class StatisticalService {
             int quantity = 1;
             for (int i = 0; i <= orderList.getSize() - 1; i++) {
                 String dateFormat = df.format(orderList.getContent().get(i).getLastUpdateStateDate());
-                if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat))
-                {
+                if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat)) {
                     if (i > 0) ordersSaleResList.add(ordersSaleRes);
                     if (dateFormat.isBlank()) dateFormat = "all";
                     ordersSaleRes = new SaleResponse(dateFormat,
@@ -92,28 +92,39 @@ public class StatisticalService {
     }
 
 
-//    public List<ProductSaleResponse> getOrderProductSales(Page<Order> orderList, String pattern) {
-//        List<ProductSaleResponse> ordersSaleResList = new ArrayList<>();
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
-//        if (orderList.getSize() > 0) {
-//            ProductSaleResponse ordersSaleRes = new ProductSaleResponse();
-//            int quantity = 1;
-//            for (int i = 0; i <= orderList.getSize() - 1; i++) {
-//                String dateFormat = dateTimeFormatter.format(orderList.getContent().get(i).getLastUpdateStateDate());
-//                if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat))
-//                {
-//                    if (i > 0) ordersSaleResList.add(ordersSaleRes);
-//                    if (dateFormat.isBlank()) dateFormat = "all";
-//                    ordersSaleRes = new SaleResponse(dateFormat,
-//                            orderList.getContent().get(i).getTotalPrice(), quantity);
-//                } else {
-//                    quantity++;
-//                    ordersSaleRes.setAmount(ordersSaleRes.getAmount().add(orderList.getContent().get(i).getTotalPrice()));
-//                    ordersSaleRes.setQuantity(quantity);
-//                }
-//                if (i == orderList.getSize() - 1) ordersSaleResList.add(ordersSaleRes);
-//            }
-//        }
-//        return ordersSaleResList;
-//    }
+    public  ResponseEntity<?> getOrderProductSales(int year, int month) {
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0);
+        LocalDateTime endDate = startDate.plusMonths(1);
+        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
+        Map<String, Long> SalesMap = new HashMap<>();
+        for (Order order : orderList) {
+            for (OrderedProduct orderedProduct : order.getOrderedProducts()) {
+                String productId = orderedProduct.getOrderProduct().getId();
+                long quantity = orderedProduct.getQuantity();
+                SalesMap.put(productId, SalesMap.getOrDefault(productId, 0L) + quantity);
+            }
+        }
+        List<GoodsInventoryResponse> saleList = new ArrayList<>();
+        for (Map.Entry<String, Long> entry : SalesMap.entrySet()) {
+            String productId = entry.getKey();
+            long count= entry.getValue();
+            Product product = productRepository.findById(productId).orElse(null);
+
+            if (product != null) {
+               GoodsInventoryResponse goodsInventoryResponse= new GoodsInventoryResponse();
+                goodsInventoryResponse.setId(productId);
+                goodsInventoryResponse.setName(product.getName());
+                goodsInventoryResponse.setSalable(count);
+                saleList.add(goodsInventoryResponse);
+            }
+        }
+        saleList.sort(Comparator.comparing(GoodsInventoryResponse::getSalable).reversed());
+        return saleList.size()>0 ? ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObjectData(true, "Statistical complete", saleList)
+        ):
+                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        new ResponseObjectData(false, "Cant not Statistical ", "")
+                );
+    }
+
 }

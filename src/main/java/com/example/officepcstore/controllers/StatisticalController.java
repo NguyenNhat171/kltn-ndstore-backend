@@ -19,4 +19,11 @@ public class StatisticalController {
                                        @RequestParam("type") String type){
         return statisticalService.getTotalSalesRevenue(from, to, type);
     }
+
+    @GetMapping(path = "/admin/manage/statistical/sale/stat/total")
+    public ResponseEntity<?> getStatSales (@RequestParam(value = "year", defaultValue = "") int from,
+                                       @RequestParam(value = "month", defaultValue = "") int to)
+    {
+        return statisticalService.getOrderProductSales(from, to);
+    }
 }

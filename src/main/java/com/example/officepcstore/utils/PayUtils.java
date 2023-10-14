@@ -40,6 +40,22 @@ public class PayUtils {
         return null;
     }
 
+
+    public String compareStockAndProduct(Order order, boolean checkPayment) {
+        order.getOrderedProducts().forEach(item -> {
+            if (checkPayment) {
+                if ( item.getOrderProduct().getStock() < item.getQuantity()) {
+                    order.setState(Constant.ORDER_CART);
+                    orderRepository.save(order);
+                    throw new AppException(HttpStatus.CONFLICT.value(),
+                            "Quantity order this product exceeds stock:" + item.getOrderProduct().getName()+":"+item.getOrderProduct().getId()
+                                    + ":" + item.getOrderProduct().getStock());
+                }
+            }
+        });
+        return null;
+    }
+
     @Synchronized
     @Transactional
     public String updateSoldProduct(Order order, boolean checkPayment) {
