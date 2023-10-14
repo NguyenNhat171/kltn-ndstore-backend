@@ -15,10 +15,10 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "comments")
+@Document(collection = "comments_product")
 @Data
 @NoArgsConstructor
-public class Comment {
+public class CommentProduct {
     @Id
     private String id;
     private String review;
@@ -26,11 +26,11 @@ public class Comment {
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
-    private User user;
+    private User userComment;
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
-    private Product product;
+    private Product productComment;
     private String state;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")

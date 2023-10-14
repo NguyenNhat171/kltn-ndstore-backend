@@ -3,7 +3,7 @@ package com.example.officepcstore.models.enity.product;
 
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
-import com.example.officepcstore.models.enity.Comment;
+import com.example.officepcstore.models.enity.CommentProduct;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -56,7 +56,7 @@ public class  Product {
     @ReadOnlyProperty
     @DocumentReference(lookup="{'product':?#{#self._id} }", lazy = true)
     @Indexed
-    private List<Comment> comment;
+    private List<CommentProduct> commentProducts;
     @Indexed
     private String state;
     private List<ProductImage> productImageList = new ArrayList<>();
@@ -102,7 +102,7 @@ public class  Product {
     @Transient
     public int getAllCommentRate() {
         try {
-            return comment.size();
+            return commentProducts.size();
         } catch (Exception e) {
             return 0;
         }

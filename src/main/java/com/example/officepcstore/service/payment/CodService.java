@@ -29,11 +29,11 @@ public class CodService extends PaymentSteps {
     @Override
     @Transactional
     public ResponseEntity<?> initializationPayment(HttpServletRequest httpServletRequest, Order order) {
-        if (order != null && order.getState().equals(Constant.ORDER_PROCESS)) {
+        if (order != null && order.getStatusOrder().equals(Constant.ORDER_PROCESS)) {
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
             String checkUpdateSold =payUtils.updateSoldProduct(order,true);
             if (checkUpdateQuantityProduct == null && checkUpdateSold==null) {
-                order.setState(Constant.ORDER_PAY_COD);
+                order.setStatusOrder(Constant.ORDER_PAY_COD);
                 order.getPaymentInformation().getPayDetails().put("fullPayment", false);
                 orderRepository.save(order);
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -51,8 +51,8 @@ public class CodService extends PaymentSteps {
     @Override
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
         Optional<Order> order = orderRepository.findById(id);
-        if (order.isPresent() && order.get().getState().equals(Constant.ORDER_PAY_COD)) {
-            order.get().setState(Constant.ORDER_CANCEL);
+        if (order.isPresent() && order.get().getStatusOrder().equals(Constant.ORDER_PAY_COD)) {
+            order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);

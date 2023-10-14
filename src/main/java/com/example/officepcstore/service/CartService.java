@@ -41,7 +41,7 @@ public class CartService {
     public ResponseEntity<?> getProductFromCart(String userId) {
             Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
+            Optional<Order> order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {
                 CartResponse res = cartMap.getProductCartRes(order.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
@@ -57,7 +57,7 @@ public class CartService {
     public ResponseEntity<?> createAndCheckProductInCart(String userId, CartReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            Optional<Order> order = orderRepository.findOrderByUser_IdAndState(new ObjectId(userId), Constant.ORDER_CART);
+            Optional<Order> order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {
                 Optional<OrderedProduct> products = order.get().getOrderedProducts().stream().filter(
                         p -> p.getOrderProduct().getId().equals(req.getProductId())).findFirst();

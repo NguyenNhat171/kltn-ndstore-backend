@@ -40,7 +40,7 @@ public class OrderService {
     public ResponseEntity<?> findAll(String state, Pageable pageable) {
         Page<Order> orders;
         if (state.isBlank()) orders = orderRepository.findAll(pageable);
-        else orders = orderRepository.findAllByState(state, pageable);
+        else orders = orderRepository.findAllByStatusOrder(state, pageable);
         if (orders.isEmpty()) throw new NotFoundException("Can not found any orders");
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
         Map<String, Object> resp = new HashMap<>();
@@ -77,7 +77,7 @@ public class OrderService {
 
     public ResponseEntity<?> findAllOrderByUserId(String userId, Pageable pageable) {
 //        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
-        Page<Order> orders = orderRepository.findOrderByUser_IdAndStateNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
+        Page<Order> orders = orderRepository.findOrderByUser_IdAndStatusOrderNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailRes).collect(Collectors.toList());
         Map<String, Object> orderResp = new HashMap<>();
         orderResp.put("totalPage", orders.getTotalPages());
@@ -91,7 +91,7 @@ public class OrderService {
                 new ResponseObjectData(false, "Not found any order",orderResp));
     }
     public ResponseEntity<?> findAllNoCart( Pageable pageable) {
-        Page<Order> orders = orderRepository.findAllByStateNoCart( pageable);
+        Page<Order> orders = orderRepository.findAllByStatusOrderNoCart(pageable);
         if (orders.isEmpty())
             throw new NotFoundException("Can not found any orders");
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
@@ -105,12 +105,12 @@ public class OrderService {
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
-            if (order.get().getState().equals(Constant.ORDER_PAY_COD) || order.get().getState().equals(Constant.ORDER_PAY_ONLINE)
-                    || order.get().getState().equals(Constant.ORDER_PROCESS)) {
+            if (order.get().getStatusOrder().equals(Constant.ORDER_PAY_COD) || order.get().getStatusOrder().equals(Constant.ORDER_PAY_ONLINE)
+                    || order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                 String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
                 order.get().setLastUpdateStateDate(LocalDateTime.now());
-                order.get().setState(Constant.ORDER_CANCEL);
+                order.get().setStatusOrder(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());
                 if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                     return ResponseEntity.status(HttpStatus.OK).body(
@@ -128,8 +128,8 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(orderId);
         if(order.isPresent())
         {
-            if(order.get().getState().equals(Constant.ORDER_PAY_COD) || order.get().getState().equals(Constant.ORDER_PAY_ONLINE))
-                order.get().setState(Constant.ORDER_SHIPPING);
+            if(order.get().getStatusOrder().equals(Constant.ORDER_PAY_COD) || order.get().getStatusOrder().equals(Constant.ORDER_PAY_ONLINE))
+                order.get().setStatusOrder(Constant.ORDER_SHIPPING);
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
             order.get().getShippingDetail().getServiceShipDetail().put("orderCode", objectRes.getString("order_code"));
@@ -146,8 +146,8 @@ public class OrderService {
     public ResponseEntity<?> setStateConfirmDelivery(String orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
         if (order.isPresent()) {
-                if (order.get().getState().equals(Constant.ORDER_PROCESS_DELIVERY)) {
-                    order.get().setState(Constant.ORDER_COMPLETE);
+                if (order.get().getStatusOrder().equals(Constant.ORDER_PROCESS_DELIVERY)) {
+                    order.get().setStatusOrder(Constant.ORDER_COMPLETE);
                     order.get().setLastUpdateStateDate(LocalDateTime.now());
                     order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
                 } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivered");
@@ -161,8 +161,8 @@ public class OrderService {
     public ResponseEntity<?> setStateProcessDelivery(String orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
         if (order.isPresent()) {
-            if (order.get().getState().equals(Constant.ORDER_SHIPPING)) {
-                order.get().setState(Constant.ORDER_PROCESS_DELIVERY);
+            if (order.get().getStatusOrder().equals(Constant.ORDER_SHIPPING)) {
+                order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
                 order.get().getShippingDetail().getServiceShipDetail().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
 

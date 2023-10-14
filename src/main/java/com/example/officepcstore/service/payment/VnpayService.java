@@ -36,7 +36,7 @@ public class VnpayService extends PaymentSteps{
     @SneakyThrows
     @Override
     public ResponseEntity<?>  initializationPayment(HttpServletRequest request, Order order) {
-        order.setState(Constant.ORDER_PROCESS);
+        order.setStatusOrder(Constant.ORDER_PROCESS);
         order.getPaymentInformation().getPayDetails().put("fullPayment", false);
         orderRepository.save(order);
         Map<String, Object> vnp_Params = mapVnPayParam(order, request);
@@ -85,7 +85,7 @@ public class VnpayService extends PaymentSteps{
     @SneakyThrows
     public ResponseEntity<?> makePayment(String paymentId, String payerId, String responseCode, String id, HttpServletRequest request, HttpServletResponse response) {
         Optional<Order> order = orderRepository.findById(id);
-        if (order.isEmpty() || !order.get().getState().equals(Constant.ORDER_PROCESS)) {
+        if (order.isEmpty() || !order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
             response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
             throw new NotFoundException("Can not found order with id: " + id);
         }
@@ -94,14 +94,14 @@ public class VnpayService extends PaymentSteps{
             order.get().getPaymentInformation().getPayDetails().put("bankCode", request.getParameter("vnp_BankCode"));
             order.get().getPaymentInformation().getPayDetails().put("transactionNo", request.getParameter("vnp_TransactionNo"));
             order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
-            order.get().setState(Constant.ORDER_PAY_ONLINE);
+            order.get().setStatusOrder(Constant.ORDER_PAY_ONLINE);
             orderRepository.save(order.get());
             response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Completed", "")
             );
         } else {
-            order.get().setState(Constant.ORDER_CANCEL);
+            order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);

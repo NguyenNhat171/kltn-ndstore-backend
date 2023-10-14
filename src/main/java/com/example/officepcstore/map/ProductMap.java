@@ -42,7 +42,7 @@ public class ProductMap {
         if (category.isEmpty() || brand.isEmpty())
             throw new NotFoundException(" category or brand not found");
         return new Product(req.getName(), req.getDescription(), req.getPrice(),req.getDiscount(), req.getStock(),
-                category.get(), brand.get(),req.getProductConfiguration(),Constant.ENABLE);
+                category.get(), brand.get(),req.getProductConfiguration(),Constant.DISABLE);
     }
 
 

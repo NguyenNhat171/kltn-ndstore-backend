@@ -24,7 +24,7 @@ public class PayUtils {
         order.getOrderedProducts().forEach(item -> {
                 if (checkPayment) {
                     if ( item.getOrderProduct().getStock() < item.getQuantity()) {
-                        order.setState(Constant.ORDER_CART);
+                        order.setStatusOrder(Constant.ORDER_CART);
                         orderRepository.save(order);
                         throw new AppException(HttpStatus.CONFLICT.value(),
                                 "Quantity order this product exceeds stock:" + item.getOrderProduct().getName()+":"+item.getOrderProduct().getId()
@@ -45,7 +45,7 @@ public class PayUtils {
         order.getOrderedProducts().forEach(item -> {
             if (checkPayment) {
                 if ( item.getOrderProduct().getStock() < item.getQuantity()) {
-                    order.setState(Constant.ORDER_CART);
+                    order.setStatusOrder(Constant.ORDER_CART);
                     orderRepository.save(order);
                     throw new AppException(HttpStatus.CONFLICT.value(),
                             "Quantity order this product exceeds stock:" + item.getOrderProduct().getName()+":"+item.getOrderProduct().getId()

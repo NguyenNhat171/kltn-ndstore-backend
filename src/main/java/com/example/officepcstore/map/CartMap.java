@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CartMap {
     public CartResponse getProductCartRes (Order order) { // toCartRes
-        CartResponse res = new CartResponse(order.getId(), order.getTotalProduct(), order.getTotalPrice(), order.getState());
+        CartResponse res = new CartResponse(order.getId(), order.getTotalProduct(), order.getTotalPrice(), order.getStatusOrder());
         res.setItems(order.getOrderedProducts().stream().map(CartMap::toCartProductRes).collect(Collectors.toList()));
         return res;
     }

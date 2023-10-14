@@ -50,10 +50,10 @@ public class StatisticalService {
             e.printStackTrace();
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Incorrect date format");
         }
-        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
+        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
         switch (type) {
             case "all" -> {
-                orderList = orderRepository.findAllByState(Constant.ORDER_COMPLETE, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastUpdateStateDate").ascending()));
+                orderList = orderRepository.findAllByStatusOrder(Constant.ORDER_COMPLETE, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastUpdateStateDate").ascending()));
                 typeDate = "";
             }
             case "month" -> typeDate = "MM-yyyy";
@@ -95,7 +95,7 @@ public class StatisticalService {
     public  ResponseEntity<?> getOrderProductSales(int year, int month) {
         LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0, 0);
         LocalDateTime endDate = startDate.plusMonths(1);
-        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndState(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
+        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_COMPLETE, Pageable.unpaged());
         Map<String, Long> SalesMap = new HashMap<>();
         for (Order order : orderList) {
             for (OrderedProduct orderedProduct : order.getOrderedProducts()) {

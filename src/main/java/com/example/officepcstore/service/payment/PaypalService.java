@@ -96,12 +96,12 @@ public class PaypalService extends PaymentSteps {
             Payment payment= execute(paymentId, payerId);
             if (payment.getState().equals("approved")) {
                 String paymentToken = "EC-" + payment.getCart();
-                Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndState(paymentToken, Constant.ORDER_PROCESS);
+                Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndStatusOrder(paymentToken, Constant.ORDER_PROCESS);
                 if (order.isPresent()) {
                     order.get().getPaymentInformation().getPayDetails().put("payer", payment.getPayer().getPayerInfo());
                     order.get().getPaymentInformation().getPayDetails().put("paymentMethod", payment.getPayer().getPaymentMethod());
                     order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
-                    order.get().setState(Constant.ORDER_PAY_ONLINE);
+                    order.get().setStatusOrder(Constant.ORDER_PAY_ONLINE);
                     orderRepository.save(order.get());
                 } else {
                     response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
@@ -125,9 +125,9 @@ public class PaypalService extends PaymentSteps {
     @Override
     @SneakyThrows
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
-        Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndState(id, Constant.ORDER_PROCESS);
+        Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndStatusOrder(id, Constant.ORDER_PROCESS);
         if (order.isPresent()) {
-            order.get().setState(Constant.ORDER_CANCEL);
+            order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);

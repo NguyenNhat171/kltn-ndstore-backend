@@ -3,7 +3,7 @@ package com.example.officepcstore.service;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.CommentMap;
-import com.example.officepcstore.models.enity.Comment;
+import com.example.officepcstore.models.enity.CommentProduct;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.response.CommentResponse;
 import com.example.officepcstore.repository.CommentRepository;
@@ -31,7 +31,7 @@ public class CommentService {
     private final CommentMap commentMap;
 
     public ResponseEntity<?> getAllCommentProduct(String id, Pageable pageable) {
-        Page<Comment> reviews = commentRepository.findAllByProduct_IdAndState(new ObjectId(id), Constant.COMMENT_ENABLE, pageable);
+        Page<CommentProduct> reviews = commentRepository.findAllByProductComment_IdAndState(new ObjectId(id), Constant.COMMENT_ENABLE, pageable);
         if (reviews.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "No comments yet  ", ""));

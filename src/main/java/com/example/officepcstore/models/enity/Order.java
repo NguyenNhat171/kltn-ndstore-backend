@@ -30,7 +30,7 @@ public class Order {
    private ShippingDetail shippingDetail = new ShippingDetail();
     private PaymentInformation paymentInformation = new PaymentInformation();
     @NotBlank(message = "State is required")
-    private String state;
+    private String statusOrder;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime invoiceDate;
@@ -52,8 +52,8 @@ public class Order {
         return totalPrice;
     }
 
-    public Order(User user, String state) {
+    public Order(User user, String statusOrder) {
         this.user = user;
-        this.state = state;
+        this.statusOrder = statusOrder;
     }
 }
