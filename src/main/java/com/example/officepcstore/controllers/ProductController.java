@@ -124,10 +124,10 @@ public class ProductController {
         return productService.addImagesToProduct(id, req.getFiles());
     }
 
-    @DeleteMapping("/admin/manage/products/delete/detail/images/{productId}")
+    @DeleteMapping("/admin/manage/products/delete/detail/{productId}/{imageId}")
     public ResponseEntity<?> deleteImage(@PathVariable("productId") String id,
-                                         @RequestBody AddImageReq req) {
-        return productService.deleteAllImageProduct(id, req.getImage_Id());
+                                         @PathVariable("imageId") String imageId) {
+        return productService.deleteAllImageProduct(id, imageId);
     }
 
 //    @PutMapping("/manage/products/price")
