@@ -35,9 +35,9 @@ public class CheckoutController {
                                         HttpServletRequest request,
                                         HttpServletResponse response) {
         switch (paymentType) {
-            case Constant.PAYBYPAYPAL:
+            case Constant.PAY_BY_PAYPAL:
                 return selectPaymentService.makePayment(paymentId,payerId,null,null, request, response);
-            case Constant.PAYBYVNPAY:
+            case Constant.PAY_BY_VNPAY:
                 return selectPaymentService.makePayment(null, null, responseCode,id, request, response);
             default:
                 return selectPaymentService.makePayment(paymentId, null,null,null, request, response);
@@ -50,7 +50,7 @@ public class CheckoutController {
                                        @PathVariable("paymentType") String paymentType,
                                        HttpServletRequest request,
                                        HttpServletResponse response) {
-        if (Constant.PAYBYPAYPAL.equals(paymentType)) {
+        if (Constant.PAY_BY_PAYPAL.equals(paymentType)) {
             return selectPaymentService.cancelPayment(token, null, request, response);
         } else {
             return selectPaymentService.cancelPayment(paymentId, null, request, response);

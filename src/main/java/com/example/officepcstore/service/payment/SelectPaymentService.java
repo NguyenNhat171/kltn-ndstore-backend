@@ -43,9 +43,9 @@ public class SelectPaymentService {
     private final UserRepository userRepository;
     public PaymentSteps getPaymentSteps(String typesPayment) {
         switch (typesPayment) {
-            case Constant.PAYBYVNPAY: return context.getBean(VnpayService.class);
-            case Constant.PAYBYCOD: return context.getBean(CodService.class);
-            case Constant.PAYBYPAYPAL: return context.getBean(PaypalService.class);
+            case Constant.PAY_BY_VNPAY: return context.getBean(VnpayService.class);
+            case Constant.PAY_BY_COD: return context.getBean(CodService.class);
+            case Constant.PAY_BY_PAYPAL: return context.getBean(PaypalService.class);
             default:
                 return null;
         }
@@ -88,16 +88,16 @@ public class SelectPaymentService {
     public ResponseEntity<?> makePayment(String paymentId, String payerPayPalId, String responseCode,
                                             String vnPayId, HttpServletRequest request, HttpServletResponse response) {
        if (responseCode != null) {
-           PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYVNPAY);
+           PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
            return paymentSteps.makePayment(null, null, responseCode, vnPayId, request, response);
        }
           else if (paymentId != null && payerPayPalId != null ) {
-                PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYPAYPAL);
+                PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
                 return paymentSteps.makePayment(paymentId, payerPayPalId, null,null, request, response);
 
         } else {
             getRoleToCancel(request);
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYCOD);
+            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
             return paymentSteps.makePayment(paymentId, null, null,null, request, response);
         }
     }
@@ -108,14 +108,14 @@ public class SelectPaymentService {
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletRequest request, HttpServletResponse response) {
         String check = id.split("-")[0];
         if (responseCode != null) {
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYVNPAY);
+            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
             return paymentSteps.cancelPayment(id, responseCode, response);
         } else if (check.equals("EC")) {
-                PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYPAYPAL);
+                PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
                 return paymentSteps.cancelPayment(id, null, response);
         } else {
             getRoleToCancel(request);
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAYBYCOD);
+            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
             return paymentSteps.cancelPayment(id, null, response);
         }
     }
