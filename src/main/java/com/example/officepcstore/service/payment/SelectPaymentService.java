@@ -70,6 +70,7 @@ public class SelectPaymentService {
             order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
             order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
             order.get().setInvoiceDate(LocalDateTime.now());
+            order.get().setTotalPriceOrder(order.get().getTotalPrice());
             order.get().setStatusOrder(Constant.ORDER_PROCESS);
             orderRepository.save(order.get());
         } catch (NotFoundException e) {

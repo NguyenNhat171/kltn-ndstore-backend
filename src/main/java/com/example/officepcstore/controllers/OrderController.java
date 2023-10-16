@@ -27,7 +27,7 @@ public class OrderController {
 
     @GetMapping(path = "/admin/manage/orders/get/all")
     public ResponseEntity<?> findAll (@RequestParam(defaultValue = "") String state,
-                                      @PageableDefault(size = 5, sort = "lastModifiedDate") @ParameterObject Pageable pageable){
+                                      @PageableDefault(size = 5, sort = "lastUpdateStateDate") @ParameterObject Pageable pageable){
         return orderService.findAll(state, pageable);
     }
 

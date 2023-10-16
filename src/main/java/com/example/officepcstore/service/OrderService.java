@@ -43,7 +43,7 @@ public class OrderService {
         else orders = orderRepository.findAllByStatusOrder(state, pageable);
         if (orders.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order", ""));
-        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
+        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
         Map<String, Object> resp = new HashMap<>();
         resp.put("list", resList);
         resp.put("totalQuantity", orders.getTotalElements());
@@ -56,7 +56,7 @@ public class OrderService {
     public ResponseEntity<?> findOrderById(String id) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
-            OrderResponse orderResponse = orderMap.getOrderDetailRes(order.get());
+            OrderResponse orderResponse = orderMap.getOrderDetailResponse(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResponse));
         }
@@ -68,7 +68,7 @@ public class OrderService {
     public ResponseEntity<?> findOrderDetailByUserId(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
-            OrderResponse orderResponse = orderMap.getOrderDetailRes(order.get());
+            OrderResponse orderResponse = orderMap.getOrderDetailResponse(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResponse));
         }
@@ -79,7 +79,7 @@ public class OrderService {
     public ResponseEntity<?> findAllOrderByUserId(String userId, Pageable pageable) {
 //        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
         Page<Order> orders = orderRepository.findOrderByUser_IdAndStatusOrderNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
-        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailRes).collect(Collectors.toList());
+        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
         Map<String, Object> orderResp = new HashMap<>();
         orderResp.put("totalPage", orders.getTotalPages());
         orderResp.put("totalOrder", orders.getTotalElements());

@@ -6,12 +6,15 @@ import lombok.*;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
 @Document(collection = "orders")
 @Getter
@@ -41,6 +44,9 @@ public class Order {
     private long totalProduct = 0;
     @Transient
     private BigDecimal totalPrice;
+
+    @Field(targetType = DECIMAL128)
+    private BigDecimal totalPriceOrder;
 
     public long getTotalProduct() {
         return orderedProducts.size();
