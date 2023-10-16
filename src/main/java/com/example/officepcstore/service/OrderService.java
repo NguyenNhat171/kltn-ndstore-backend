@@ -39,9 +39,10 @@ public class OrderService {
 
     public ResponseEntity<?> findAll(String state, Pageable pageable) {
         Page<Order> orders;
-        if (state.isBlank()) orders = orderRepository.findAll(pageable);
+        if (state.isBlank()) orders = orderRepository.findAllByStatusOrderNoCart(pageable);
         else orders = orderRepository.findAllByStatusOrder(state, pageable);
-        if (orders.isEmpty()) throw new NotFoundException("Can not found any orders");
+        if (orders.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found order", ""));
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
         Map<String, Object> resp = new HashMap<>();
         resp.put("list", resList);
@@ -59,7 +60,7 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResponse));
         }
-        else return ResponseEntity.status(HttpStatus.OK).body(
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Can not found order with id"+id, ""));
     }
 
@@ -71,7 +72,7 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResponse));
         }
-        else return ResponseEntity.status(HttpStatus.OK).body(
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Can not found order with id"+ id, ""));
     }
 
@@ -87,21 +88,21 @@ public class OrderService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResp));
         }
-       else return ResponseEntity.status(HttpStatus.OK).body(
+       else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found any order",orderResp));
     }
-    public ResponseEntity<?> findAllNoCart( Pageable pageable) {
-        Page<Order> orders = orderRepository.findAllByStatusOrderNoCart(pageable);
-        if (orders.isEmpty())
-            throw new NotFoundException("Can not found any orders");
-        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
-        Map<String, Object> resp = new HashMap<>();
-        resp.put("list", resList);
-        resp.put("totalQuantity", orders.getTotalElements());
-        resp.put("totalPage", orders.getTotalPages());
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Get orders success", resp));
-    }
+//    public ResponseEntity<?> findAllNoCart( Pageable pageable) {
+//        Page<Order> orders = orderRepository.findAllByStatusOrderNoCart(pageable);
+//        if (orders.isEmpty())
+//            throw new NotFoundException("Can not found any orders");
+//        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderRes).collect(Collectors.toList());
+//        Map<String, Object> resp = new HashMap<>();
+//        resp.put("list", resList);
+//        resp.put("totalQuantity", orders.getTotalElements());
+//        resp.put("totalPage", orders.getTotalPages());
+//        return ResponseEntity.status(HttpStatus.OK).body(
+//                new ResponseObjectData(true, "Get orders success", resp));
+//    }
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
@@ -119,7 +120,7 @@ public class OrderService {
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(),
                     "You cannot cancel while the order is still processing!");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ id, ""));
     }
 
@@ -138,7 +139,7 @@ public class OrderService {
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Create shipping complete", order.get().getShippingDetail().getServiceShipDetail()));
-        } else return ResponseEntity.status(HttpStatus.OK).body(
+        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 
@@ -154,7 +155,7 @@ public class OrderService {
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Change state order", " "));
-        }else return ResponseEntity.status(HttpStatus.OK).body(
+        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 
@@ -169,7 +170,7 @@ public class OrderService {
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Change state order", " "));
-        }else return ResponseEntity.status(HttpStatus.OK).body(
+        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 

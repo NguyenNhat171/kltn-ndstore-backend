@@ -25,7 +25,7 @@ public class OrderController {
     private final JwtUtils jwtUtils;
     private final OrderService orderService;
 
-    @GetMapping(path = "/admin/manage/orders/get")
+    @GetMapping(path = "/admin/manage/orders/get/all")
     public ResponseEntity<?> findAll (@RequestParam(defaultValue = "") String state,
                                       @PageableDefault(size = 5, sort = "lastModifiedDate") @ParameterObject Pageable pageable){
         return orderService.findAll(state, pageable);
@@ -72,10 +72,10 @@ public class OrderController {
     }
 
 
-    @GetMapping(path = "/admin/manage/orders/get/all/no/cart")
-    public ResponseEntity<?> findAllOrderNoCart (@PageableDefault(size = 5, sort = "invoiceDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
-        return orderService.findAllNoCart( pageable);
-    }
+//    @GetMapping(path = "/admin/manage/orders/get/all/no/cart")
+//    public ResponseEntity<?> findAllOrderNoCart (@PageableDefault(size = 5, sort = "invoiceDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+//        return orderService.findAllNoCart( pageable);
+//    }
 
 
     @PutMapping(path = "/orders/cancel/{orderId}")
