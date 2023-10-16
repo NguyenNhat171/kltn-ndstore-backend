@@ -6,6 +6,7 @@ import com.example.officepcstore.models.enity.OrderedProduct;
 import com.example.officepcstore.models.enity.product.ProductImage;
 import com.example.officepcstore.payload.response.CartProductResponse;
 import com.example.officepcstore.payload.response.CartResponse;
+import com.example.officepcstore.payload.response.ItemOrderResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,9 +36,9 @@ public class CartMap {
         }
     }
 
-    public static CartProductResponse toCartProductOrderRes(OrderedProduct product) {
+    public static ItemOrderResponse toCartProductOrderRes(OrderedProduct product) {
         try {
-            return new CartProductResponse(product.getId(),product.getOrderProduct().getId(),product.getOrderProduct().getName(),
+            return new ItemOrderResponse(product.getId(),product.getOrderProduct().getId(),product.getOrderProduct().getName(),
                     product.getOrderProduct().getProductImageList(),product.getProductOrderPrice(), product.getQuantity(),product.getSubProductOrderPrice(),
                     product.getOrderProduct().getState()
             );

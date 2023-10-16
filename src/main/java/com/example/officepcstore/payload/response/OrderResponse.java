@@ -19,7 +19,7 @@ public class OrderResponse {
     private long totalProduct = 0;
     private BigDecimal totalPrice;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private List<CartProductResponse> items = new ArrayList<>();
+    private List<ItemOrderResponse> items = new ArrayList<>();
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String paymentType;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
