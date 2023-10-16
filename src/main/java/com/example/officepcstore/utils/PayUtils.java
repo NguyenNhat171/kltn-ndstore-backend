@@ -3,6 +3,7 @@ package com.example.officepcstore.utils;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.Order;
+import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.repository.ProductRepository;
 import com.mongodb.MongoWriteException;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PayUtils {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
 
     @Synchronized
     @Transactional
@@ -70,6 +72,19 @@ public class PayUtils {
             }
         });
         return null;
+    }
+
+    @Synchronized
+    @Transactional
+    public void updateProductPriceOrder(Order order) {
+        order.getOrderedProducts().forEach(item -> {
+                item.setProductOrderPrice(item.getOrderProduct().getReducedPrice());
+            try {
+                orderProductRepository.save(item);
+            } catch (MongoWriteException e) {
+                throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Update price fail");
+            }
+        });
     }
 
 }

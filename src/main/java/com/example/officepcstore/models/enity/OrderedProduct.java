@@ -42,6 +42,8 @@ public class OrderedProduct {
     @Transient
     private BigDecimal subProductPrice = BigDecimal.ZERO;
 
+    @Field(targetType = DECIMAL128)
+    private BigDecimal productOrderPrice;
     public BigDecimal getPrice(){
         BigDecimal originSubPrice =orderProduct.getPrice().multiply(BigDecimal.valueOf(quantity));
         return originSubPrice;
@@ -54,6 +56,12 @@ public class OrderedProduct {
             String discountString = originPrice.multiply(BigDecimal.valueOf((double) (100- orderProduct.getDiscount())/100))
                     .stripTrailingZeros().toPlainString();
             return new BigDecimal(discountString);
+    }
+
+    public BigDecimal getSubProductOrderPrice()
+    {
+        BigDecimal subOrderPrice = (productOrderPrice.multiply(BigDecimal.valueOf(quantity)));
+        return  subOrderPrice;
     }
 
 

@@ -25,4 +25,15 @@ public class CartProductResponse {
     private BigDecimal subPrice;
   //  private boolean reviewed;
     private String productState;
+
+    public CartProductResponse(String itemCartId, String productId, String productName, List<ProductImage> image, BigDecimal productPrice, long quantity, BigDecimal originSubPrice, String productState) {
+        this.itemCartId = itemCartId;
+        this.productId = productId;
+        this.productName = productName;
+        this.image = image;
+        this.productPrice = productPrice;
+        this.quantity = quantity;
+        this.originSubPrice = originSubPrice;
+        this.productState = productState;
+    }
 }

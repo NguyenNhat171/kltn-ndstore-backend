@@ -13,6 +13,7 @@ import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.repository.UserRepository;
 import com.example.officepcstore.security.jwt.JwtUtils;
+import com.example.officepcstore.utils.PayUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.message.Message;
@@ -39,6 +40,7 @@ public class SelectPaymentService {
     private final ApplicationContext context;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
+    private final PayUtils payUtils;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     public PaymentSteps getPaymentSteps(String typesPayment) {
@@ -73,6 +75,7 @@ public class SelectPaymentService {
             order.get().setTotalPriceOrder(order.get().getTotalPrice());
             order.get().setStatusOrder(Constant.ORDER_PROCESS);
             orderRepository.save(order.get());
+            payUtils.updateProductPriceOrder(order.get());
         } catch (NotFoundException e) {
             log.error(e.getMessage());
             throw new NotFoundException(e.getMessage());

@@ -35,7 +35,17 @@ public class CartMap {
         }
     }
 
-
+    public static CartProductResponse toCartProductOrderRes(OrderedProduct product) {
+        try {
+            return new CartProductResponse(product.getId(),product.getOrderProduct().getId(),product.getOrderProduct().getName(),
+                    product.getOrderProduct().getProductImageList(),product.getProductOrderPrice(), product.getQuantity(),product.getSubProductOrderPrice(),
+                    product.getOrderProduct().getState()
+            );
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Cant get product cart");
+        }
+    }
 
 
 }
