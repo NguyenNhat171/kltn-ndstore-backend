@@ -271,6 +271,10 @@ public class ProductService {
                 else throw new NotFoundException("Not found brand with id: "+productReq.getBrand());
             }
             product.get().setState(productReq.getState());
+            String discountCalculate = productReq.getPrice().multiply(BigDecimal.valueOf((double) (100- productReq.getDiscount())/100))
+                    .stripTrailingZeros().toPlainString();
+            BigDecimal discountPrice = new BigDecimal(discountCalculate);
+            product.get().setReducedPrice(discountPrice);
                 productRepository.save(product.get());
             ProductResponse res = productMap.toGetProductRes(product.get());
             return ResponseEntity.status(HttpStatus.OK).body(
