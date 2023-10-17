@@ -20,10 +20,10 @@ public class StatisticalController {
         return statisticalService.getTotalSalesRevenue(from, to, type);
     }
 
-    @GetMapping(path = "/admin/manage/statistical/sale/stat/total")
-    public ResponseEntity<?> getStatSales (@RequestParam(value = "year", defaultValue = "") int from,
-                                       @RequestParam(value = "month", defaultValue = "") int to)
-    {
-        return statisticalService.getOrderProductSales(from, to);
-    }
+//    @GetMapping(path = "/admin/manage/statistical/sale/stat/total")
+//    public ResponseEntity<?> getStatSales (@RequestParam(value = "year", defaultValue = "") int from,
+//                                       @RequestParam(value = "month", defaultValue = "") int to)
+//    {
+//        return statisticalService.getOrderProductSales(from, to);
+//    }
 }

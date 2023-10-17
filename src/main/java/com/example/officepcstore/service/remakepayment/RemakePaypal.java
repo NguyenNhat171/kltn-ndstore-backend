@@ -1,14 +1,12 @@
-package com.example.officepcstore.service.payment;
+package com.example.officepcstore.service.remakepayment;
 
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
-import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
-import com.example.officepcstore.repository.UserRepository;
-import com.example.officepcstore.security.jwt.JwtUtils;
+import com.example.officepcstore.service.payment.SelectPaymentService;
 import com.example.officepcstore.service.paymentconfig.PaypalForm;
 import com.example.officepcstore.service.paymentconfig.PaypalMethod;
 import com.example.officepcstore.utils.CheckTimePayment;
@@ -19,10 +17,8 @@ import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
@@ -37,11 +33,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 @AllArgsConstructor
 @Service
 @Slf4j
-public class PaypalService extends PaymentSteps {
+public class RemakePaypal extends  RemakePaymentStep{
     private APIContext apiContext;
     private PayUtils payUtils;
     private final OrderRepository orderRepository;
@@ -66,9 +61,6 @@ public class PaypalService extends PaymentSteps {
                     successUrl);
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
-                    String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-                    String checkUpdateSold =payUtils.updateSoldProduct(order,true);
-                    if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
                         if (!payment.getTransactions().isEmpty())
                             order.getPaymentInformation().getPayDetails().put("amount", payment.getTransactions().get(0).getAmount());
                         order.getPaymentInformation().setPaymentId(payment.getId());
@@ -80,7 +72,7 @@ public class PaypalService extends PaymentSteps {
                         taskScheduler.schedule(checkTimePayment, new Date(System.currentTimeMillis() + Constant.PAYMENT_TIMEOUT)) ;
                         return ResponseEntity.status(HttpStatus.OK).body(
                                 new ResponseObjectData(true, "Payment complete", links.getHref()));
-                    }
+
                 }
             }
         } catch (PayPalRESTException | IOException e) {
@@ -104,10 +96,10 @@ public class PaypalService extends PaymentSteps {
                     order.get().setStatusOrder(Constant.ORDER_WAITING);
                     orderRepository.save(order.get());
                 } else {
-                    response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
+                    response.sendRedirect(PaymentType.URL_PAYMENT + "false&cancel=false");
                     throw new NotFoundException("Can not found order with id: " + id);
                 }
-                response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
+                response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=false");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment with Paypal complete", "")
                 );
@@ -115,7 +107,7 @@ public class PaypalService extends PaymentSteps {
         } catch (PayPalRESTException e) {
             log.error(e.getMessage());
         }
-        response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
+        response.sendRedirect(PaymentType.URL_PAYMENT + "false&cancel=false");
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 new ResponseObjectData(false, "Payment with Paypal failed", "")
         );
@@ -132,13 +124,13 @@ public class PaypalService extends PaymentSteps {
             String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
             if (checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
-                response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
+                response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Cancel payment with Paypal complete", "")
                 );
             }
         }
-        response.sendRedirect(SelectPaymentService.URL_PAYMENT   + "false&cancel=true");
+        response.sendRedirect(PaymentType.URL_PAYMENT   + "false&cancel=true");
         return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
                 new ResponseObjectData(false, "Cancel payment with Paypal failed", "")
         );
@@ -147,8 +139,8 @@ public class PaypalService extends PaymentSteps {
     public Payment createPayPalPaymentSandBox(Order order, String currency, PaypalMethod method,
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
-        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())));
-       // Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
+        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPriceOrder().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())));
+        // Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
         Amount amount = new Amount(currency, String.format(String.valueOf(TotalMoneyVN)));
         Transaction transaction = new Transaction();
         transaction.setDescription(description);

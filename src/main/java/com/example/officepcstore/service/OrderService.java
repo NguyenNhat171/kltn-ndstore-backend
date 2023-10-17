@@ -106,7 +106,7 @@ public class OrderService {
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
-            if (order.get().getStatusOrder().equals(Constant.ORDER_PAY_COD) || order.get().getStatusOrder().equals(Constant.ORDER_PAY_ONLINE)
+            if (order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_WAITING)
                     || order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                 String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
@@ -129,7 +129,7 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(orderId);
         if(order.isPresent())
         {
-            if(order.get().getStatusOrder().equals(Constant.ORDER_PAY_COD) || order.get().getStatusOrder().equals(Constant.ORDER_PAY_ONLINE))
+            if(order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_WAITING))
                 order.get().setStatusOrder(Constant.ORDER_SHIPPING);
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");

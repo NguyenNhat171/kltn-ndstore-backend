@@ -1,4 +1,4 @@
-package com.example.officepcstore.service.payment;
+package com.example.officepcstore.service.remakepayment;
 
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
@@ -6,12 +6,14 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
+import com.example.officepcstore.service.payment.SelectPaymentService;
 import com.example.officepcstore.service.paymentconfig.VnpayConfig;
 import com.example.officepcstore.utils.CheckTimePayment;
 import com.example.officepcstore.utils.PayUtils;
 import com.example.officepcstore.utils.StringUtils;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
@@ -25,17 +27,17 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
-public class VnpayService extends PaymentSteps{
+@Slf4j
+public class RemakeVnpay extends RemakePaymentStep{
     private final OrderRepository orderRepository;
     private final PayUtils payUtils;
     private final CheckTimePayment checkTimePayment;
     private final TaskScheduler taskScheduler;
-
     @SneakyThrows
     @Override
-    public ResponseEntity<?>  initializationPayment(HttpServletRequest request, Order order) {
+    public ResponseEntity<?> initializationPayment(HttpServletRequest request, Order order) {
         order.setStatusOrder(Constant.ORDER_PROCESS);
         order.getPaymentInformation().getPayDetails().put("fullPayment", false);
         orderRepository.save(order);
@@ -68,16 +70,12 @@ public class VnpayService extends PaymentSteps{
         String vnp_SecureHash = VnpayConfig.hmacSHA512(VnpayConfig.vnp_HashSecret, hashData.toString());
         queryUrl += VnpayConfig.vnp_SecureHash + vnp_SecureHash;
         String paymentUrl = VnpayConfig.vnp_PayUrl + "?" + queryUrl;
-        String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-        String checkUpdateSold =payUtils.updateSoldProduct(order,true);
-        if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
             checkTimePayment.setOrderId(order.getId());
             checkTimePayment.setOrderRepository(orderRepository);
-           checkTimePayment.setPayUtils(payUtils);
+            checkTimePayment.setPayUtils(payUtils);
             taskScheduler.schedule( checkTimePayment, new Date(System.currentTimeMillis() + Constant.PAYMENT_TIMEOUT)) ;
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Complete", paymentUrl));
-        } else throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds the available stock!");
     }
 
 
@@ -86,7 +84,7 @@ public class VnpayService extends PaymentSteps{
     public ResponseEntity<?> makePayment(String paymentId, String payerId, String responseCode, String id, HttpServletRequest request, HttpServletResponse response) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isEmpty() || !order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
-            response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
+            response.sendRedirect(PaymentType.URL_PAYMENT + "false&cancel=false");
             throw new NotFoundException("Can not found order with id: " + id);
         }
         if (responseCode.equals(VnpayConfig.responseSuccessCode)) {
@@ -96,20 +94,18 @@ public class VnpayService extends PaymentSteps{
             order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
             order.get().setStatusOrder(Constant.ORDER_WAITING);
             orderRepository.save(order.get());
-            response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
+            response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=false");
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Completed", "")
             );
         } else {
             order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
-            String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
-            if (responseCode.equals(VnpayConfig.responseCancelCode) && checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
-                response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
+            if (responseCode.equals(VnpayConfig.responseCancelCode)) {
+                response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment cancel complete", ""));
-            } else response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
+            } else response.sendRedirect(PaymentType.URL_PAYMENT + "false&cancel=false");
             throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed when payment");
         }
     }
@@ -161,4 +157,6 @@ public class VnpayService extends PaymentSteps{
         }
         return vnp_Params;
     }
+
+
 }
