@@ -130,7 +130,7 @@ public class OrderService {
         if(order.isPresent())
         {
             if(order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_WAITING))
-                order.get().setStatusOrder(Constant.ORDER_SHIPPING);
+                order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
             HttpResponse<?> response = logisticService.create(req, order.get());
             JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
             order.get().getShippingDetail().getServiceShipDetail().put("orderCode", objectRes.getString("order_code"));
@@ -159,20 +159,20 @@ public class OrderService {
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
 
-    public ResponseEntity<?> setStateProcessDelivery(String orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        if (order.isPresent()) {
-            if (order.get().getStatusOrder().equals(Constant.ORDER_SHIPPING)) {
-                order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
-                order.get().getShippingDetail().getServiceShipDetail().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
-            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
-
-            orderRepository.save(order.get());
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Change state order", " "));
-        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
-    }
+//    public ResponseEntity<?> setStateProcessDelivery(String orderId) {
+//        Optional<Order> order = orderRepository.findById(orderId);
+//        if (order.isPresent()) {
+//            if (order.get().getStatusOrder().equals(Constant.ORDER_SHIPPING)) {
+//                order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
+//                order.get().getShippingDetail().getServiceShipDetail().put("getShippedAt", LocalDateTime.now(Clock.systemUTC()));
+//            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivering");
+//
+//            orderRepository.save(order.get());
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Change state order", " "));
+//        }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
+//    }
 
 
 //    public ResponseEntity<?> changeStateDone(String orderId) {

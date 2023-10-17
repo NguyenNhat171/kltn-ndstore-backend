@@ -19,8 +19,8 @@ public class Constant {
     public static final String ORDER_CANCEL = "cancel";
     public static final String ORDER_PROCESS = "process";
     public static final String ORDER_SUCCESS = "success";
-    public static final String ORDER_SHIPPING = "shipping"; //ORDER_STATE_DELIVERY
-   public static final String ORDER_PROCESS_DELIVERY = "delivered";
+//    public static final String ORDER_SHIPPING = "shipping"; //ORDER_STATE_DELIVERY
+   public static final String ORDER_PROCESS_DELIVERY = "delivery";
    // public static final String ORDER_PREPARE = "prepare";
     public static final String ORDER_WAITING = "waiting"; // dang xu li
 

@@ -40,10 +40,10 @@ public class OrderController {
     public ResponseEntity<?> changeStateConfirmDelivery (@PathVariable String orderId){
         return orderService.setStateConfirmDelivery(orderId);
     }
-    @PutMapping(path = "/admin/manage/orders/process/delivery/{orderId}")
-    public ResponseEntity<?> changeStateDelivery (@PathVariable String orderId){
-        return orderService.setStateProcessDelivery(orderId);
-    }
+//    @PutMapping(path = "/admin/manage/orders/process/delivery/{orderId}")
+//    public ResponseEntity<?> changeStateDelivery (@PathVariable String orderId){
+//        return orderService.setStateProcessDelivery(orderId);
+//    }
 //    @PutMapping(path = "/manage/orders/complete/{orderId}")
 //    public ResponseEntity<?> confirmCompleteOrderByAdmin (@PathVariable String orderId,
 //                                          HttpServletRequest request){
