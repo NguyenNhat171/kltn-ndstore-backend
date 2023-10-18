@@ -66,9 +66,9 @@ public class PaypalService extends PaymentSteps {
                     successUrl);
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
-                    String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-                    String checkUpdateSold =payUtils.updateSoldProduct(order,true);
-                    if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
+                    String putQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
+                    String putSold =payUtils.putSold(order,true);
+                    if (putQuantity == null && putSold == null) {
                         if (!payment.getTransactions().isEmpty())
                             order.getPaymentInformation().getPayDetails().put("amount", payment.getTransactions().get(0).getAmount());
                         order.getPaymentInformation().setPaymentId(payment.getId());
@@ -129,9 +129,9 @@ public class PaypalService extends PaymentSteps {
         if (order.isPresent()) {
             order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
-            String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
-            if (checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
+            String putQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+            String putSold =payUtils.putSold(order.get(),false);
+            if (putQuantityProduct == null && putSold ==null) {
                 response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Cancel payment with Paypal complete", "")

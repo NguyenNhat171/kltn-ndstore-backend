@@ -107,7 +107,7 @@ public class OrderService {
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
             if (order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-                String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
+                String checkUpdateSold =payUtils.putSold(order.get(),false);
                 order.get().setLastUpdateStateDate(LocalDateTime.now());
                 order.get().setStatusOrder(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());
@@ -126,7 +126,7 @@ public class OrderService {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent()) {
                 String updateQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-                String updateSold = payUtils.updateSoldProduct(order.get(), false);
+                String updateSold = payUtils.putSold(order.get(), false);
                 order.get().setLastUpdateStateDate(LocalDateTime.now());
                 order.get().setStatusOrder(Constant.ORDER_CANCEL);
                 orderRepository.save(order.get());

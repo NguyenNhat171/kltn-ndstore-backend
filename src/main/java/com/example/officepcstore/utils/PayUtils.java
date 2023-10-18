@@ -60,7 +60,7 @@ public class PayUtils {
 
     @Synchronized
     @Transactional
-    public String updateSoldProduct(Order order, boolean checkPayment) {
+    public String putSold(Order order, boolean checkPayment) {
         order.getOrderedProducts().forEach(item -> {
             if (checkPayment) {
             item.getOrderProduct().setSold(item.getOrderProduct().getSold() + item.getQuantity());

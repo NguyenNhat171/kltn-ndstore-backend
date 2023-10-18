@@ -68,9 +68,9 @@ public class VnpayService extends PaymentSteps{
         String vnp_SecureHash = VnpayConfig.hmacSHA512(VnpayConfig.vnp_HashSecret, hashData.toString());
         queryUrl += VnpayConfig.vnp_SecureHash + vnp_SecureHash;
         String paymentUrl = VnpayConfig.vnp_PayUrl + "?" + queryUrl;
-        String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
-        String checkUpdateSold =payUtils.updateSoldProduct(order,true);
-        if (checkUpdateQuantityProduct == null && checkUpdateSold == null) {
+        String checkingQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
+        String checkingSold =payUtils.putSold(order,true);
+        if (checkingQuantity == null && checkingSold == null) {
             checkTimePayment.setOrderId(order.getId());
             checkTimePayment.setOrderRepository(orderRepository);
            checkTimePayment.setPayUtils(payUtils);
@@ -103,9 +103,9 @@ public class VnpayService extends PaymentSteps{
         } else {
             order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
-            String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
-            if (responseCode.equals(VnpayConfig.responseCancelCode) && checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
+            String putQuantity= payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+            String putSoldCancel =payUtils.putSold(order.get(),false);
+            if (responseCode.equals(VnpayConfig.responseCancelCode) && putQuantity == null && putSoldCancel==null) {
                 response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment cancel complete", ""));
@@ -116,8 +116,7 @@ public class VnpayService extends PaymentSteps{
 
     @Override
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Payment cancel complete", ""));
+        return null;
     }
 
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {

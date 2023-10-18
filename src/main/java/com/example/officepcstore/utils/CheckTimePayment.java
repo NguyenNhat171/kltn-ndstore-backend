@@ -35,7 +35,7 @@ public class CheckTimePayment implements Runnable {
                             (Date) order.get().getPaymentInformation().getPayDetails()
                                     .get("orderCreateTime"))) {
                         String check = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-                        String checkSold = payUtils.updateSoldProduct(order.get(), false);
+                        String checkSold = payUtils.putSold(order.get(), false);
                         log.info("Back Stock" + (check == null) +"Back Sold"+(checkSold == null));
                         order.get().setStatusOrder(Constant.ORDER_CANCEL);
                         orderRepository.save(order.get());

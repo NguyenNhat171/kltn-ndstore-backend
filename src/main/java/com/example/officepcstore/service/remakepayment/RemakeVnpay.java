@@ -101,9 +101,9 @@ public class RemakeVnpay extends RemakePaymentStep{
         } else {
             order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
-            String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
-            String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
-            if (responseCode.equals(VnpayConfig.responseCancelCode)&& checkUpdateQuantityProduct == null && checkUpdateSold ==null) {
+            String putStockAndQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+            String putSoldCancel=payUtils.putSold(order.get(),false);
+            if (responseCode.equals(VnpayConfig.responseCancelCode)&& putStockAndQuantity == null && putSoldCancel ==null) {
                 response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=true");
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Payment cancel complete", ""));
@@ -114,8 +114,7 @@ public class RemakeVnpay extends RemakePaymentStep{
 
     @Override
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Payment cancel complete", ""));
+        return null;
     }
 
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
