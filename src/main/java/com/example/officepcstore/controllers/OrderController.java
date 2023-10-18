@@ -50,7 +50,7 @@ public class OrderController {
 //    }
 
     @PutMapping(path = "/admin/manage/orders/ship/{orderId}")
-    public ResponseEntity<?> setStateDeliveryOrder (@RequestBody String estimatedDeliveryTime,
+    public ResponseEntity<?> setStateDeliveryOrder (@RequestParam (value ="estimatedDeliveryTime") String estimatedDeliveryTime,
                                               @PathVariable String orderId){
         return orderService.setStateDeliveryOrder(estimatedDeliveryTime, orderId);
     }
