@@ -6,7 +6,6 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.OrderMap;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
-import com.example.officepcstore.payload.request.CreateShipReq;
 import com.example.officepcstore.payload.response.OrderResponse;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.utils.PayUtils;
@@ -34,7 +33,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMap orderMap;
     private final PayUtils payUtils;
-    private final LogisticService logisticService;
+
 
 
     public ResponseEntity<?> findAll(String state, Pageable pageable) {
@@ -125,20 +124,16 @@ public class OrderService {
     }
 
 
-    public ResponseEntity<?> createShip(CreateShipReq req, String orderId) {
+    public ResponseEntity<?> setStateDeliveryOrder(String estimatedTimeDelivery , String orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
         if(order.isPresent())
         {
-            if(order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_WAITING))
+            if(order.get().getStatusOrder().equals(Constant.ORDER_WAITING))
                 order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
-            HttpResponse<?> response = logisticService.create(req, order.get());
-            JSONObject objectRes = new JSONObject(response.body().toString()).getJSONObject("data");
-            order.get().getShippingDetail().getServiceShipDetail().put("orderCode", objectRes.getString("order_code"));
-            order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", objectRes.getLong("total_fee"));
-            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", objectRes.getString("expected_delivery_time"));
+            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", estimatedTimeDelivery);
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Create shipping complete", order.get().getShippingDetail().getServiceShipDetail()));
+                    new ResponseObjectData(true, "Change state delivery complete", order.get().getShippingDetail().getServiceShipDetail()));
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }

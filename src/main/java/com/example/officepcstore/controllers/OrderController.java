@@ -3,7 +3,6 @@ package com.example.officepcstore.controllers;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.payload.request.CreateShipReq;
 import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -50,10 +49,10 @@ public class OrderController {
 //        return orderService.changeStateDone( orderId);
 //    }
 
-    @PostMapping(path = "/admin/manage/orders/ship/{orderId}")
-    public ResponseEntity<?> createShipOrder (@RequestBody CreateShipReq req,
+    @PutMapping(path = "/admin/manage/orders/ship/{orderId}")
+    public ResponseEntity<?> setStateDeliveryOrder (@RequestBody String estimatedDeliveryTime,
                                               @PathVariable String orderId){
-        return orderService.createShip(req, orderId);
+        return orderService.setStateDeliveryOrder(estimatedDeliveryTime, orderId);
     }
 
     @GetMapping(path = "/orders/get/detail/{orderId}")

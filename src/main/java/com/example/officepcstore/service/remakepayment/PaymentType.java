@@ -38,8 +38,6 @@ public class PaymentType {
     public static String URL_PAYMENT = "http://localhost:3000/checkout/order/payment?complete=";
     private final ApplicationContext context;
     private final OrderRepository orderRepository;
-    private final OrderProductRepository orderProductRepository;
-    private final PayUtils payUtils;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
     public PaymentSteps getPaymentSteps(String typesPayment) {
@@ -62,15 +60,7 @@ public class PaymentType {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
             PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
-//            paymentInformation.getPayDetails().put("invoiceDate", LocalDateTime.now(Clock.systemDefaultZone()));
             order.get().setPaymentInformation(paymentInformation);
-//            ShippingDetail shippingDetail = new ShippingDetail(req.getName(), req.getPhone(),
-//                    req.getProvince(), req.getDistrict(), req.getWard(),req.getAddress(),req.getNote());
-//            order.get().setShippingDetail(shippingDetail);
-//            order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", req.getShipFee());
-//            order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
-//            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
-//            order.get().setInvoiceDate(LocalDateTime.now());
             orderRepository.save(order.get());
         } catch (NotFoundException e) {
             log.error(e.getMessage());

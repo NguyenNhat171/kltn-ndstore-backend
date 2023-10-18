@@ -79,10 +79,10 @@ public class StatisticalService {
                     if (i > 0) ordersSaleResList.add(ordersSaleRes);
                     if (dateFormat.isBlank()) dateFormat = "all";
                     ordersSaleRes = new SaleResponse(dateFormat,
-                            orderList.getContent().get(i).getTotalPrice(), quantity);
+                            orderList.getContent().get(i).getTotalPriceOrder(), quantity);
                 } else {
                     quantity++;
-                    ordersSaleRes.setAmount(ordersSaleRes.getAmount().add(orderList.getContent().get(i).getTotalPrice()));
+                    ordersSaleRes.setAmount(ordersSaleRes.getAmount().add(orderList.getContent().get(i).getTotalPriceOrder()));
                     ordersSaleRes.setQuantity(quantity);
                 }
                 if (i == orderList.getSize() - 1) ordersSaleResList.add(ordersSaleRes);
