@@ -105,8 +105,7 @@ public class OrderService {
     public ResponseEntity<?> cancelOrder(String id, String userId) {
         Optional<Order> order = orderRepository.findById(id);
         if (order.isPresent() && order.get().getUser().getId().equals(userId)) {
-            if (order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_WAITING)
-                    || order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
+            if (order.get().getStatusOrder().equals(Constant.ORDER_WAITING) || order.get().getStatusOrder().equals(Constant.ORDER_PROCESS)) {
                 String checkUpdateQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
                 String checkUpdateSold =payUtils.updateSoldProduct(order.get(),false);
                 order.get().setLastUpdateStateDate(LocalDateTime.now());
@@ -116,19 +115,33 @@ public class OrderService {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObjectData(true, "Cancel order successfully", ""));
                 }
-            } else throw new AppException(HttpStatus.BAD_REQUEST.value(),
-                    "You cannot cancel while the order is still processing!");
+            } else ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(false, "Cancel order failed", ""));;
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ id, ""));
     }
 
-
+    public ResponseEntity<?> setCancelOrderByAdmin(String id) {
+        Optional<Order> order = orderRepository.findById(id);
+        if (order.isPresent()) {
+                String updateQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
+                String updateSold = payUtils.updateSoldProduct(order.get(), false);
+                order.get().setLastUpdateStateDate(LocalDateTime.now());
+                order.get().setStatusOrder(Constant.ORDER_CANCEL);
+                orderRepository.save(order.get());
+                if (updateQuantity == null && updateSold == null) {
+                    return ResponseEntity.status(HttpStatus.OK).body(
+                            new ResponseObjectData(true, "Cancel order successfully", ""));
+                }
+        } return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found order with id" + id, ""));
+    }
     public ResponseEntity<?> setStateDeliveryOrder(String estimatedTimeDelivery , String orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
+        //Optional<Order> order = orderRepository.findById(orderId);
+        Optional<Order> order = orderRepository.findOrderByIdAndStatusOrder(orderId,Constant.ORDER_WAITING);
         if(order.isPresent())
         {
-            if(order.get().getStatusOrder().equals(Constant.ORDER_WAITING))
                 order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
             order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", estimatedTimeDelivery);
             orderRepository.save(order.get());
@@ -140,14 +153,13 @@ public class OrderService {
 
 
     public ResponseEntity<?> setStateConfirmDelivery(String orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
+      //  Optional<Order> order = orderRepository.findById(orderId);
+        Optional<Order> order = orderRepository.findOrderByIdAndStatusOrder(orderId,Constant.ORDER_PROCESS_DELIVERY);
         if (order.isPresent()) {
-                if (order.get().getStatusOrder().equals(Constant.ORDER_PROCESS_DELIVERY)) {
                     order.get().setStatusOrder(Constant.ORDER_SUCCESS);
                     order.get().setLastUpdateStateDate(LocalDateTime.now());
                     order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
-                } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Order have not been delivered");
-            orderRepository.save(order.get());
+                    orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Change state order", " "));
         }else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(

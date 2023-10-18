@@ -26,7 +26,7 @@ public class OrderController {
 
     @GetMapping(path = "/admin/manage/orders/get/all")
     public ResponseEntity<?> findAll (@RequestParam(defaultValue = "") String state,
-                                      @PageableDefault(size = 5, sort = "lastUpdateStateDate") @ParameterObject Pageable pageable){
+                                      @PageableDefault(size = 5, sort = "invoiceDate",direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
         return orderService.findAll(state, pageable);
     }
 
@@ -82,5 +82,10 @@ public class OrderController {
                                           HttpServletRequest request){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
         return orderService.cancelOrder(orderId, user.getId());
+    }
+
+    @PutMapping(path = "/admin/manage/orders/set/cancel/{orderId}")
+    public ResponseEntity<?> cancelOrderByAdmin (@PathVariable String orderId){
+        return orderService.setCancelOrderByAdmin(orderId);
     }
 }
