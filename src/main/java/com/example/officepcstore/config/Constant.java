@@ -27,7 +27,7 @@ public class Constant {
     public static final String PAY_BY_PAYPAL = "paypal";
     public static final String PAY_BY_VNPAY = "vnpay";
     public static final String PAY_BY_COD = "cod";
-    public static final int PAYMENT_TIMEOUT = 10 * 60 * 1500;
+    public static final int PAYMENT_TIMEOUT = 10 * 60 * 2000;
 
     //RECOMMEND TYPE
     public static final String REVIEW_GOOD_TYPE = "review";

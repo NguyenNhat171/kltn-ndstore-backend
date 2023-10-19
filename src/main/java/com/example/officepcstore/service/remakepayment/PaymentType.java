@@ -40,11 +40,11 @@ public class PaymentType {
     private final OrderRepository orderRepository;
     private final JwtUtils jwtUtils;
     private final UserRepository userRepository;
-    public PaymentSteps getPaymentSteps(String typesPayment) {
+    public RemakePaymentStep getPaymentSteps(String typesPayment) {
         switch (typesPayment) {
-            case Constant.PAY_BY_VNPAY: return context.getBean(VnpayService.class);
-            case Constant.PAY_BY_COD: return context.getBean(CodService.class);
-            case Constant.PAY_BY_PAYPAL: return context.getBean(PaypalService.class);
+            case Constant.PAY_BY_VNPAY: return context.getBean(RemakeVnpay.class);
+            case Constant.PAY_BY_COD: return context.getBean(RemakeCod.class);
+            case Constant.PAY_BY_PAYPAL: return context.getBean(RemakePaypal.class);
             default:
                 return null;
         }
@@ -68,9 +68,9 @@ public class PaymentType {
         }catch (AppException e) {
             throw new AppException(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "More than one cart with user id: "+ userId);
+            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Some thing wrong with cart: "+ userId);
         }
-        PaymentSteps paymentSteps = getPaymentSteps(paymentType);
+        RemakePaymentStep paymentSteps = getPaymentSteps(paymentType);
         return paymentSteps.initializationPayment(request, order.get());
     }
 
@@ -78,16 +78,16 @@ public class PaymentType {
     public ResponseEntity<?> makePayment(String paymentId, String payerPayPalId, String responseCode,
                                          String vnPayId, HttpServletRequest request, HttpServletResponse response) {
         if (responseCode != null) {
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
             return paymentSteps.makePayment(null, null, responseCode, vnPayId, request, response);
         }
         else if (paymentId != null && payerPayPalId != null ) {
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
             return paymentSteps.makePayment(paymentId, payerPayPalId, null,null, request, response);
 
         } else {
             getRoleToCancel(request);
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
             return paymentSteps.makePayment(paymentId, null, null,null, request, response);
         }
     }
@@ -98,14 +98,14 @@ public class PaymentType {
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletRequest request, HttpServletResponse response) {
         String check = id.split("-")[0];
         if (responseCode != null) {
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_VNPAY);
             return paymentSteps.cancelPayment(id, responseCode, response);
         } else if (check.equals("EC")) {
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_PAYPAL);
             return paymentSteps.cancelPayment(id, null, response);
         } else {
             getRoleToCancel(request);
-            PaymentSteps paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
+            RemakePaymentStep paymentSteps = getPaymentSteps(Constant.PAY_BY_COD);
             return paymentSteps.cancelPayment(id, null, response);
         }
     }

@@ -82,7 +82,7 @@ public class SelectPaymentService {
         }catch (AppException e) {
             throw new AppException(e.getCode(), e.getMessage());
         } catch (Exception e) {
-            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "More than one cart with user id: "+ userId);
+            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Some thing wrong with cart: "+ userId);
         }
        PaymentSteps paymentSteps = getPaymentSteps(paymentType);
         return paymentSteps.initializationPayment(request, order.get());
