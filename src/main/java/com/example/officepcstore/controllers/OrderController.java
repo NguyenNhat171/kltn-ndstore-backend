@@ -25,7 +25,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping(path = "/admin/manage/orders/get/all")
-    public ResponseEntity<?> findAll (@RequestParam(defaultValue = "") String state,
+    public ResponseEntity<?> findAll (@RequestParam(value = "state",defaultValue = "") String state,
                                       @PageableDefault(size = 5, sort = "invoiceDate",direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
         return orderService.findAll(state, pageable);
     }
@@ -64,10 +64,10 @@ public class OrderController {
     }
 
     @GetMapping(path = "/orders/get/list/user")
-    public ResponseEntity<?> userGetAllOrder (HttpServletRequest request,
+    public ResponseEntity<?> userGetAllOrder (HttpServletRequest request,@RequestParam(value = "state",defaultValue = "") String state,
                                               @PageableDefault(size = 5, sort = "invoiceDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable ){
         User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return orderService.findAllOrderByUserId(user.getId(),pageable);
+            return orderService.findAllOrderByUserId(user.getId(),state,pageable);
     }
 
 

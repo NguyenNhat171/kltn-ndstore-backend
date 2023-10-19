@@ -41,14 +41,18 @@ public class OrderService {
         if (state.isBlank()) orders = orderRepository.findAllByStatusOrderNoCart(pageable);
         else orders = orderRepository.findAllByStatusOrder(state, pageable);
         if (orders.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObjectData(false, "Not found order", ""));
+                new ResponseObjectData(false, "Not found any order", ""));
         List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
         Map<String, Object> resp = new HashMap<>();
         resp.put("list", resList);
         resp.put("totalQuantity", orders.getTotalElements());
         resp.put("totalPage", orders.getTotalPages());
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new ResponseObjectData(true, "Get orders success", resp));
+        if(resList.size()>0){
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get order success", resp));
+        }
+        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found any order", ""));
     }
 
 
@@ -75,20 +79,26 @@ public class OrderService {
                 new ResponseObjectData(false, "Can not found order with id"+ id, ""));
     }
 
-    public ResponseEntity<?> findAllOrderByUserId(String userId, Pageable pageable) {
+    public ResponseEntity<?> findAllOrderByUserId(String userId, String state,Pageable pageable) {
 //        Page<Order> orders = orderRepository.findOrderByUser_Id(new ObjectId(userId), pageable);
-        Page<Order> orders = orderRepository.findOrderByUser_IdAndStatusOrderNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
-        List<OrderResponse> resList = orders.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
+        Page<Order> listOrder;
+        if (state.isBlank())
+            listOrder = orderRepository.findOrdersByUser_IdAndStatusOrderNot(new ObjectId(userId), Constant.ORDER_CART,pageable);
+        else
+            listOrder= orderRepository.findOrdersByUser_IdAndStatusOrder(new ObjectId(userId), state,pageable);
+        if (listOrder.isEmpty()) ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found any order", ""));
+        List<OrderResponse> resList = listOrder.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
         Map<String, Object> orderResp = new HashMap<>();
-        orderResp.put("totalPage", orders.getTotalPages());
-        orderResp.put("totalOrder", orders.getTotalElements());
+        orderResp.put("totalPage", listOrder.getTotalPages());
+        orderResp.put("totalOrder",listOrder.getTotalElements());
         orderResp.put("listOrder", resList);
         if(resList.size()>0){
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get order success", orderResp));
         }
        else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                new ResponseObjectData(false, "Not found any order",orderResp));
+                new ResponseObjectData(false, "Not found any order",""));
     }
 //    public ResponseEntity<?> findAllNoCart( Pageable pageable) {
 //        Page<Order> orders = orderRepository.findAllByStatusOrderNoCart(pageable);

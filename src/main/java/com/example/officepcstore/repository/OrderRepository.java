@@ -18,7 +18,8 @@ public interface OrderRepository extends MongoRepository<Order, String> {
    Optional<Order> findOrderByIdAndStatusOrder(String orderId, String state);
     Page<Order> findAllByStatusOrder(String state, Pageable pageable);
 //    Page<Order> findOrderByUser_Id(ObjectId userId, Pageable pageable);
-    Page<Order> findOrderByUser_IdAndStatusOrderNot(ObjectId userId,String state ,Pageable pageable);
+    Page<Order> findOrdersByUser_IdAndStatusOrderNot(ObjectId userId,String state ,Pageable pageable);
+    Page<Order> findOrdersByUser_IdAndStatusOrder(ObjectId userId,String state ,Pageable pageable);
 
   Page<Order> findAllByInvoiceDateBetweenAndStatusOrder(LocalDateTime from, LocalDateTime to, String state, Pageable pageable);
 //    @Aggregation("{ $group: { _id : $state, count: { $sum: 1 } } }")
