@@ -42,11 +42,13 @@ public class CommentService {
             commentRes.put("allPage", reviews.getTotalPages());
             commentRes.put("allComment", commentList);
             if (reviews.isEmpty())
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObjectData(false, "No comments yet  ", ""));
             else
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "All Comment Product success ", commentRes));
         }
+
+
     }
 }

@@ -50,9 +50,10 @@ public class CartService {
             else
                 return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Get cart complete", " "));
-        } throw new NotFoundException("Not found user with id: "+userId);
+        } return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found user"+userId, " "));
     }
-//addAndUpdateProductToCart
+
     @Transactional
     public ResponseEntity<?> createAndCheckProductInCart(String userId, CartReq req) {
         Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
@@ -68,9 +69,10 @@ public class CartService {
             } else
                 return createCart(user.get(), req);
         }
-        throw new NotFoundException("Not found user with id: "+userId);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found user"+userId, " "));
     }
-//processAddProductToOrder
+
     @Transactional
     @Synchronized
     ResponseEntity<?> createCart(User user, CartReq req) {
@@ -89,7 +91,7 @@ public class CartService {
                     new ResponseObjectData(true, "Product have add to cart first time complete", res));
         } else throw new NotFoundException("Not found product with id: "+req.getProductId());
     }
-//processAddProductToExistOrder
+
     private ResponseEntity<?> putProductToCartAvailable(Order order, CartReq req) {
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
@@ -140,7 +142,9 @@ public class CartService {
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Remove item "+orderProductId+" in cart complete", ""));
             }
-            else throw new AppException(HttpStatus.NOT_FOUND.value(), "Not found product in cart");
-        } throw new NotFoundException("Not found user with id: "+userId);
+            else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Remove item failed because "+orderProductId+"not in cart", ""));
+        } return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Not found user"+userId, " "));
     }
 }
