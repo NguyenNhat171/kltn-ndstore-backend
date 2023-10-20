@@ -53,23 +53,14 @@ public class PaymentType {
     public ResponseEntity<?> initializationPayment(HttpServletRequest request, String id, String paymentType) {
         Optional<Order> order;
         String userId = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request)).getId();
-        try {
-            order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_PROCESS);
-            // order = orderRepository.findOrderByUser_Id(new ObjectId(userId));
+   //         order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_PROCESS);
+             order = orderRepository.findOrderByUser_Id(new ObjectId(userId));
             if (order.isEmpty() || !order.get().getId().equals(id)) {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
             PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
             order.get().setPaymentInformation(paymentInformation);
             orderRepository.save(order.get());
-        } catch (NotFoundException e) {
-            log.error(e.getMessage());
-            throw new NotFoundException(e.getMessage());
-        }catch (AppException e) {
-            throw new AppException(e.getCode(), e.getMessage());
-        } catch (Exception e) {
-            throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Some thing wrong with cart: "+ userId);
-        }
         RemakePaymentStep paymentSteps = getPaymentSteps(paymentType);
         return paymentSteps.initializationPayment(request, order.get());
     }

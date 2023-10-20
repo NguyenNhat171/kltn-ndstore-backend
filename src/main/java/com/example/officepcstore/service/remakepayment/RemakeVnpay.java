@@ -120,7 +120,7 @@ public class RemakeVnpay extends RemakePaymentStep{
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String totalPriceOrder = String.valueOf((order.getTotalPrice().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())))
+        String totalPriceOrder = String.valueOf((order.getTotalPriceOrder().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())))
                 .multiply(BigDecimal.valueOf(100)));
         Map<String, Object> vnp_Params = new HashMap<>();
         vnp_Params.put(VnpayConfig.vnp_Version_k, VnpayConfig.vnp_Version);
@@ -139,7 +139,7 @@ public class RemakeVnpay extends RemakePaymentStep{
         SimpleDateFormat formatter = new SimpleDateFormat(VnpayConfig.yyyyMMddHHmmss);
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put(VnpayConfig.vnp_CreateDate, vnp_CreateDate);
-        cld.add(Calendar.MINUTE, 10);
+        cld.add(Calendar.MINUTE, 700);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put(VnpayConfig.vnp_ExpireDate, vnp_ExpireDate);
 

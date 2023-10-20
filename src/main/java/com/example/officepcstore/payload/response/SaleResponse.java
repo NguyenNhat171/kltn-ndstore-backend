@@ -10,6 +10,6 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class SaleResponse {
     private String date;
-    private BigDecimal amount;
+    private BigDecimal revenue;
     private int quantity;
 }

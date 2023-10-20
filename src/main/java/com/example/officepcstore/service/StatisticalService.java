@@ -82,7 +82,7 @@ public class StatisticalService {
                             orderList.getContent().get(i).getTotalPriceOrder(), quantity);
                 } else {
                     quantity++;
-                    ordersSaleRes.setAmount(ordersSaleRes.getAmount().add(orderList.getContent().get(i).getTotalPriceOrder()));
+                    ordersSaleRes.setRevenue(ordersSaleRes.getRevenue().add(orderList.getContent().get(i).getTotalPriceOrder()));
                     ordersSaleRes.setQuantity(quantity);
                 }
                 if (i == orderList.getSize() - 1) ordersSaleResList.add(ordersSaleRes);
