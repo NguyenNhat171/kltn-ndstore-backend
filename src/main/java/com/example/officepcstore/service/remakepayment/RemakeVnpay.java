@@ -139,7 +139,7 @@ public class RemakeVnpay extends RemakePaymentStep{
         SimpleDateFormat formatter = new SimpleDateFormat(VnpayConfig.yyyyMMddHHmmss);
         String vnp_CreateDate = formatter.format(cld.getTime());
         vnp_Params.put(VnpayConfig.vnp_CreateDate, vnp_CreateDate);
-        cld.add(Calendar.MINUTE, 700);
+        cld.add(Calendar.MINUTE, 10);
         String vnp_ExpireDate = formatter.format(cld.getTime());
         vnp_Params.put(VnpayConfig.vnp_ExpireDate, vnp_ExpireDate);
 
