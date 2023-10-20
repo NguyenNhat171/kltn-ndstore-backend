@@ -53,8 +53,8 @@ public class PaymentType {
     public ResponseEntity<?> initializationPayment(HttpServletRequest request, String id, String paymentType) {
         Optional<Order> order;
         String userId = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request)).getId();
-   //         order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_PROCESS);
-             order = orderRepository.findOrderByUser_Id(new ObjectId(userId));
+           order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_PROCESS);
+        //     order = orderRepository.findOrderByUser_Id(new ObjectId(userId));
             if (order.isEmpty() || !order.get().getId().equals(id)) {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
