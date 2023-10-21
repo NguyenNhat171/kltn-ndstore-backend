@@ -31,7 +31,7 @@ public class CommentService {
     private final CommentMap commentMap;
 
     public ResponseEntity<?> getAllCommentProduct(String id, Pageable pageable) {
-        Page<CommentProduct> reviews = commentRepository.findAllByProductComment_IdAndState(new ObjectId(id), Constant.COMMENT_ENABLE, pageable);
+        Page<CommentProduct> reviews = commentRepository.findAllByProductComment_Id(new ObjectId(id), pageable);
         if (reviews.isEmpty()) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "No comments yet  ", ""));

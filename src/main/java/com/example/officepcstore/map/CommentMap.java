@@ -10,8 +10,7 @@ public class CommentMap {
     public CommentResponse getCommentResponse(CommentProduct comment)
     {
         return
-                new CommentResponse(comment.getId(), comment.getReview(), comment.getRateProductQuality(),
-                        comment.getState(), comment.getUserComment().getId(),comment.getUserComment().getName(),comment.getProductComment().getId(),comment.getProductComment().getName() ,comment.getCommentDate());
+                new CommentResponse(comment.getId(), comment.getReview(), comment.getVoteProduct(), comment.getUserComment().getId(),comment.getUserComment().getName(),comment.getProductComment().getId(),comment.getProductComment().getName() ,comment.getCommentDate());
     }
 
 }

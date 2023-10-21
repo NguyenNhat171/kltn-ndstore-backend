@@ -7,14 +7,12 @@ import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.service.paymentconfig.VnpayConfig;
-import com.example.officepcstore.utils.CheckTimePayment;
 import com.example.officepcstore.utils.PayUtils;
 import com.example.officepcstore.utils.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +28,7 @@ import java.util.*;
 public class VnpayService extends PaymentSteps{
     private final OrderRepository orderRepository;
     private final PayUtils payUtils;
-    private final CheckTimePayment checkTimePayment;
-    private final TaskScheduler taskScheduler;
+
 
     @SneakyThrows
     @Override
@@ -71,10 +68,6 @@ public class VnpayService extends PaymentSteps{
         String checkingQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order, true);
         String checkingSold =payUtils.putSold(order,true);
         if (checkingQuantity == null && checkingSold == null) {
-            checkTimePayment.setOrderId(order.getId());
-            checkTimePayment.setOrderRepository(orderRepository);
-           checkTimePayment.setPayUtils(payUtils);
-            taskScheduler.schedule( checkTimePayment, new Date(System.currentTimeMillis() + Constant.PAYMENT_TIMEOUT)) ;
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Complete", paymentUrl));
         } else throw new AppException(HttpStatus.CONFLICT.value(), "Quantity exceeds the available stock!");

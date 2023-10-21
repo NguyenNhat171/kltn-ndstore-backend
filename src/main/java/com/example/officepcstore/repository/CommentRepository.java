@@ -11,5 +11,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentRepository  extends MongoRepository<CommentProduct, String> {
-    Page<CommentProduct>findAllByProductComment_IdAndState(ObjectId id, String state, Pageable pageable);
+    Page<CommentProduct>findAllByProductComment_Id(ObjectId id, Pageable pageable);
 }

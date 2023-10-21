@@ -5,13 +5,11 @@ import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
-import com.example.officepcstore.repository.OrderProductRepository;
+
 import com.example.officepcstore.repository.OrderRepository;
-import com.example.officepcstore.repository.UserRepository;
-import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.service.paymentconfig.PaypalForm;
 import com.example.officepcstore.service.paymentconfig.PaypalMethod;
-import com.example.officepcstore.utils.CheckTimePayment;
+
 import com.example.officepcstore.utils.ExchangeMoneyUtils;
 import com.example.officepcstore.utils.PayUtils;
 import com.example.officepcstore.utils.StringUtils;
@@ -19,13 +17,12 @@ import com.paypal.api.payments.*;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,8 +45,7 @@ public class PaypalService extends PaymentSteps {
     public static final String URL_SUCCESS_PAYPAL = "/api/checkout/paypal/success";
     public static final String URL_CANCEL_PAYPAL = "/api/checkout/paypal/cancel";
     public static final String PATTERN = "&token=";
-    private final TaskScheduler taskScheduler;
-    private final CheckTimePayment checkTimePayment;
+
     @Override
     @Transactional
     public ResponseEntity<?> initializationPayment(HttpServletRequest request, Order order) {
@@ -75,9 +71,6 @@ public class PaypalService extends PaymentSteps {
                         order.getPaymentInformation().setPaymentToken((links.getHref().split(PATTERN)[1]));
                         order.getPaymentInformation().getPayDetails().put("fullPayment", false);
                         orderRepository.save(order);
-                        checkTimePayment.setOrderId(order.getId());
-                        checkTimePayment.setOrderRepository(orderRepository);
-                        taskScheduler.schedule(checkTimePayment, new Date(System.currentTimeMillis() + Constant.PAYMENT_TIMEOUT)) ;
                         return ResponseEntity.status(HttpStatus.OK).body(
                                 new ResponseObjectData(true, "Payment complete", links.getHref()));
                     }

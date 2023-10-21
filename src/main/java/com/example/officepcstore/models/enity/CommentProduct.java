@@ -22,7 +22,7 @@ public class CommentProduct {
     @Id
     private String id;
     private String review;
-    private double rateProductQuality;
+    private double voteProduct;
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
@@ -31,7 +31,6 @@ public class CommentProduct {
     @JsonIgnore
     @Indexed
     private Product productComment;
-    private String state;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime commentDate;

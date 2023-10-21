@@ -12,7 +12,6 @@ public class CommentResponse {
     private String id;
     private String review;
     private double rate;
-    private String state;
     private String userIdComment;
     private String userNameComment;
     private String  productIdComment;

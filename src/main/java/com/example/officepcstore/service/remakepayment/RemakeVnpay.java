@@ -6,9 +6,7 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
-import com.example.officepcstore.service.payment.SelectPaymentService;
 import com.example.officepcstore.service.paymentconfig.VnpayConfig;
-import com.example.officepcstore.utils.CheckTimePayment;
 import com.example.officepcstore.utils.PayUtils;
 import com.example.officepcstore.utils.StringUtils;
 import lombok.AllArgsConstructor;
@@ -16,7 +14,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,8 +30,7 @@ import java.util.*;
 public class RemakeVnpay extends RemakePaymentStep{
     private final OrderRepository orderRepository;
     private final PayUtils payUtils;
-    private final CheckTimePayment checkTimePayment;
-    private final TaskScheduler taskScheduler;
+
     @SneakyThrows
     @Override
     public ResponseEntity<?> initializationPayment(HttpServletRequest request, Order order) {
@@ -70,10 +66,6 @@ public class RemakeVnpay extends RemakePaymentStep{
         String vnp_SecureHash = VnpayConfig.hmacSHA512(VnpayConfig.vnp_HashSecret, hashData.toString());
         queryUrl += VnpayConfig.vnp_SecureHash + vnp_SecureHash;
         String paymentUrl = VnpayConfig.vnp_PayUrl + "?" + queryUrl;
-            checkTimePayment.setOrderId(order.getId());
-            checkTimePayment.setOrderRepository(orderRepository);
-            checkTimePayment.setPayUtils(payUtils);
-            taskScheduler.schedule( checkTimePayment, new Date(System.currentTimeMillis() + Constant.PAYMENT_TIMEOUT)) ;
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Complete", paymentUrl));
     }
