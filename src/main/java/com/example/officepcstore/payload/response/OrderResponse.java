@@ -1,6 +1,6 @@
 package com.example.officepcstore.payload.response;
 
-import com.example.officepcstore.models.enity.ShippingDetail;
+import com.example.officepcstore.models.enity.Shipment;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class OrderResponse {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private String paymentType;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private ShippingDetail shippingDetail;
+    private Shipment shipment;
     private String state;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private Object createdDate;

@@ -25,7 +25,7 @@ public class RemakeCod extends RemakePaymentStep{
     public ResponseEntity<?> initializationPayment(HttpServletRequest httpServletRequest, Order order) {
         if (order != null && order.getStatusOrder().equals(Constant.ORDER_PROCESS)) {
                 order.setStatusOrder(Constant.ORDER_WAITING);
-                order.getPaymentInformation().getPayDetails().put("fullPayment", false);
+                order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
                 orderRepository.save(order);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));

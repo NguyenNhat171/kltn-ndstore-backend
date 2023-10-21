@@ -32,7 +32,7 @@ public class RecommendProductUtils  implements Runnable {
     public void run() {
         log.info("Start add recommend score!");
         if (!type.isBlank() && !catId.isBlank() && !brandId.isBlank() && userId != null) {
-            Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+            Optional<User> user = userRepository.findUserByIdAndStatusUser(userId, Constant.USER_ACTIVE);
             if (user.isPresent()) {
                 try {
                     addScoreToUser(user.get(),catId);

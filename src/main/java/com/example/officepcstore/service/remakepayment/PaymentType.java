@@ -4,19 +4,11 @@ import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
-import com.example.officepcstore.models.enity.PaymentInformation;
-import com.example.officepcstore.models.enity.ShippingDetail;
+import com.example.officepcstore.models.enity.PaymentOrderMethod;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.payload.request.PayReq;
-import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.repository.UserRepository;
 import com.example.officepcstore.security.jwt.JwtUtils;
-import com.example.officepcstore.service.payment.CodService;
-import com.example.officepcstore.service.payment.PaymentSteps;
-import com.example.officepcstore.service.payment.PaypalService;
-import com.example.officepcstore.service.payment.VnpayService;
-import com.example.officepcstore.utils.PayUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
@@ -28,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 @Service
@@ -60,8 +51,8 @@ public class PaymentType {
             if (order.isEmpty() || !order.get().getId().equals(id)) {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
-            PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
-            order.get().setPaymentInformation(paymentInformation);
+            PaymentOrderMethod paymentOrderMethod = new PaymentOrderMethod(null,paymentType.toUpperCase(), "", new HashMap<>());
+            order.get().setPaymentOrderMethod(paymentOrderMethod);
             orderRepository.save(order.get());
         } catch (NotFoundException e) {
             log.error(e.getMessage());
@@ -114,7 +105,7 @@ public class PaymentType {
 
     private void getRoleToCancel(HttpServletRequest request) {
         String userId = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request)).getId();
-        Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(userId, Constant.USER_ACTIVE);
         if (user.isEmpty() || !(user.get().getRole().equals(Constant.ROLE_ADMIN)))
             throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission!");
     }

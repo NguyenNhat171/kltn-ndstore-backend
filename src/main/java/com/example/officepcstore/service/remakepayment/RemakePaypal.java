@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 @AllArgsConstructor
@@ -62,10 +61,10 @@ public class RemakePaypal extends  RemakePaymentStep{
             for (Links links : payment.getLinks()) {
                 if (links.getRel().equals("approval_url")) {
                         if (!payment.getTransactions().isEmpty())
-                            order.getPaymentInformation().getPayDetails().put("amount", payment.getTransactions().get(0).getAmount());
-                        order.getPaymentInformation().setPaymentId(payment.getId());
-                        order.getPaymentInformation().setPaymentToken((links.getHref().split(PATTERN)[1]));
-                        order.getPaymentInformation().getPayDetails().put("fullPayment", false);
+                            order.getPaymentOrderMethod().getTransactionInformation().put("amount", payment.getTransactions().get(0).getAmount());
+                        order.getPaymentOrderMethod().setPaymentId(payment.getId());
+                        order.getPaymentOrderMethod().setPaymentToken((links.getHref().split(PATTERN)[1]));
+                        order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
                         orderRepository.save(order);
                         return ResponseEntity.status(HttpStatus.OK).body(
                                 new ResponseObjectData(true, "Payment complete", links.getHref()));
@@ -85,11 +84,11 @@ public class RemakePaypal extends  RemakePaymentStep{
             Payment payment= execute(paymentId, payerId);
             if (payment.getState().equals("approved")) {
                 String paymentToken = "EC-" + payment.getCart();
-                Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndStatusOrder(paymentToken, Constant.ORDER_PROCESS);
+                Optional<Order> order = orderRepository.findOrderByPaymentOrderMethod_PaymentTokenAndStatusOrder(paymentToken, Constant.ORDER_PROCESS);
                 if (order.isPresent()) {
-                    order.get().getPaymentInformation().getPayDetails().put("payer", payment.getPayer().getPayerInfo());
-                    order.get().getPaymentInformation().getPayDetails().put("paymentMethod", payment.getPayer().getPaymentMethod());
-                    order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
+                    order.get().getPaymentOrderMethod().getTransactionInformation().put("payer", payment.getPayer().getPayerInfo());
+                    order.get().getPaymentOrderMethod().getTransactionInformation().put("paymentMethod", payment.getPayer().getPaymentMethod());
+                    order.get().getPaymentOrderMethod().getTransactionInformation().put("fullPayment", true);
                     order.get().setStatusOrder(Constant.ORDER_WAITING);
                     orderRepository.save(order.get());
                 } else {
@@ -114,7 +113,7 @@ public class RemakePaypal extends  RemakePaymentStep{
     @Override
     @SneakyThrows
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
-        Optional<Order> order = orderRepository.findOrderByPaymentInformation_PaymentTokenAndStatusOrder(id, Constant.ORDER_PROCESS);
+        Optional<Order> order = orderRepository.findOrderByPaymentOrderMethod_PaymentTokenAndStatusOrder(id, Constant.ORDER_PROCESS);
         if (order.isPresent()) {
             order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
@@ -136,7 +135,7 @@ public class RemakePaypal extends  RemakePaymentStep{
     public Payment createPayPalPaymentSandBox(Order order, String currency, PaypalMethod method,
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
-        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPriceOrder().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())));
+        double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPriceOrder().add(new BigDecimal(order.getShipment().getServiceShipDetail().get("totalFeeShip").toString())));
         // Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
         Amount amount = new Amount(currency, String.format(String.valueOf(TotalMoneyVN)));
         Transaction transaction = new Transaction();

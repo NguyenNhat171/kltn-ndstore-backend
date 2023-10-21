@@ -1,5 +1,5 @@
 package com.example.officepcstore.models.enums;
 
-public enum EnumSocial {
+public enum AccountType {
     LOCAL, GOOGLE,FACEBOOK
 }

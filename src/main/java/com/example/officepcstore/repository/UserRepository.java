@@ -12,10 +12,10 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends MongoRepository<User,String> {
-    Optional<User> findUserByEmailAndState(String email, String state);
+    Optional<User> findUserByEmailAndStatusUser(String email, String state);
     Optional<User> findUserByEmail(String email);
-    Optional<User> findUserByIdAndState(String id, String state);
-   Page<User> findAllByState(String state, Pageable pageable);
+    Optional<User> findUserByIdAndStatusUser(String id, String state);
+   Page<User> findAllByStatusUser(String state, Pageable pageable);
    boolean existsByEmail(String email);
 
 }

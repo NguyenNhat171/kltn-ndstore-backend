@@ -8,7 +8,7 @@ import com.example.officepcstore.map.UserMap;
 import com.example.officepcstore.models.enity.Token;
 import com.example.officepcstore.models.enity.User;
 import com.example.officepcstore.models.enums.EnumMailType;
-import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.models.enums.AccountType;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.LoginReq;
 import com.example.officepcstore.payload.request.RegisterReq;
@@ -57,11 +57,11 @@ public class AuthService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Email or Password is wrong", ""));
         }
-        else if (userChecker.get().getState().equals(Constant.USER_BLOCK)) {
+        else if (userChecker.get().getStatusUser().equals(Constant.USER_BLOCK)) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Your account is block", ""));
          }
-        else if(userChecker.get().getState().equals(Constant.USER_UNVERIFIED)) {
+        else if(userChecker.get().getStatusUser().equals(Constant.USER_UNVERIFIED)) {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Your account is unconfirm", ""));
         }
@@ -72,7 +72,7 @@ public class AuthService {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
-                if (user.getUser().getSocial().equals(EnumSocial.LOCAL)) {
+                if (user.getUser().getAccountType().equals(AccountType.LOCAL)) {
 
                     LoginResponse res = userMapper.toLoginRes(user.getUser());
                     String access_token = jwtUtils.generateTokenFromUserId(user.getUser());
@@ -80,7 +80,7 @@ public class AuthService {
                     return ResponseEntity.status(HttpStatus.OK).body(
                             new ResponseObjectData(true, "Log in successfully ", res));
                 } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        user.getUser().getSocial() + " account");
+                        user.getUser().getAccountType() + " account");
             } catch (BadCredentialsException ex) {
 //            ex.printStackTrace();
                 throw new BadCredentialsException(ex.getMessage());
@@ -123,9 +123,9 @@ public class AuthService {
 
 
     public ResponseEntity<?> sendMailResetForgetPass(String email) {
-        Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (user.get().getSocial().equals(EnumSocial.LOCAL)) {
+            if (user.get().getAccountType().equals(AccountType.LOCAL)) {
                 try {
                     sendVerifyMailReset(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
@@ -136,15 +136,15 @@ public class AuthService {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
                 }
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getSocial() + " account");
+                    user.get().getAccountType() + " account");
         }
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
 
     public ResponseEntity<?> sendMailResetGetNewPass(String email) {
-        Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (user.get().getSocial().equals(EnumSocial.LOCAL)) {
+            if (user.get().getAccountType().equals(AccountType.LOCAL)) {
                 try {
                     sendMailResetNewPass(user.get());
                     return ResponseEntity.status(HttpStatus.OK).body(
@@ -155,7 +155,7 @@ public class AuthService {
                     throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
                 }
             } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getSocial() + " account");
+                    user.get().getAccountType() + " account");
         }
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
@@ -203,10 +203,10 @@ public class AuthService {
     }
 
     private ResponseEntity<?> verifyReset(String email, String otp) {
-        Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (!user.get().getSocial().equals(EnumSocial.LOCAL)) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getSocial() + " account");
+            if (!user.get().getAccountType().equals(AccountType.LOCAL)) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+                    user.get().getAccountType() + " account");
             Map<String, Object> res = new HashMap<>();
             boolean verify = false;
             if (LocalDateTime.now().isBefore(user.get().getToken().getExp())) {
@@ -228,12 +228,12 @@ public class AuthService {
     }
 
     private ResponseEntity<?> verifyRegister(String email, String otp) {
-        Optional<User> user = userRepository.findUserByEmailAndState(email, Constant.USER_UNVERIFIED);
+        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_UNVERIFIED);
         if (user.isPresent()) {
             boolean verify = false;
             if (LocalDateTime.now().isBefore(user.get().getToken().getExp())) {
                 if (user.get().getToken().getOtp().equals(otp)) {
-                    user.get().setState(Constant.USER_ACTIVE);
+                    user.get().setStatusUser(Constant.USER_ACTIVE);
                     user.get().setToken(null);
                     userRepository.save(user.get());
                     verify = true;

@@ -39,7 +39,7 @@ public class CartService {
     private final TaskScheduler taskScheduler;
 
     public ResponseEntity<?> getProductFromCart(String userId) {
-            Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+            Optional<User> user = userRepository.findUserByIdAndStatusUser(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             Optional<Order> order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {
@@ -56,7 +56,7 @@ public class CartService {
 
     @Transactional
     public ResponseEntity<?> createAndCheckProductInCart(String userId, CartReq req) {
-        Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(userId, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             Optional<Order> order = orderRepository.findOrderByUser_IdAndStatusOrder(new ObjectId(userId), Constant.ORDER_CART);
             if (order.isPresent()) {

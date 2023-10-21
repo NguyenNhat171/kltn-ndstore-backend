@@ -1,7 +1,7 @@
 package com.example.officepcstore.models.enity;
 
 
-import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.models.enums.AccountType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -42,9 +42,9 @@ public class User {
     private String role;
     private String avatar;
 
-    private EnumSocial social;
+    private AccountType accountType;
 
-    private String state;
+    private String statusUser;
     @ReadOnlyProperty
     @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
     @JsonIgnore
@@ -65,9 +65,9 @@ public class User {
     LocalDateTime createdDate;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
-    LocalDateTime lastModifiedDate;
+    LocalDateTime lastUpdateStatus;
 
-    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String state, EnumSocial social) {
+    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String statusUser, AccountType accountType) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -78,7 +78,7 @@ public class User {
         this.address = address;
         this.role = role;
         this.avatar = avatar;
-        this.state = state;
-        this.social = social;
+        this.statusUser = statusUser;
+        this.accountType = accountType;
     }
 }

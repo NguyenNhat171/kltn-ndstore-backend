@@ -1,7 +1,7 @@
 package com.example.officepcstore.security.oauth;
 
 
-import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.models.enums.AccountType;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -36,7 +36,7 @@ public class CustomOAuth2User implements OAuth2User {
     }
 
     public String getProfilePicture() {
-        if (EnumSocial.valueOf(oauth2ClientName.toUpperCase(Locale.ROOT)) == EnumSocial.FACEBOOK) {
+        if (AccountType.valueOf(oauth2ClientName.toUpperCase(Locale.ROOT)) == AccountType.FACEBOOK) {
             if(oauth2User.getAttributes().containsKey("picture")) {
                 Map<String, Object> pictureObj = (Map<String, Object>) oauth2User.getAttributes().get("picture");
                 if(pictureObj.containsKey("data")) {

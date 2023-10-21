@@ -1,8 +1,6 @@
 package com.example.officepcstore.service;
 
 import com.example.officepcstore.config.Constant;
-import com.example.officepcstore.excep.AppException;
-import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.OrderMap;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
@@ -11,15 +9,12 @@ import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.utils.PayUtils;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
-import org.cloudinary.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpResponse;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -153,10 +148,10 @@ public class OrderService {
         if(order.isPresent())
         {
                 order.get().setStatusOrder(Constant.ORDER_PROCESS_DELIVERY);
-            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", estimatedTimeDelivery);
+            order.get().getShipment().getServiceShipDetail().put("estimatedTime", estimatedTimeDelivery);
             orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Change state delivery complete", order.get().getShippingDetail().getServiceShipDetail()));
+                    new ResponseObjectData(true, "Change state delivery complete", order.get().getShipment().getServiceShipDetail()));
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                 new ResponseObjectData(false, "Not found order with id"+ orderId, ""));
     }
@@ -168,7 +163,7 @@ public class OrderService {
         if (order.isPresent()) {
                     order.get().setStatusOrder(Constant.ORDER_SUCCESS);
                     order.get().setLastUpdateStateDate(LocalDateTime.now());
-                    order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
+                    order.get().getPaymentOrderMethod().getTransactionInformation().put("fullPayment", true);
                     orderRepository.save(order.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Change state order", " "));

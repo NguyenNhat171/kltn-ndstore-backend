@@ -4,10 +4,9 @@ import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
-import com.example.officepcstore.models.enity.PaymentInformation;
-import com.example.officepcstore.models.enity.ShippingDetail;
+import com.example.officepcstore.models.enity.PaymentOrderMethod;
+import com.example.officepcstore.models.enity.Shipment;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.PayReq;
 import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
@@ -16,7 +15,6 @@ import com.example.officepcstore.security.jwt.JwtUtils;
 import com.example.officepcstore.utils.PayUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.message.Message;
 import org.bson.types.ObjectId;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -26,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
@@ -62,15 +58,15 @@ public class SelectPaymentService {
             if (order.isEmpty() || !order.get().getId().equals(id)) {
                 throw new NotFoundException("Not found any order with id: " + id);
             }
-            PaymentInformation paymentInformation= new PaymentInformation(null,paymentType.toUpperCase(), "", new HashMap<>());
+            PaymentOrderMethod paymentOrderMethod = new PaymentOrderMethod(null,paymentType.toUpperCase(), "", new HashMap<>());
 //            paymentInformation.getPayDetails().put("invoiceDate", LocalDateTime.now(Clock.systemDefaultZone()));
-            order.get().setPaymentInformation(paymentInformation);
-            ShippingDetail shippingDetail = new ShippingDetail(req.getName(), req.getPhone(),
+            order.get().setPaymentOrderMethod(paymentOrderMethod);
+            Shipment shipment = new Shipment(req.getName(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),req.getAddress(),req.getNote());
-            order.get().setShippingDetail(shippingDetail);
-            order.get().getShippingDetail().getServiceShipDetail().put("totalFeeShip", req.getShipFee());
-            order.get().getShippingDetail().getServiceShipDetail().put("serviceType", req.getServiceType());
-            order.get().getShippingDetail().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
+            order.get().setShipment(shipment);
+            order.get().getShipment().getServiceShipDetail().put("totalFeeShip", req.getShipFee());
+            order.get().getShipment().getServiceShipDetail().put("serviceType", req.getServiceType());
+            order.get().getShipment().getServiceShipDetail().put("estimatedTime", req.getEstimatedTime());
             order.get().setInvoiceDate(LocalDateTime.now());
             order.get().setTotalPriceOrder(order.get().getTotalPrice());
             order.get().setStatusOrder(Constant.ORDER_PROCESS);
@@ -127,7 +123,7 @@ public class SelectPaymentService {
 
     private void getRoleToCancel(HttpServletRequest request) {
         String userId = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request)).getId();
-        Optional<User> user = userRepository.findUserByIdAndState(userId, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(userId, Constant.USER_ACTIVE);
         if (user.isEmpty() || !(user.get().getRole().equals(Constant.ROLE_ADMIN)))
             throw new AppException(HttpStatus.FORBIDDEN.value(), "You don't have permission!");
     }

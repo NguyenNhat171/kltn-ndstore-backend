@@ -11,7 +11,7 @@ import java.util.Map;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ShippingDetail {
+public class Shipment {
     private String customerName;
     private String customerPhone;
     private String customerProvince;
@@ -23,7 +23,7 @@ public class ShippingDetail {
 
 
 
-  public ShippingDetail(String customerName, String customerPhone, String customerProvince, String customerDistrict, String customerWard, String customerAddress) {
+  public Shipment(String customerName, String customerPhone, String customerProvince, String customerDistrict, String customerWard, String customerAddress) {
         this.customerName = customerName;
         this.customerPhone = customerPhone;
         this.customerProvince = customerProvince;
@@ -32,7 +32,7 @@ public class ShippingDetail {
         this.customerAddress = customerAddress;
     }
 
-    public ShippingDetail(String customerName, String customerPhone, String customerProvince, String customerDistrict, String customerWard, String customerAddress, String customerNote) {
+    public Shipment(String customerName, String customerPhone, String customerProvince, String customerDistrict, String customerWard, String customerAddress, String customerNote) {
         this.customerName = customerName;
         this.customerPhone = customerPhone;
         this.customerProvince = customerProvince;

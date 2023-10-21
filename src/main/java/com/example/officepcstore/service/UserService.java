@@ -6,7 +6,7 @@ import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.UserMap;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.models.enums.AccountType;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.ChangePassReq;
 import com.example.officepcstore.payload.request.RegisterReq;
@@ -54,7 +54,7 @@ public class UserService {
 
 
     public ResponseEntity<?> findUserById(String id) {
-        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             UserResponse res = userMap.toUserRes(user.get());
             return ResponseEntity.status(HttpStatus.OK).body(
@@ -83,7 +83,7 @@ public class UserService {
         req.setPassword(passwordEncoder.encode(req.getPassword()));
         User user = userMap.toUser(req);
 
-        user.setState(Constant.USER_ACTIVE);
+        user.setStatusUser(Constant.USER_ACTIVE);
         try {
             userRepository.insert(user);
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> updateUserAvatar(String id, MultipartFile file) {
-        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             if (file != null && !file.isEmpty()) {
                 try {
@@ -116,7 +116,7 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<?> updateProfileUser(String id, UserReq userReq) {
-        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             user.get().setName(userReq.getName());
             user.get().setPhone(userReq.getPhone());
@@ -137,9 +137,9 @@ public class UserService {
 
     @Transactional
     public ResponseEntity<?> blockUser(String id) {
-        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            user.get().setState(Constant.USER_BLOCK);
+            user.get().setStatusUser(Constant.USER_BLOCK);
             userRepository.save(user.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Delete user success", ""));
@@ -151,14 +151,14 @@ public class UserService {
     public ResponseEntity<?> changeStateUserByAdmin(String id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            if(user.get().getState().equals(Constant.USER_BLOCK)) {
-                user.get().setState(Constant.USER_ACTIVE);
+            if(user.get().getStatusUser().equals(Constant.USER_BLOCK)) {
+                user.get().setStatusUser(Constant.USER_ACTIVE);
                 userRepository.save(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "Set active user success", user));
             }
-            else if(user.get().getState().equals(Constant.USER_ACTIVE)) {
-                user.get().setState(Constant.USER_BLOCK);
+            else if(user.get().getStatusUser().equals(Constant.USER_ACTIVE)) {
+                user.get().setStatusUser(Constant.USER_BLOCK);
                 userRepository.save(user.get());
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, "set block user success", user));
@@ -173,11 +173,11 @@ public class UserService {
     }
 
     public ResponseEntity<?> updatePassword(String id, ChangePassReq req) {
-        Optional<User> user = userRepository.findUserByIdAndState(id, Constant.USER_ACTIVE);
+        Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
-            if (!user.get().getSocial().equals(EnumSocial.LOCAL))
+            if (!user.get().getAccountType().equals(AccountType.LOCAL))
                 throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        user.get().getSocial() + " account");
+                        user.get().getAccountType() + " account");
             if (passwordEncoder.matches(req.getOldPass(), user.get().getPassword())
                     && !req.getNewPass().equals(req.getOldPass())) {
                 user.get().setPassword(passwordEncoder.encode(req.getNewPass()));
@@ -194,9 +194,9 @@ public class UserService {
     public ResponseEntity<?> resetForgetPassword(String id, ResetForgetPassReq req) {
         Optional<User> foundUser = userRepository.findById(id);
         if (foundUser.isPresent()) {
-            if (!foundUser.get().getSocial().equals(EnumSocial.LOCAL))
+            if (!foundUser.get().getAccountType().equals(AccountType.LOCAL))
                 throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                        foundUser.get().getSocial() + " account");
+                        foundUser.get().getAccountType() + " account");
             foundUser.get().setPassword(passwordEncoder.encode(req.getNewPass()));
             userRepository.save(foundUser.get());
             UserResponse userRes = userMap.toUserRes(foundUser.get());

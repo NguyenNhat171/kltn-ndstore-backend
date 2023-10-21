@@ -14,7 +14,7 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     Optional<Order> findOrderByUser_Id(ObjectId userId);
    Optional<Order> findOrderByUser_IdAndStatusOrder(ObjectId userId, String state);
 //  Optional<Order> findOrderByIdAndUser_Id(String orderId, ObjectId userId);
-    Optional<Order> findOrderByPaymentInformation_PaymentTokenAndStatusOrder(String token, String state);
+    Optional<Order> findOrderByPaymentOrderMethod_PaymentTokenAndStatusOrder(String token, String state);
    Optional<Order> findOrderByIdAndStatusOrder(String orderId, String state);
     Page<Order> findAllByStatusOrder(String state, Pageable pageable);
 //    Page<Order> findOrderByUser_Id(ObjectId userId, Pageable pageable);

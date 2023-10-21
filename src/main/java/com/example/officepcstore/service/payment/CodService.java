@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -34,7 +33,7 @@ public class CodService extends PaymentSteps {
             String checkUpdateSold =payUtils.putSold(order,true);
             if (checkUpdateQuantityProduct == null && checkUpdateSold==null) {
                 order.setStatusOrder(Constant.ORDER_WAITING);
-                order.getPaymentInformation().getPayDetails().put("fullPayment", false);
+                order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
                 orderRepository.save(order);
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));

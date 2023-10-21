@@ -1,13 +1,11 @@
 package com.example.officepcstore.map;
 
 import com.example.officepcstore.config.Constant;
-import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.User;
-import com.example.officepcstore.models.enums.EnumSocial;
+import com.example.officepcstore.models.enums.AccountType;
 import com.example.officepcstore.payload.request.RegisterReq;
 import com.example.officepcstore.payload.response.LoginResponse;
 import com.example.officepcstore.payload.response.UserResponse;
-import com.example.officepcstore.utils.StringUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +26,7 @@ public class UserMap {
         if (req != null) {
             return new User(req.getName(), req.getEmail(), req.getPassword(), req.getPhone(),
                     req.getProvince(), req.getDistrict(), req.getWard(),
-                    req.getAddress(), Constant.ROLE_USER, null, Constant.USER_UNVERIFIED, EnumSocial.LOCAL);
+                    req.getAddress(), Constant.ROLE_USER, null, Constant.USER_UNVERIFIED, AccountType.LOCAL);
         }
         return null;
     }
@@ -42,7 +40,7 @@ public class UserMap {
             userRes.setEmail(user.getEmail());
             userRes.setAvatar(user.getAvatar());
             userRes.setRole(user.getRole());
-            userRes.setState(user.getState());
+            userRes.setState(user.getStatusUser());
             userRes.setPhone(user.getPhone());
             userRes.setAddress(user.getAddress());
             userRes.setProvince(user.getProvince());

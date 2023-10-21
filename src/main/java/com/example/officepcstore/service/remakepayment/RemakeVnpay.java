@@ -35,7 +35,7 @@ public class RemakeVnpay extends RemakePaymentStep{
     @Override
     public ResponseEntity<?> initializationPayment(HttpServletRequest request, Order order) {
         order.setStatusOrder(Constant.ORDER_PROCESS);
-        order.getPaymentInformation().getPayDetails().put("fullPayment", false);
+        order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
         orderRepository.save(order);
         Map<String, Object> vnp_Params = mapVnPayParam(order, request);
 
@@ -80,10 +80,10 @@ public class RemakeVnpay extends RemakePaymentStep{
             throw new NotFoundException("Can not found order with id: " + id);
         }
         if (responseCode.equals(VnpayConfig.responseSuccessCode)) {
-            order.get().getPaymentInformation().getPayDetails().put("amount", request.getParameter(VnpayConfig.vnp_Amount));
-            order.get().getPaymentInformation().getPayDetails().put("bankCode", request.getParameter("vnp_BankCode"));
-            order.get().getPaymentInformation().getPayDetails().put("transactionNo", request.getParameter("vnp_TransactionNo"));
-            order.get().getPaymentInformation().getPayDetails().put("fullPayment", true);
+            order.get().getPaymentOrderMethod().getTransactionInformation().put("amount", request.getParameter(VnpayConfig.vnp_Amount));
+            order.get().getPaymentOrderMethod().getTransactionInformation().put("bankCode", request.getParameter("vnp_BankCode"));
+            order.get().getPaymentOrderMethod().getTransactionInformation().put("transactionNo", request.getParameter("vnp_TransactionNo"));
+            order.get().getPaymentOrderMethod().getTransactionInformation().put("fullPayment", true);
             order.get().setStatusOrder(Constant.ORDER_WAITING);
             orderRepository.save(order.get());
             response.sendRedirect(PaymentType.URL_PAYMENT + "true&cancel=false");
@@ -112,7 +112,7 @@ public class RemakeVnpay extends RemakePaymentStep{
     public Map<String, Object> mapVnPayParam(Order order, HttpServletRequest request) {
         String vnp_IpAddr = VnpayConfig.getIpAddress(request);
         String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-        String totalPriceOrder = String.valueOf((order.getTotalPriceOrder().add(new BigDecimal(order.getShippingDetail().getServiceShipDetail().get("totalFeeShip").toString())))
+        String totalPriceOrder = String.valueOf((order.getTotalPriceOrder().add(new BigDecimal(order.getShipment().getServiceShipDetail().get("totalFeeShip").toString())))
                 .multiply(BigDecimal.valueOf(100)));
         Map<String, Object> vnp_Params = new HashMap<>();
         vnp_Params.put(VnpayConfig.vnp_Version_k, VnpayConfig.vnp_Version);
