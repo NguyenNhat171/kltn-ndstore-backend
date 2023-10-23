@@ -23,22 +23,21 @@ public class CartController {
 
     @GetMapping(path = "/cart/get/all")
     public ResponseEntity<?> getAllProductFromCart (HttpServletRequest request){
-        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return cartService.getProductFromCart(user.getId());
+        User checkUser = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+            return cartService.getProductFromCart(checkUser.getId());
     }
 
     @PostMapping(path = "/cart/put")
     public ResponseEntity<?> putProductToCart (@RequestBody @Valid CartReq req,
                                                   HttpServletRequest request){
-        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return cartService.createAndCheckProductInCart(user.getId(), req);
-
+        User checkUser = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+            return cartService.createAndCheckProductInCart(checkUser.getId(), req);
     }
 
     @DeleteMapping(path = "/cart/remove/{productId}")
     public ResponseEntity<?> removeProductInCart (@PathVariable("productId") String orderItemId,
                                                   HttpServletRequest request){
-        User user = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
-            return cartService.removeProductFromCart(user.getId(), orderItemId);
+        User checkUser = jwtUtils.getUserFromJWT(jwtUtils.getJwtFromHeader(request));
+            return cartService.removeProductFromCart(checkUser.getId(), orderItemId);
     }
 }

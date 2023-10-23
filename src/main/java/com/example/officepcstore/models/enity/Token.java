@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class Token {
-    private String otp;
-    private LocalDateTime exp;
+    private String verificationCode;
+    private LocalDateTime expireTime;
 }

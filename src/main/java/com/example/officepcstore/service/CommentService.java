@@ -5,14 +5,12 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.CommentMap;
 import com.example.officepcstore.models.enity.CommentProduct;
 import com.example.officepcstore.models.enity.Order;
+import com.example.officepcstore.models.enity.OrderedProduct;
 import com.example.officepcstore.models.enity.User;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.CommentContentReq;
 import com.example.officepcstore.payload.response.CommentResponse;
-import com.example.officepcstore.repository.CommentRepository;
-import com.example.officepcstore.repository.OrderProductRepository;
-import com.example.officepcstore.repository.ProductRepository;
-import com.example.officepcstore.repository.UserRepository;
+import com.example.officepcstore.repository.*;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -35,6 +33,7 @@ public class CommentService {
     private final ProductRepository productRepository;
     private final CommentMap commentMap;
     private final OrderProductRepository orderProductRepository;
+    private final OrderRepository orderRepository;
 
     public ResponseEntity<?> getAllCommentProduct(String id, Pageable pageable) {
         Page<CommentProduct> reviews = commentRepository.findAllByProductComment_Id(new ObjectId(id), pageable);
@@ -55,19 +54,20 @@ public class CommentService {
                         new ResponseObjectData(true, "All Comment Product success ", commentRes));
         }
     }
-//    public ResponseEntity<?> createCommentByUser(String customerId, CommentContentReq commentContentReq)
-//    {
+    public ResponseEntity<?> createCommentByUser(String customerId, CommentContentReq commentContentReq)
+    {
 //        Optional<User> user = userRepository.findUserByIdAndStatusUser(customerId, Constant.USER_ACTIVE);
 //        if(user.isPresent())
 //            return ResponseEntity.status(HttpStatus.OK).body(
 //                    new ResponseObjectData(false, "Not found user "+customerId, ""));
 //        Optional<CommentProduct> checkComment = commentRepository.findCommentProductByUserComment_IdAndProductComment_Id(
 //                new ObjectId(customerId), new ObjectId(commentContentReq.getProductBuyId()));
+//        Optional<OrderedProduct> checkOrderedProduct=orderProductRepository.findOrderedProductByOrderProduct_Id(new ObjectId(commentContentReq.getProductBuyId()));
 //        if(checkComment.isPresent())
 //            return ResponseEntity.status(HttpStatus.OK).body(
 //                    new ResponseObjectData(false, "You have comment this product ", ""));
 //        else
-//
-//            return null;
-//    }
+
+            return null;
+    }
 }

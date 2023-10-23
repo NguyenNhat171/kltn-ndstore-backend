@@ -49,15 +49,15 @@ public class RecommendProductUtils  implements Runnable {
 
     public void addScoreToUser (User user, String id) {
         int catScore = 1;
-        if (user.getRecommendRating().containsKey(id)) {
-            catScore = user.getRecommendRating().get(id);
+        if (user.getSuggestedScore().containsKey(id)) {
+            catScore = user.getSuggestedScore().get(id);
             switch (type) {
                 case REVIEW_GOOD_TYPE: catScore+=5 ;break;
                 case CART_TYPE: catScore+=3 ;break;
                 default: catScore+=1;
             }
         }
-        user.getRecommendRating().put(id,
+        user.getSuggestedScore().put(id,
                 catScore);
     }
 }

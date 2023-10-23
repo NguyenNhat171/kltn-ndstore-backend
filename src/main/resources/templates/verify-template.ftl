@@ -196,13 +196,28 @@
                 </tr>
                 <!-- end button -->
 
+
+
                 <!-- start copy -->
                 <tr>
                     <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Xin vui lòng   <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email}> vào đây </a>  để xác nhận   </p>
+
+
+
+
+
                         <p style="margin: 0;"> Mã xác minh này gửi vào hòm thư của bạn sẽ hết hạn sau 10 phút. </p>
                     </td>
                 </tr>
+
+
+                <tr>
+                    <td align="center" style="border-radius:3px;background-color:#32CD32">
+                        <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email} style="display:inline-block;border:1px solid #32CD32;font-family:'Helvetica neue',Helvetica,Arial,Verdana,sans-serif;font-size:16px;color:#ffffff;text-decoration:none;border-radius:3px;padding:15px 40px">
+                            Bấm vào đây để thực hiện xác minh</a>
+                    </td>
+                </tr>
+
                 <!-- end copy -->
 
                 <!-- start copy -->
@@ -254,13 +269,13 @@
                 <!-- end unsubscribe -->
 
             </table>
-            </td>
-            </tr>
-            </table>
-            <![endif]-->
         </td>
     </tr>
-    <!-- end footer -->
+</table>
+<![endif]-->
+</td>
+</tr>
+<!-- end footer -->
 
 </table>
 <!-- end body -->

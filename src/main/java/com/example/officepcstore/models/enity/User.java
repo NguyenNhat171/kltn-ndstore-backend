@@ -59,7 +59,7 @@ public class User {
     private Token token;
     @JsonIgnore
     @Indexed
-    private Map<Object, Integer> recommendRating = new HashMap<>();
+    private Map<Object, Integer> suggestedScore = new HashMap<>();
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;

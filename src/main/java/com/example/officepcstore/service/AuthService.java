@@ -63,7 +63,7 @@ public class AuthService {
          }
         else if(userChecker.get().getStatusUser().equals(Constant.USER_UNVERIFIED)) {
             return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(false, "Your account is unconfirm", ""));
+                    new ResponseObjectData(false, "Your account is unconfirmed", ""));
         }
             else{
             try {
@@ -163,19 +163,19 @@ public class AuthService {
 
     @SneakyThrows
     public void sendVerifyMail(User user) {
-        String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        String verifyCode = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         Map<String, Object> model = new HashMap<>();
-        model.put("token", token);
-        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(10)));
+        model.put("token", verifyCode);
+        user.setToken(new Token(verifyCode, LocalDateTime.now().plusMinutes(10)));
         userRepository.save(user);
         mailService.sendEmail(user.getEmail(), model, EnumMailType.AUTH);
     }
     @SneakyThrows
     public void sendVerifyMailReset(User user) {
-        String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        String resetCode = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
         Map<String, Object> model = new HashMap<>();
-        model.put("token", token);
-        user.setToken(new Token(token, LocalDateTime.now().plusMinutes(10)));
+        model.put("token", resetCode);
+        user.setToken(new Token(resetCode, LocalDateTime.now().plusMinutes(10)));
         userRepository.save(user);
         mailService.sendEmail(user.getEmail(), model, EnumMailType.RESET);
     }
@@ -209,8 +209,8 @@ public class AuthService {
                     user.get().getAccountType() + " account");
             Map<String, Object> res = new HashMap<>();
             boolean verify = false;
-            if (LocalDateTime.now().isBefore(user.get().getToken().getExp())) {
-                if (user.get().getToken().getOtp().equals(otp)) {
+            if (LocalDateTime.now().isBefore(user.get().getToken().getExpireTime())) {
+                if (user.get().getToken().getVerificationCode().equals(otp)) {
                     res.put("id", user.get().getId());
                     res.put("token", jwtUtils.generateTokenFromUserId(user.get()));
                     verify = true;
@@ -231,8 +231,8 @@ public class AuthService {
         Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_UNVERIFIED);
         if (user.isPresent()) {
             boolean verify = false;
-            if (LocalDateTime.now().isBefore(user.get().getToken().getExp())) {
-                if (user.get().getToken().getOtp().equals(otp)) {
+            if (LocalDateTime.now().isBefore(user.get().getToken().getExpireTime())) {
+                if (user.get().getToken().getVerificationCode().equals(otp)) {
                     user.get().setStatusUser(Constant.USER_ACTIVE);
                     user.get().setToken(null);
                     userRepository.save(user.get());
