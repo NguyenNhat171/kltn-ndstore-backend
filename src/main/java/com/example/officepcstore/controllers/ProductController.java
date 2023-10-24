@@ -50,8 +50,8 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/find/search")
-    public ResponseEntity<?> search (@RequestParam("q") String query,
-                                     @PageableDefault(sort = "score") @ParameterObject Pageable pageable){
+    public ResponseEntity<?> search (@RequestParam("content") String query,
+                                     @PageableDefault(sort = "createDate") @ParameterObject Pageable pageable){
         if (query.isEmpty() || query.matches(".*[%<>&;'\0-].*"))
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid keyword");
         return productService.search(query, pageable);

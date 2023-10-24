@@ -38,4 +38,11 @@ public class CommentProduct {
     @LastModifiedDate
     LocalDateTime commentUpdateDate;
 
+    public CommentProduct(String review, double voteProduct, User userComment, Product productComment, LocalDateTime commentDate) {
+        this.review = review;
+        this.voteProduct = voteProduct;
+        this.userComment = userComment;
+        this.productComment = productComment;
+        this.commentDate = commentDate;
+    }
 }

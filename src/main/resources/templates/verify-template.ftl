@@ -213,7 +213,7 @@
 
                 <tr>
                     <td align="center" style="border-radius:3px;background-color:#32CD32">
-                        <a href=https://tlcn-fe.vercel.app/check-otp-register?email=${email} style="display:inline-block;border:1px solid #32CD32;font-family:'Helvetica neue',Helvetica,Arial,Verdana,sans-serif;font-size:16px;color:#ffffff;text-decoration:none;border-radius:3px;padding:15px 40px">
+                        <a href=http://localhost:3000/verify/{email} style="display:inline-block;border:1px solid #32CD32;font-family:'Helvetica neue',Helvetica,Arial,Verdana,sans-serif;font-size:16px;color:#ffffff;text-decoration:none;border-radius:3px;padding:15px 40px">
                             Bấm vào đây để thực hiện xác minh</a>
                     </td>
                 </tr>

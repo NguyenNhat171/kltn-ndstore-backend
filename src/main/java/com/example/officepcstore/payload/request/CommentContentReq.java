@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class CommentContentReq {
    private String description;
-   private String productBuyId;
+   private String productBuyOrderId;
    private double vote;
 
 }

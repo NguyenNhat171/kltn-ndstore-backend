@@ -1,264 +1,171 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
 <head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Email Confirmation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="telephone=no" name="format-detection">
+    <title></title>
+    <!--[if (mso 16)]>
     <style type="text/css">
-        /**
-         * Google webfonts. Recommended to include the .woff version for cross-client compatibility.
-         */
-        @media screen {
-            @font-face {
-                font-family: 'Source Sans Pro';
-                font-style: normal;
-                font-weight: 400;
-                src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'), url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff) format('woff');
-            }
-            @font-face {
-                font-family: 'Source Sans Pro';
-                font-style: normal;
-                font-weight: 700;
-                src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'), url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff) format('woff');
-            }
-        }
-        /**
-         * Avoid browser level font resizing.
-         * 1. Windows Mobile
-         * 2. iOS / OSX
-         */
-        body,
-        table,
-        td,
-        a {
-            -ms-text-size-adjust: 100%; /* 1 */
-            -webkit-text-size-adjust: 100%; /* 2 */
-        }
-        /**
-         * Remove extra space added to tables and cells in Outlook.
-         */
-        table,
-        td {
-            mso-table-rspace: 0pt;
-            mso-table-lspace: 0pt;
-        }
-        /**
-         * Better fluid images in Internet Explorer.
-         */
-        img {
-            -ms-interpolation-mode: bicubic;
-        }
-        /**
-         * Remove blue links for iOS devices.
-         */
-        a[x-apple-data-detectors] {
-            font-family: inherit !important;
-            font-size: inherit !important;
-            font-weight: inherit !important;
-            line-height: inherit !important;
-            color: inherit !important;
-            text-decoration: none !important;
-        }
-        /**
-         * Fix centering issues in Android 4.4.
-         */
-        div[style*="margin: 16px 0;"] {
-            margin: 0 !important;
-        }
-        body {
-            width: 100% !important;
-            height: 100% !important;
-            padding: 0 !important;
-            margin: 0 !important;
-        }
-        /**
-         * Collapse table borders to avoid space between cells.
-         */
-        table {
-            border-collapse: collapse !important;
-        }
-        a {
-            color: #1a82e2;
-        }
-        img {
-            height: auto;
-            line-height: 100%;
-            text-decoration: none;
-            border: 0;
-            outline: none;
-        }
+        a {text-decoration: none;}
     </style>
-
+    <![endif]-->
+    <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
+    <!--[if gte mso 9]>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG></o:AllowPNG>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
 </head>
-<body style="background-color: #e9ecef;">
 
-<!-- start preheader -->
-<div class="preheader" style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
-    Chúng tôi nhận được yêu cầu thiết lập lại mật khẩu cho tài khoản của bạn</div>
-<!-- end preheader -->
+<body>
+<div dir="ltr" class="es-wrapper-color">
+    <!--[if gte mso 9]>
+    <v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t">
+        <v:fill type="tile" color="#fafafa"></v:fill>
+    </v:background>
+    <![endif]-->
+    <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+        <tr>
+            <td class="esd-email-paddings" valign="top">
+                <table cellpadding="0" cellspacing="0" class="es-content esd-header-popover" align="center">
+                    <tbody>
+                    <tr>
+                        <td class="esd-stripe" align="center">
+                            <table bgcolor="#d9ead3" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: #d9ead3;">
+                                <tbody>
+                                <tr>
+                                    <td class="esd-structure es-p15t es-p20r es-p20l" align="left">
+                                        <table cellpadding="0" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td width="560" class="esd-container-frame" align="center" valign="top">
+                                                    <table cellpadding="0" cellspacing="0" width="100%">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td align="center" class="esd-block-image es-p10t es-p10b" style="font-size: 0px;"><a target="_blank"><img src="https://fchioyd.stripocdn.email/content/guids/CABINET_91d375bbb7ce4a7f7b848a611a0368a7/images/69901618385469411.png" alt style="display: block;" width="100"></a></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" class="esd-block-text es-m-txt-c es-p15t es-p15b es-p40r es-p10l es-m-p0r es-m-p0l" esd-links-underline="none">
+                                                                <h1><br></h1>
+                                                                <p style="text-align: left; font-size: 22px;">${title}</p>
+                                                                <p style="font-size: 20px;">Đây là mã xác nhận để thay đổi mật khẩu của tài khoản ${email}:</p>
+                                                        <tr>
+                                                            <td align="left" bgcolor="#d9ead3">
+                                                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                    <tr>
+                                                                        <td align="center" bgcolor="#d9ead3" style="padding: 12px;">
+                                                                            <table border="0" cellpadding="0" cellspacing="0">
+                                                                                <tr>
+                                                                                    <td style="border-radius:8px;background:#d9ead3;text-align:center">
+                                                                                        <div style="background:#ffffff;border:2px solid #000000;font-family:'Roboto',sans-serif;font-size:30px;line-height:1.1;text-align:center;text-decoration:none;display:block;border-radius:8px;font-weight:bold;padding:10px 40px">
+                                                                                            <span style="color:#000000;letter-spacing:5px">${token}</span>
+                                                                                        </div>
+                                                                                    </td>
 
-<!-- start body -->
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
 
-    <!-- start logo -->
-    <tr>
-        <td align="center">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                <tr>
-                    <td align="center" valign="top" >
-                        <h1 style="margin-TOP: 30px; font-size: 52px; font-weight: 700; letter-spacing: -1px; line-height: 48px;font-family: Arial, sans-serif;">ND Store</h1>
-                    </td>
-                </tr>
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
+                                                        </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="left" class="esd-block-text es-p10t es-p10l">
+                                                                <p style="font-size: 16px;"><br></p>
+                                                                <p style="font-size: 20px;"><b>Vui lòng đổi lại mật khẩu sau khi đăng nhập.</b></p>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="esd-structure es-p20b es-p20r es-p20l" align="left">
+                                        <table cellpadding="0" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td width="560" class="esd-container-frame" align="center" valign="top">
+                                                    <table cellpadding="0" cellspacing="0" width="100%" style="border-radius: 5px; border-collapse: separate;">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td align="left" class="esd-block-text es-m-txt-c es-p10t es-p10l">
+                                                                <p style="line-height: 150%; font-size: 18px;">Mã xác nhận có thời hạn trong 10 phút</p>
+                                                                <p style="font-size: 18px;">Nếu bạn có vấn đề trong quá trình đổi mật khẩu, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn.<br>Trân trọng!<br>ND Store</p>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td align="center" class="esd-block-text es-p10t es-p10b">
+                                                                <p><br></p>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table cellpadding="0" cellspacing="0" class="es-footer esd-footer-popover" align="center">
+                    <tbody>
+                    <tr>
+                        <td class="esd-stripe" align="center">
+                            <table class="es-footer-body" align="center" cellpadding="0" cellspacing="0" width="600" style="background-color: transparent;">
+                                <tbody>
+                                <tr>
+                                    <td class="esd-structure es-p20t es-p20b es-p20r es-p20l" align="left">
+                                        <table cellpadding="0" cellspacing="0" width="100%">
+                                            <tbody>
+                                            <tr>
+                                                <td width="560" class="esd-container-frame" align="left">
+                                                    <table cellpadding="0" cellspacing="0" width="100%">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td align="center" class="esd-block-text">
+                                                                <p style="font-size: 14px;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu đổi mật khẩu mới từ email ${email}. Nếu bạn không yêu cầu, bạn có thể yên tâm bỏ qua email này.</p>
+                                                                <p style="font-size: 14px;">©ND Store</p>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </td>
-            </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end logo -->
-
-    <!-- start hero -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-                <tr>
-                    <td align="left" bgcolor="#ffffff" style="padding: 36px 24px 0; font-family:  Arial, sans-serif; border-top: 3px solid #d4dadf;">
-                        <h1 style="margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -1px; line-height: 48px;">${title}</h1>
-                    </td>
-                </tr>
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-            </td>
-            </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end hero -->
-
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-
-                <!-- start copy -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family:Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;">Đây là mã xác nhận của tài khoản
-                            ${email}:</p>
-                    </td>
-                </tr>
-                <!-- end copy -->
-
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px;">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td style="border-radius:8px;background:#ffffff;text-align:center">
-                                                <div style="background:#ffffff;border:2px solid #000000;font-family:'Roboto',sans-serif;font-size:30px;line-height:1.1;text-align:center;text-decoration:none;display:block;border-radius:8px;font-weight:bold;padding:10px 40px">
-                                                    <span style="color:#000000;letter-spacing:5px">${token}</span>
-                                                </div>
-                                            </td>
-
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
-
-                <!-- start copy -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                        <p style="margin: 0;"> <b>Vui lòng đổi lại mật khẩu sau khi đăng nhập.</b>  </p>
-
-                    </td>
-                </tr>
-                <!-- end copy -->
-
-                <!-- start copy -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                        <p style="margin: 0;">Nếu bạn có vấn đề trong quá trình đổi mật khẩu, bạn đừng ngại phản hồi qua email này để Shop tiếp tục hỗ trợ bạn chu đáo hơn.
-                            <br>Trân trọng!
-                            <br> ND Store
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
-
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-            </td>
-            </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
-
-    <!-- start footer -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef" style="padding: 24px;">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
-
-                <!-- start permission -->
-                <tr>
-                    <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">Mail này được gửi này bởi vì chúng tôi nhận được yêu cầu đổi mật khẩu mới từ email ${email}. Nếu bạn không yêu cầu, bạn có thể yên tâm bỏ qua email này.</p>
-                    </td>
-                </tr>
-                <!-- end permission -->
-
-                <!-- start unsubscribe -->
-                <tr>
-                    <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                        <p style="margin: 0;">©ND Store</p>
-                    </td>
-                </tr>
-                <!-- end unsubscribe -->
-
-            </table>
-        </td>
-    </tr>
-</table>
-<![endif]-->
-</td>
-</tr>
-<!-- end footer -->
-
-</table>
-<!-- end body -->
-
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
+
 </html>
