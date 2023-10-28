@@ -4,6 +4,7 @@ import com.example.officepcstore.models.enity.product.Product;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public interface ProductRepository extends MongoRepository<Product, String> {
     Optional<Product> findProductByIdAndState(String id, String state);
     Page<Product> findAllByState(String state, Pageable pageable);
+    List<Product> findAllByState(String state);
 
     Page<Product> findAll(Pageable pageable);
   // @Query( value= "{ $and:[{'price': {$gte: ?0 , $lte: ?1}}] ," + "  'state' : 'enable'}")
@@ -37,7 +39,43 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
 
 //@Query(value="{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }")
-@Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }]," + "  'state' : 'enable'}")
-Page<Product> findAllByProductConfiguration(List<Map<String, String>> queryParams,Pageable pageable);
+//   @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }]," + "  'state' : 'enable'}")
+//   Page<Product> findAllByProductConfiguration(List<Map<String, String>> queryParams,Pageable pageable);
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 }]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndCategory_Id(List<Map<String, String>> queryParams,ObjectId categoryId,Pageable pageable);
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 }]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndCategory_Id(List<Map<String, String>> queryParams,ObjectId categoryId);
+
+//    @Query(value = "{ $and: ["
+//            + "{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },"
+//            + "{'category.id': ?1 },"
+//            + "{'state': 'enable' },"
+//            + "{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}"
+//            + "] }")
+@Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(
+            List<Map<String, String>> queryParams,
+            ObjectId categoryId,
+            long minPrice,
+            long maxPrice,
+            Pageable pageable);
+
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(
+            List<Map<String, String>> queryParams,
+            ObjectId categoryId,
+            long minPrice,
+            long maxPrice);
+//    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}]," + " 'state' : 'enable'}")
+//    Page<Product> findAllByProductConfigurationAndCategory_IdAndReducedPriceBetweenOrderByReducedPriceAsc(
+//            List<Map<String, String>> queryParams,
+//            ObjectId categoryId,
+//            long minPrice,
+//            long maxPrice,
+//            Pageable pageable);
+
+
 
 }

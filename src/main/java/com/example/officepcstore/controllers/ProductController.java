@@ -57,17 +57,60 @@ public class ProductController {
         return productService.search(query, pageable);
     }
 
-    @GetMapping(path = "/products/find/filter/search/config")
-    public ResponseEntity<?> filterProductConfig (@RequestParam Map<String, String> query,
-                                     @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+//    @GetMapping(path = "/products/find/filter/search/config")
+//    public ResponseEntity<?> filterProductConfig (@RequestParam Map<String, String> query,
+//                                     @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+//
+//        return productService.filterProductByConfig(query, pageable);
+//    }
 
-        return productService.filterProductByConfig(query, pageable);
+    @GetMapping(path = "/products/find/filter/category/search/config")
+    public ResponseEntity<?> filterProductConfigAndCategory (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId,
+                                                  @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
+
+        return productService.filterProductByConfigAndCategoryId(categoryId,query,pageable);
+    }
+
+        @GetMapping(path = "/products/find/filter/category/search/list/config")
+    public ResponseEntity<?> filterSortProductConfigAndCategoryPriceBetween (@RequestParam Map<String, String> query,
+                                                             @RequestParam (value = "categoryId") String categoryId,
+                                                             @RequestParam(value = "priceMin") BigDecimal min,
+                                                             @RequestParam(value = "priceMax" ) BigDecimal max,
+//                                                                         @RequestParam(value = "sortBy" ) String sortBy,
+//                                                                         @RequestParam(value = "sortDirection" ) Sort.Direction  sortDirection,
+                                                  @PageableDefault(size=20) @ParameterObject Pageable pageable){
+            if (categoryId.isBlank())
+            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Not found CategoryId");
+        return productService.filterPriceAndProductByConfigAndCategoryId(categoryId,query,min,max,pageable);
+    }
+
+
+    @GetMapping(path = "/products/find/filter/category/search/all/enable/config")
+    public ResponseEntity<?> filterListProductConfigAndCategory (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId
+                                                           ){
+
+        return productService.listFilterProductByConfigAndCategoryId(categoryId,query);
+    }
+
+    @GetMapping(path = "/products/find/filter/category/search/all/config")
+    public ResponseEntity<?> filterListProductConfigAndCategoryPriceBetween (@RequestParam Map<String, String> query,
+                                                                             @RequestParam (value = "categoryId") String categoryId,
+                                                                             @RequestParam(value = "priceMin") BigDecimal min,
+                                                                             @RequestParam(value = "priceMax" ) BigDecimal max){
+        if (categoryId.isBlank())
+            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Not found CategoryId");
+        return productService.listFilterPriceAndProductByConfigAndCategoryId(categoryId,query,min,max);
     }
 
 
     @GetMapping(path = "/products/get/enable/list/all")
     public ResponseEntity<?> findAllProductByUser (@PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
         return productService.findAllProductByUser(pageable);
+    }
+
+    @GetMapping(path = "/products/get/enable/list/find/all")
+    public ResponseEntity<?> getAllListProductByUser (){
+        return productService.findAllListProductByUser();
     }
 
     @GetMapping(path = "/products/get/filer/price/list/all")
