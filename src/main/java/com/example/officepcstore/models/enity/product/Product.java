@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -36,7 +37,9 @@ import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128
 public class  Product {
     @Id
     private String id;
+    @TextIndexed (weight = 8)
     private String name;
+    @TextIndexed (weight = 1)
     private String description;
     @Field(targetType = DECIMAL128)
     private BigDecimal price;

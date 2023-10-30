@@ -477,8 +477,7 @@ public class ProductService {
     public ResponseEntity<?> searchProductByKeyword(String key, Pageable pageable) {
         Page<Product> products;
         try {
-            products = productRepository.findAllBy(TextCriteria
-                            .forDefaultLanguage().matchingAny(key),
+            products = productRepository.findAllBy( key,
                     pageable);
         } catch (Exception e) {
             throw new NotFoundException("Can not found any product with: "+key);
@@ -494,8 +493,7 @@ public class ProductService {
     public ResponseEntity<?> searchProductByKeywordReturnList(String key) {
        List<Product> products;
         try {
-            products = productRepository.findAllBy(TextCriteria
-                            .forDefaultLanguage().matchingAny(key));
+            products = productRepository.findAllBy(key);
         } catch (Exception e) {
             throw new NotFoundException("Can not found any product with: " + key);
         }
