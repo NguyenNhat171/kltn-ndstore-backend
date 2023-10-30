@@ -24,7 +24,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Page<Product> findAll(Pageable pageable);
   // @Query( value= "{ $and:[{'price': {$gte: ?0 , $lte: ?1}}] ," + "  'state' : 'enable'}")
    Page <Product> findAllByPriceBetweenAndState( long priceMin,long PriceMax, String state,Pageable pageable);
-
+    List<Product> findAllBy(TextCriteria textCriteria);
  //   Page<Product> findAllByCategory_IdOrBrand_IdAndState(ObjectId catId, ObjectId brandId, String state, Pageable pageable);
 
 //    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +

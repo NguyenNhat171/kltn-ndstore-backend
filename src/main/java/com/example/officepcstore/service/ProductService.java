@@ -474,7 +474,7 @@ public class ProductService {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not found any product", ""));
     }
-    public ResponseEntity<?> search(String key, Pageable pageable) {
+    public ResponseEntity<?> searchProductByKeyword(String key, Pageable pageable) {
         Page<Product> products;
         try {
             products = productRepository.findAllBy(TextCriteria
@@ -485,6 +485,22 @@ public class ProductService {
         }
         List<AllProductResponse> resList = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> resp = getPageProductRes(products, resList);
+        if (resp != null) return resp;
+        else
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not found any product", ""));
+    }
+
+    public ResponseEntity<?> searchProductByKeywordReturnList(String key) {
+       List<Product> products;
+        try {
+            products = productRepository.findAllBy(TextCriteria
+                            .forDefaultLanguage().matchingAny(key));
+        } catch (Exception e) {
+            throw new NotFoundException("Can not found any product with: " + key);
+        }
+        List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+        ResponseEntity<?> resp = toGetListProductResponse(products, resList);
         if (resp != null) return resp;
         else
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
@@ -519,13 +535,13 @@ public class ProductService {
             product.get().setStock(productReq.getStock());
             product.get().setDiscount(productReq.getDiscount());
             if (!productReq.getCategory().equals(product.get().getCategory().getId())) {
-                Optional<Category> category = categoryRepository.findCategoryByIdAndState(productReq.getCategory(), Constant.ENABLE);
+                Optional<Category> category = categoryRepository.findById(productReq.getCategory());
                 if (category.isPresent())
                     product.get().setCategory(category.get());
                 else throw new NotFoundException("Not found category with id: "+productReq.getCategory());
             }
             if (!productReq.getBrand().equals(product.get().getBrand().getId())) {
-                Optional<Brand> brand = brandRepository.findBrandByIdAndState(productReq.getBrand(), Constant.ENABLE);
+                Optional<Brand> brand = brandRepository.findById(productReq.getBrand());
                 if (brand.isPresent())
                     product.get().setBrand(brand.get());
                 else throw new NotFoundException("Not found brand with id: "+productReq.getBrand());

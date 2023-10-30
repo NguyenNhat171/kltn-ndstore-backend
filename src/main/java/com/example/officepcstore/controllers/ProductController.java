@@ -50,11 +50,18 @@ public class ProductController {
     }
 
     @GetMapping(path = "/products/find/search")
-    public ResponseEntity<?> search (@RequestParam("content") String query,
+    public ResponseEntity<?> searchProduct (@RequestParam("content") String content,
                                      @PageableDefault(sort = "createDate") @ParameterObject Pageable pageable){
-        if (query.isEmpty() || query.matches(".*[%<>&;'\0-].*"))
+        if ( content.matches(".*[%<>&;'\0-].*")||content.isEmpty())
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid keyword");
-        return productService.search(query, pageable);
+        return productService.searchProductByKeyword(content, pageable);
+    }
+
+    @GetMapping(path = "/products/find/list/all/search")
+    public ResponseEntity<?> searchProductGetList (@RequestParam("content") String content){
+        if ( content.matches(".*[%<>&;'\0-].*")||content.isEmpty())
+            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid keyword");
+        return productService.searchProductByKeywordReturnList(content);
     }
 
 //    @GetMapping(path = "/products/find/filter/search/config")
@@ -92,7 +99,7 @@ public class ProductController {
         return productService.listFilterProductByConfigAndCategoryId(categoryId,query);
     }
 
-    @GetMapping(path = "/products/find/filter/category/search/all/config")
+    @GetMapping(path = "/products/find/filter/category/search/all/enable/price/config")
     public ResponseEntity<?> filterListProductConfigAndCategoryPriceBetween (@RequestParam Map<String, String> query,
                                                                              @RequestParam (value = "categoryId") String categoryId,
                                                                              @RequestParam(value = "priceMin") BigDecimal min,
