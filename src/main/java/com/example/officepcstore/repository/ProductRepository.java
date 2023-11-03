@@ -25,19 +25,22 @@ public interface ProductRepository extends MongoRepository<Product, String> {
   // @Query( value= "{ $and:[{'price': {$gte: ?0 , $lte: ?1}}] ," + "  'state' : 'enable'}")
    Page <Product> findAllByPriceBetweenAndState( long priceMin,long PriceMax, String state,Pageable pageable);
     @Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
-    List<Product> findAllBy(String textCriteria);
+    List<Product> findAllByKeyword(String textCriteria);
  //   Page<Product> findAllByCategory_IdOrBrand_IdAndState(ObjectId catId, ObjectId brandId, String state, Pageable pageable);
 
 //    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +
 //            "    'state' : 'enable'}")
 @Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
-    Page<Product> findAllBy(String textCriteria, Pageable pageable);
+    Page<Product> findAllByKeyword(String textCriteria, Pageable pageable);
 //    @Query(value = "{ $or: [{'category' : ?0},{'category':{$in: ?1}}] ," +
 //            "    'state' : 'enable'}")
     Page<Product> findAllByCategory_IdAndState(ObjectId id, String state ,Pageable pageable);
     Page<Product>findAllByBrand_IdAndState(ObjectId id, String state ,Pageable pageable);
     List<Product>findAllByBrand_IdAndState(ObjectId id,String state);
     List<Product>findAllByCategory_IdAndState(ObjectId id,String state);
+    List<Product> findAllByCategory_IdAndBrand_IdAndState(ObjectId categoryId, ObjectId brandId, String state);
+
+    Page<Product> findAllByCategory_IdAndBrand_IdAndState(ObjectId categoryId, ObjectId brandId, String state,Pageable pageable);
 
 
 //@Query(value="{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }")
@@ -48,6 +51,11 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Page<Product> findAllByProductConfigurationAndCategory_Id(List<Map<String, String>> queryParams,ObjectId categoryId,Pageable pageable);
     @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 }]," + " 'state' : 'enable'}")
     List<Product> findAllByProductConfigurationAndCategory_Id(List<Map<String, String>> queryParams,ObjectId categoryId);
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{ 'brand.id': ?2 }]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndCategory_IdAndBrand_Id(List<Map<String, String>> queryParams,ObjectId categoryId, ObjectId brandId,Pageable pageable);
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{ 'brand.id': ?2 }]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndCategory_IdAndBrand_Id(List<Map<String, String>> queryParams,ObjectId categoryId, ObjectId brandId);
 
 //    @Query(value = "{ $and: ["
 //            + "{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },"
@@ -68,6 +76,25 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product> findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(
             List<Map<String, String>> queryParams,
             ObjectId categoryId,
+            long minPrice,
+            long maxPrice);
+
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{ 'brand.id': ?2 },{'reducedPrice': { '$gte': ?3, '$lte': ?4 }}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndCategory_IdAndBrand_IdAndReducedPriceBetween(
+            List<Map<String, String>> queryParams,
+            ObjectId categoryId,
+            ObjectId brandId,
+            long minPrice,
+            long maxPrice,
+            Pageable pageable);
+
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{ 'brand.id': ?2 },{'reducedPrice': { '$gte': ?3, '$lte': ?4 }}]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndCategory_IdAndBrand_IdAndReducedPriceBetween(
+            List<Map<String, String>> queryParams,
+            ObjectId categoryId,
+            ObjectId brandId,
             long minPrice,
             long maxPrice);
 //    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}]," + " 'state' : 'enable'}")

@@ -202,17 +202,18 @@ public class ProductService {
 //    }
 
 
-    public ResponseEntity<?> filterProductByConfigAndCategoryId( String categoryId,Map<String, String> optionProduct,Pageable pageable)
+    public ResponseEntity<?> filterProductByConfigAndCategoryId( String categoryId,String brandId,Map<String, String> optionProduct,Pageable pageable)
     {
-        Page<Product> filteredProducts;
+        Page<Product> pageFilteredProducts;
         List<Map<String, String>> queryParamsList = new ArrayList<>();
         optionProduct.forEach((key, value) -> {
             Map<String, String> query = new HashMap<>();
-            if(key.equals("page") || key.equals("size")|| key.equals("categoryId"))
+            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("brandId"))
             {
                 query.remove("page");
                 query.remove("size");
                 query.remove("categoryId");
+                query.remove("brandId");
             }
             else
                 query.put(key, value);
@@ -223,38 +224,64 @@ public class ProductService {
                     new ResponseObjectData(false, "Not found any product", ""));
         }
             else{
-                if (optionProduct.isEmpty()) {
-                    filteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE, pageable);
-                    return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObjectData(true, "Get product success", filteredProducts));
-                } else {
-                    filteredProducts = productRepository.findAllByProductConfigurationAndCategory_Id(queryParamsList, new ObjectId(categoryId), pageable);
-                    List<AllProductResponse> listProduct = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-                    ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
-                    if (resp != null)
-                        return resp;
-                    else
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                                new ResponseObjectData(false, "Not found any product", ""));
-                }
+            if (optionProduct.isEmpty()) {
+                pageFilteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else if(optionProduct.isEmpty() && !brandId.isBlank() )
+            {
+                pageFilteredProducts = productRepository.findAllByCategory_IdAndBrand_IdAndState(new ObjectId(categoryId),new ObjectId(brandId), Constant.ENABLE,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
+            else if(!optionProduct.isEmpty()&& brandId.isBlank()){
+                pageFilteredProducts = productRepository.findAllByProductConfigurationAndCategory_Id(queryParamsList, new ObjectId(categoryId),pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else {
+                pageFilteredProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndBrand_Id(queryParamsList,new ObjectId(categoryId),new ObjectId(brandId) ,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp =getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
             }
     }
 
 
-    public ResponseEntity<?> filterPriceAndProductByConfigAndCategoryId(String categoryId, Map<String, String> optionProduct, BigDecimal priceMin, BigDecimal priceMax, Pageable pageable)
+    public ResponseEntity<?> filterPriceAndProductByConfigAndCategoryId(String categoryId,String brandId, Map<String, String> optionProduct, BigDecimal priceMin, BigDecimal priceMax, Pageable pageable)
     {
-        Page<Product> filteredProducts;
+        Page<Product> pageFilteredProducts;
         List<Map<String, String>> queryParamsList = new ArrayList<>();
 
         optionProduct.forEach((key, value) -> {
             Map<String, String> query = new HashMap<>();
-            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("sortBy") ||key.equals("priceMin") ||key.equals("priceMax"))
+            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("brandId") ||key.equals("priceMin") ||key.equals("priceMax"))
             {
                 query.remove("page");
                 query.remove("size");
                 query.remove("categoryId");
-                query.remove("sortBy");
-                query.remove("sortDirection");
                 query.remove("priceMin");
                 query.remove("priceMax");
             }
@@ -268,22 +295,51 @@ public class ProductService {
         }
         else {
             if (optionProduct.isEmpty()) {
-                filteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE, pageable);
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Get product success", filteredProducts));
-            } else {
-                    Long priceMinLong = priceMin.longValue();
-                    Long priceMaxLong = priceMax.longValue();
-//
-                    filteredProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(queryParamsList, new ObjectId(categoryId), priceMinLong, priceMaxLong, pageable);
-                    List<AllProductResponse> listProduct = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-                    ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
-                    if (resp != null)
-                        return resp;
-                    else
-                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                                new ResponseObjectData(false, "Not found any product", ""));
-                }
+                pageFilteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else if(optionProduct.isEmpty() && !brandId.isBlank() )
+            {
+                pageFilteredProducts = productRepository.findAllByCategory_IdAndBrand_IdAndState(new ObjectId(categoryId),new ObjectId(brandId), Constant.ENABLE,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
+            else if(!optionProduct.isEmpty()&& brandId.isBlank()){
+                Long priceMinLong = priceMin.longValue();
+                Long priceMaxLong = priceMax.longValue();
+                pageFilteredProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(queryParamsList, new ObjectId(categoryId), priceMinLong, priceMaxLong,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else {
+                Long priceMinLong = priceMin.longValue();
+                Long priceMaxLong = priceMax.longValue();
+                pageFilteredProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndBrand_IdAndReducedPriceBetween(queryParamsList,new ObjectId(categoryId),new ObjectId(brandId) , priceMinLong, priceMaxLong,pageable);
+                List<AllProductResponse> listProduct = pageFilteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp =getPageProductRes(pageFilteredProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
 
         }
     }
@@ -291,17 +347,18 @@ public class ProductService {
 
 
 
-    public ResponseEntity<?> listFilterProductByConfigAndCategoryId( String categoryId,Map<String, String> optionProduct)
+    public ResponseEntity<?> listFilterProductByConfigAndCategoryId( String categoryId,String brandId,Map<String, String> optionProduct)
     {
-        List<Product> filteredProducts;
+        List<Product> listFilterProducts ;
         List<Map<String, String>> optionParamsList = new ArrayList<>();
         optionProduct.forEach((key, value) -> {
             Map<String, String> query = new HashMap<>();
-            if(key.equals("page") || key.equals("size")|| key.equals("categoryId"))
+            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")|| key.equals("brandId"))
             {
                 query.remove("page");
                 query.remove("size");
                 query.remove("categoryId");
+                query.remove("brandId");
             }
             else
                 query.put(key, value);
@@ -313,39 +370,70 @@ public class ProductService {
         }
         else{
             if (optionProduct.isEmpty()) {
-                filteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE);
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Get product success", filteredProducts));
-            } else {
-                filteredProducts = productRepository.findAllByProductConfigurationAndCategory_Id(optionParamsList, new ObjectId(categoryId));
-                List<AllProductResponse> listProduct = filteredProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-                ResponseEntity<?> resp = toGetListProductResponse(filteredProducts, listProduct);
+                listFilterProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE);
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
                 if (resp != null)
                     return resp;
                 else
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                             new ResponseObjectData(false, "Not found any product", ""));
             }
+            else if(optionProduct.isEmpty() && !brandId.isBlank() )
+            {
+                listFilterProducts = productRepository.findAllByCategory_IdAndBrand_IdAndState(new ObjectId(categoryId),new ObjectId(brandId), Constant.ENABLE);
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
+            else if(!optionProduct.isEmpty()&& brandId.isBlank()){
+                listFilterProducts = productRepository.findAllByProductConfigurationAndCategory_Id(optionParamsList, new ObjectId(categoryId));
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else {
+                listFilterProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndBrand_Id(optionParamsList,new ObjectId(categoryId),new ObjectId(brandId));
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
+            //
         }
     }
 
 
 
 
-    public ResponseEntity<?> listFilterPriceAndProductByConfigAndCategoryId(String categoryId, Map<String, String> optionProduct, BigDecimal priceMin, BigDecimal priceMax)
+    public ResponseEntity<?> listFilterPriceAndProductByConfigAndCategoryId(String categoryId,String brandId, Map<String, String> optionProduct, BigDecimal priceMin, BigDecimal priceMax)
     {
        List<Product> listFilterProducts;
         List<Map<String, String>> listOptionProduct= new ArrayList<>();
 
         optionProduct.forEach((key, value) -> {
             Map<String, String> query = new HashMap<>();
-            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("priceMin") ||key.equals("priceMax"))
+            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("priceMin") ||key.equals("priceMax")||key.equals("brandId"))
             {
                 query.remove("page");
                 query.remove("size");
                 query.remove("categoryId");;
                 query.remove("priceMin");
                 query.remove("priceMax");
+                query.remove("brandId");
             }
             else
                 query.put(key, value);
@@ -355,12 +443,32 @@ public class ProductService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not found category", ""));
         }
+
         else {
+
             if (optionProduct.isEmpty()) {
                 listFilterProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE);
-                return ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Get product success", listFilterProducts));
-            } else {
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+            else if(optionProduct.isEmpty() && !brandId.isBlank() )
+            {
+                listFilterProducts = productRepository.findAllByCategory_IdAndBrand_IdAndState(new ObjectId(categoryId),new ObjectId(brandId), Constant.ENABLE);
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
+            else if(!optionProduct.isEmpty()&& brandId.isBlank()){
                 Long priceMinLong = priceMin.longValue();
                 Long priceMaxLong = priceMax.longValue();
                 listFilterProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(listOptionProduct, new ObjectId(categoryId), priceMinLong, priceMaxLong);
@@ -372,6 +480,19 @@ public class ProductService {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                             new ResponseObjectData(false, "Not found any product", ""));
             }
+            else {
+                Long priceMinLong = priceMin.longValue();
+                Long priceMaxLong = priceMax.longValue();
+                listFilterProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndBrand_IdAndReducedPriceBetween(listOptionProduct,new ObjectId(categoryId),new ObjectId(brandId) , priceMinLong, priceMaxLong);
+                List<AllProductResponse> listProduct = listFilterProducts.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+                ResponseEntity<?> resp = toGetListProductResponse(listFilterProducts, listProduct);
+                if (resp != null)
+                    return resp;
+                else
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                            new ResponseObjectData(false, "Not found any product", ""));
+            }
+
 
         }
     }
@@ -387,63 +508,6 @@ public class ProductService {
         return null;
     }
 
-
-//    public ResponseEntity<?> filterAndSortProductByConfigAndCategoryId(String categoryId, Map<String, String> optionProduct, BigDecimal priceMin, BigDecimal priceMax, Pageable pageable,String sortBy,String sortDirection)
-//    {
-//        Page<Product> filteredProducts;
-//        List<Map<String, String>> queryParamsList = new ArrayList<>();
-//
-//        optionProduct.forEach((key, value) -> {
-//            Map<String, String> query = new HashMap<>();
-//            if(key.equals("page") || key.equals("size")|| key.equals("categoryId")||key.equals("sortBy") ||key.equals("priceMin") ||key.equals("priceMax"))
-//            {
-//                query.remove("page");
-//                query.remove("size");
-//                query.remove("categoryId");
-//                query.remove("sortBy");
-//                query.remove("sortDirection");
-//                query.remove("priceMin");
-//                query.remove("priceMax");
-//            }
-//            else
-//                query.put(key, value);
-//            queryParamsList.add(query);
-//        });
-//        if(categoryId.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObjectData(false, "Not found any product", ""));
-//        }
-//        else {
-//            if (optionProduct.isEmpty()) {
-//                filteredProducts = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryId), Constant.ENABLE, pageable);
-//                return ResponseEntity.status(HttpStatus.OK).body(
-//                        new ResponseObjectData(true, "Get product success", filteredProducts));
-//            } else {
-//                if(priceMin.equals(0)&&priceMax.equals(0)){
-//                    filteredProducts = productRepository.findAllByProductConfigurationAndCategory_Id(queryParamsList, new ObjectId(categoryId), pageable);
-//                    List<AllProductResponse> listProduct = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-//                    ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
-//                    if (resp != null)
-//                        return resp;
-//                    else
-//                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                                new ResponseObjectData(false, "Not found any product", ""));
-//                }
-//                else {
-//                    Long priceMinLong = priceMin.longValue();
-//                    Long priceMaxLong = priceMax.longValue();
-//                    filteredProducts = productRepository.findAllByProductConfigurationAndCategory_IdAndReducedPriceBetween(queryParamsList, new ObjectId(categoryId), priceMinLong, priceMaxLong, pageable);
-//                    List<AllProductResponse> listProduct = filteredProducts.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
-//                    ResponseEntity<?> resp = getPageProductRes(filteredProducts, listProduct);
-//                    if (resp != null)
-//                        return resp;
-//                    else
-//                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                                new ResponseObjectData(false, "Not found any product", ""));
-//                }
-//            }
-//        }
-//    }
 
 
     public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
@@ -474,13 +538,12 @@ public class ProductService {
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not found any product", ""));
     }
-    public ResponseEntity<?> searchProductByKeyword(String key, Pageable pageable) {
+    public ResponseEntity<?> searchProductByKeyword(String keywordProduct, Pageable pageable) {
         Page<Product> products;
         try {
-            products = productRepository.findAllBy( key,
-                    pageable);
+            products = productRepository.findAllByKeyword(keywordProduct, pageable);
         } catch (Exception e) {
-            throw new NotFoundException("Can not found any product with: "+key);
+            throw new NotFoundException("Can not found any product with: "+keywordProduct);
         }
         List<AllProductResponse> resList = products.getContent().stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> resp = getPageProductRes(products, resList);
@@ -490,12 +553,12 @@ public class ProductService {
                     new ResponseObjectData(false, "Not found any product", ""));
     }
 
-    public ResponseEntity<?> searchProductByKeywordReturnList(String key) {
+    public ResponseEntity<?> searchProductByKeywordReturnList(String keywordProduct) {
        List<Product> products;
         try {
-            products = productRepository.findAllBy(key);
+            products = productRepository.findAllByKeyword(keywordProduct);
         } catch (Exception e) {
-            throw new NotFoundException("Can not found any product with: " + key);
+            throw new NotFoundException("Can not found any product with: " + keywordProduct);
         }
         List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
         ResponseEntity<?> resp = toGetListProductResponse(products, resList);

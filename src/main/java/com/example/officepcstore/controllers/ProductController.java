@@ -72,41 +72,44 @@ public class ProductController {
 //    }
 
     @GetMapping(path = "/products/find/filter/category/search/config")
-    public ResponseEntity<?> filterProductConfigAndCategory (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId,
+    public ResponseEntity<?> filterProductConfigAndCategoryAndBrand (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId,
+                                                                     @RequestParam (value = "brandId",defaultValue = "") String brandId,
                                                   @PageableDefault(size=20,sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
 
-        return productService.filterProductByConfigAndCategoryId(categoryId,query,pageable);
+        return productService.filterProductByConfigAndCategoryId(categoryId,brandId,query,pageable);
     }
 
         @GetMapping(path = "/products/find/filter/category/search/list/config")
-    public ResponseEntity<?> filterSortProductConfigAndCategoryPriceBetween (@RequestParam Map<String, String> query,
+    public ResponseEntity<?> filterSortProductConfigAndCategoryAndBrandPriceBetween (@RequestParam Map<String, String> query,
                                                              @RequestParam (value = "categoryId") String categoryId,
+                                                                                     @RequestParam (value = "brandId",defaultValue = "") String brandId,
                                                              @RequestParam(value = "priceMin") BigDecimal min,
                                                              @RequestParam(value = "priceMax" ) BigDecimal max,
-//                                                                         @RequestParam(value = "sortBy" ) String sortBy,
-//                                                                         @RequestParam(value = "sortDirection" ) Sort.Direction  sortDirection,
+//
                                                   @PageableDefault(size=20) @ParameterObject Pageable pageable){
             if (categoryId.isBlank())
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Not found CategoryId");
-        return productService.filterPriceAndProductByConfigAndCategoryId(categoryId,query,min,max,pageable);
+        return productService.filterPriceAndProductByConfigAndCategoryId(categoryId,brandId,query,min,max,pageable);
     }
 
 
     @GetMapping(path = "/products/find/filter/category/search/all/enable/config")
-    public ResponseEntity<?> filterListProductConfigAndCategory (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId
+    public ResponseEntity<?> filterListProductConfigAndCategoryAndBrand (@RequestParam Map<String, String> query, @RequestParam (value = "categoryId") String categoryId,
+                                                                           @RequestParam (value = "brandId",defaultValue = "") String brandId
                                                            ){
 
-        return productService.listFilterProductByConfigAndCategoryId(categoryId,query);
+        return productService.listFilterProductByConfigAndCategoryId(categoryId,brandId,query);
     }
 
     @GetMapping(path = "/products/find/filter/category/search/all/enable/price/config")
-    public ResponseEntity<?> filterListProductConfigAndCategoryPriceBetween (@RequestParam Map<String, String> query,
+    public ResponseEntity<?> filterListProductConfigAndCategoryAndBrandPriceBetween (@RequestParam Map<String, String> query,
                                                                              @RequestParam (value = "categoryId") String categoryId,
+                                                                                     @RequestParam (value = "brandId",defaultValue = "") String brandId,
                                                                              @RequestParam(value = "priceMin") BigDecimal min,
                                                                              @RequestParam(value = "priceMax" ) BigDecimal max){
         if (categoryId.isBlank())
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Not found CategoryId");
-        return productService.listFilterPriceAndProductByConfigAndCategoryId(categoryId,query,min,max);
+        return productService.listFilterPriceAndProductByConfigAndCategoryId(categoryId,brandId,query,min,max);
     }
 
 
