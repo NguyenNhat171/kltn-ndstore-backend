@@ -3,7 +3,6 @@ package com.example.officepcstore.models.enity;
 import com.example.officepcstore.models.enity.product.Product;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,34 +14,34 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "comments_product")
+@Document(collection = "reviews_product")
 @Data
 @NoArgsConstructor
-public class CommentProduct {
+public class ReviewProduct {
     @Id
     private String id;
-    private String review;
+    private String reviewDescription;
     private double voteProduct;
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
-    private User userComment;
+    private User userReview;
     @DocumentReference(lazy = true)
     @JsonIgnore
     @Indexed
-    private Product productComment;
+    private Product productReview;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    LocalDateTime commentDate;
+    LocalDateTime reviewDate;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
-    LocalDateTime commentUpdateDate;
+    LocalDateTime reviewUpdateDate;
 
-    public CommentProduct(String review, double voteProduct, User userComment, Product productComment, LocalDateTime commentDate) {
-        this.review = review;
+    public ReviewProduct(String reviewDescription, double voteProduct, User userReview, Product productReview, LocalDateTime reviewDate) {
+        this.reviewDescription = reviewDescription;
         this.voteProduct = voteProduct;
-        this.userComment = userComment;
-        this.productComment = productComment;
-        this.commentDate = commentDate;
+        this.userReview = userReview;
+        this.productReview = productReview;
+        this.reviewDate = reviewDate;
     }
 }

@@ -5,9 +5,9 @@ import lombok.Data;
 
 
 @Data
-public class CommentContentReq {
+public class ReviewContentReq {
    private String description;
-   private String productBuyOrderId;
+   private String productBuyId;
    private double vote;
 
 }

@@ -54,7 +54,7 @@ public class User {
     @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed
-    private List<CommentProduct> commentProducts;
+    private List<ReviewProduct> reviewProducts;
     @JsonIgnore
     private Token token;
     @JsonIgnore

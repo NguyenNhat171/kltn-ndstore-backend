@@ -3,9 +3,8 @@ package com.example.officepcstore.models.enity.product;
 
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
-import com.example.officepcstore.models.enity.CommentProduct;
+import com.example.officepcstore.models.enity.ReviewProduct;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +17,9 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.TextScore;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +55,7 @@ public class  Product {
     @ReadOnlyProperty
     @DocumentReference(lookup="{'product':?#{#self._id} }", lazy = true)
     @Indexed
-    private List<CommentProduct> commentProducts;
+    private List<ReviewProduct> reviewProducts;
     @Indexed
     private String state;
     private List<ProductImage> productImageList = new ArrayList<>();
@@ -103,9 +99,9 @@ public class  Product {
 
 
     @Transient
-    public int getAllCommentRate() {
+    public int getNumberProductVote() {
         try {
-            return commentProducts.size();
+            return reviewProducts.size();
         } catch (Exception e) {
             return 0;
         }

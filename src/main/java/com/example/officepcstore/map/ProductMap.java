@@ -53,7 +53,7 @@ public class ProductMap {
         BigDecimal discountPrice = new BigDecimal(discountCalculate);
         return new  AllProductResponse(req.getId(), req.getName(), req.getDescription(),
                 req.getPrice(),discountPrice, req.getDiscount(), req.getStock(), req.getSold(), req.getRate(),
-                req.getAllCommentRate(), req.getCategory().getId(),
+                req.getNumberProductVote(), req.getCategory().getId(),
                 req.getCategory().getTitleCategory(), req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getProductImageList(),req.getProductConfiguration());
     }
@@ -64,7 +64,7 @@ public class ProductMap {
                 .stripTrailingZeros().toPlainString();
         BigDecimal discountPrice = new BigDecimal(discountCalculate);
         return new ProductResponse(req.getId(), req.getName(), req.getDescription(),
-                req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getSold(), req.getRate(), req.getAllCommentRate(),
+                req.getPrice(),discountPrice,req.getDiscount(),req.getStock(), req.getSold(), req.getRate(), req.getNumberProductVote(),
                 req.getCategory().getId(), req.getCategory().getTitleCategory(),req.getBrand().getId(),
                 req.getBrand().getName(), req.getState(), req.getCreatedDate(),req.getProductImageList(),req.getProductConfiguration());
     }

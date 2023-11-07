@@ -8,14 +8,14 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Data
-public class CommentResponse {
+public class ReviewProductResponse {
     private String id;
-    private String review;
+    private String reviewDescription;
     private double rate;
-    private String userIdComment;
-    private String userNameComment;
-    private String  productIdComment;
-    private String  productNameComment;
+    private String userIdReview;
+    private String userNameReview;
+    private String  productIdReview;
+    private String  productNameReview;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
     private LocalDateTime commentCreateDate;
 }
