@@ -29,7 +29,7 @@ public class OrderMap {
 public OrderResponse getOrderDetailResponse (Order order) {
     OrderResponse orderRes =  new OrderResponse(order.getId(), order.getUser().getId(), order.getUser().getName(),
             order.getTotalProduct(), order.getTotalPriceOrder(), order.getStatusOrder(), order.getInvoiceDate(),order.getLastUpdateStateDate());
-    orderRes.setItems(order.getOrderedProducts().stream().map(CartMap::toCartProductOrderRes).collect(Collectors.toList()));
+    orderRes.setItems(order.getOrderDetails().stream().map(CartMap::toCartProductOrderRes).collect(Collectors.toList()));
     orderRes.setPaymentType(order.getPaymentOrderMethod().getPaymentType());
     orderRes.setPaymentInfo(order.getPaymentOrderMethod().getTransactionInformation());
     orderRes.setShipment(order.getShipment());

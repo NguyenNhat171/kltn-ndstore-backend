@@ -23,7 +23,7 @@ import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderedProduct {
+public class OrderDetail {
     @Id
     private String id;
     @DocumentReference
@@ -71,7 +71,7 @@ public class OrderedProduct {
 //        this.order = order;
 //    }
 
-    public OrderedProduct(Product orderProduct, long quantity, Order order) {
+    public OrderDetail(Product orderProduct, long quantity, Order order) {
         this.orderProduct = orderProduct;
         this.quantity = quantity;
         this.order = order;

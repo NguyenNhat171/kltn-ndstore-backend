@@ -23,7 +23,7 @@ public class PayUtils {
     @Synchronized
     @Transactional
     public String checkStockAndQuantityToUpdateProduct(Order order, boolean checkPayment) {
-        order.getOrderedProducts().forEach(item -> {
+        order.getOrderDetails().forEach(item -> {
                 if (checkPayment) {
                     if ( item.getOrderProduct().getStock() < item.getQuantity()) {
                         order.setStatusOrder(Constant.ORDER_CART);
@@ -44,7 +44,7 @@ public class PayUtils {
 
 
     public String compareStockAndProduct(Order order, boolean checkPayment) {
-        order.getOrderedProducts().forEach(item -> {
+        order.getOrderDetails().forEach(item -> {
             if (checkPayment) {
                 if ( item.getOrderProduct().getStock() < item.getQuantity()) {
                     order.setStatusOrder(Constant.ORDER_CART);
@@ -61,7 +61,7 @@ public class PayUtils {
     @Synchronized
     @Transactional
     public String putSold(Order order, boolean checkPayment) {
-        order.getOrderedProducts().forEach(item -> {
+        order.getOrderDetails().forEach(item -> {
             if (checkPayment) {
             item.getOrderProduct().setSold(item.getOrderProduct().getSold() + item.getQuantity());
             } else item.getOrderProduct().setSold(item.getOrderProduct().getSold() - item.getQuantity());
@@ -77,7 +77,7 @@ public class PayUtils {
     @Synchronized
     @Transactional
     public void updateProductPriceOrder(Order order) {
-        order.getOrderedProducts().forEach(item -> {
+        order.getOrderDetails().forEach(item -> {
                 item.setProductOrderPrice(item.getOrderProduct().getReducedPrice());
             try {
                 orderProductRepository.save(item);

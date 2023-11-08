@@ -3,7 +3,7 @@ package com.example.officepcstore.service;
 import com.example.officepcstore.config.Constant;
 import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.models.enity.Order;
-import com.example.officepcstore.models.enity.OrderedProduct;
+import com.example.officepcstore.models.enity.OrderDetail;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.response.GoodsInventoryResponse;
@@ -98,9 +98,9 @@ public class StatisticalService {
         Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_SUCCESS, Pageable.unpaged());
         Map<String, Long> SalesMap = new HashMap<>();
         for (Order order : orderList) {
-            for (OrderedProduct orderedProduct : order.getOrderedProducts()) {
-                String productId = orderedProduct.getOrderProduct().getId();
-                long quantity = orderedProduct.getQuantity();
+            for (OrderDetail orderDetail : order.getOrderDetails()) {
+                String productId = orderDetail.getOrderProduct().getId();
+                long quantity = orderDetail.getQuantity();
                 SalesMap.put(productId, SalesMap.getOrDefault(productId, 0L) + quantity);
             }
         }
