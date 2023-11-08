@@ -106,7 +106,7 @@ public class ReviewProductService {
                 ReviewProduct createReviewProduct =
                         new ReviewProduct(reviewContentReq.getDescription(), reviewContentReq.getVote(), user.get(), checkProduct.get(), LocalDateTime.now());
                 reviewProductRepository.save(createReviewProduct);
-            double voteReviewProduct = ((checkProduct.get().getRate() * (checkProduct.get().getNumberProductVote() - 1)) + reviewContentReq.getVote())/ checkProduct.get().getNumberProductVote();
+            double voteReviewProduct = (checkProduct.get().getRate() + reviewContentReq.getVote())/ checkProduct.get().getNumberProductVote();
             checkProduct.get().setRate( voteReviewProduct);
             productRepository.save(checkProduct.get());
                 return    ResponseEntity.status(HttpStatus.OK).body(
