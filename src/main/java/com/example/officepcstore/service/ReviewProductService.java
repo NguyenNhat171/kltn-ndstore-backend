@@ -90,7 +90,7 @@ public class ReviewProductService {
     public ResponseEntity<?> createReviewByUser(String customerId, ReviewContentReq reviewContentReq)
     {
         Optional<User> user = userRepository.findUserByIdAndStatusUser(customerId, Constant.USER_ACTIVE);
-        if(user.isPresent())
+        if(user.isEmpty())
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(false, "Not found user "+customerId, ""));
         Optional<ReviewProduct> checkComment = reviewProductRepository.findReviewProductByUserReview_IdAndProductReview_Id(
