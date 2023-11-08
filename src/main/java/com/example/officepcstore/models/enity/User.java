@@ -51,7 +51,7 @@ public class User {
     @Indexed
     private List<Order> orders;
     @ReadOnlyProperty
-    @DocumentReference(lookup="{'user':?#{#self._id} }", lazy = true)
+    @DocumentReference(lookup="{'userReview':?#{#self._id} }", lazy = true)
     @JsonIgnore
     @Indexed
     private List<ReviewProduct> reviewProducts;

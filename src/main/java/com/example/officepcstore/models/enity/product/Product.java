@@ -53,7 +53,7 @@ public class  Product {
     private Brand brand;
     private double rate = 0;
     @ReadOnlyProperty
-    @DocumentReference(lookup="{'product':?#{#self._id} }", lazy = true)
+    @DocumentReference(lookup="{'productReview':?#{#self._id} }", lazy = true)
     @Indexed
     private List<ReviewProduct> reviewProducts;
     @Indexed
