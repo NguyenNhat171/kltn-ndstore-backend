@@ -141,24 +141,24 @@ public class AuthService {
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
 
-    public ResponseEntity<?> sendMailResetGetNewPass(String email) {
-        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
-        if (user.isPresent()) {
-            if (user.get().getAccountType().equals(AccountType.LOCAL)) {
-                try {
-                    sendMailResetNewPass(user.get());
-                    return ResponseEntity.status(HttpStatus.OK).body(
-                            new ResponseObjectData(true, "Send email reset password success", " "));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    log.error(e.getMessage());
-                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
-                }
-            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-                    user.get().getAccountType() + " account");
-        }
-        throw new NotFoundException("Can not found user with email " + email + " is activated");
-    }
+//    public ResponseEntity<?> sendMailResetGetNewPass(String email) {
+//        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
+//        if (user.isPresent()) {
+//            if (user.get().getAccountType().equals(AccountType.LOCAL)) {
+//                try {
+//                    sendMailResetNewPass(user.get());
+//                    return ResponseEntity.status(HttpStatus.OK).body(
+//                            new ResponseObjectData(true, "Send email reset password success", " "));
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    log.error(e.getMessage());
+//                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
+//                }
+//            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
+//                    user.get().getAccountType() + " account");
+//        }
+//        throw new NotFoundException("Can not found user with email " + email + " is activated");
+//    }
 
 
     @SneakyThrows
@@ -180,15 +180,15 @@ public class AuthService {
         mailService.sendEmail(user.getEmail(), model, EnumMailType.RESET);
     }
 
-    @SneakyThrows
-    public void sendMailResetNewPass(User user) {
-        String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
-        Map<String, Object> model = new HashMap<>();
-        model.put("token", token);
-        user.setPassword(passwordEncoder.encode(token));
-        userRepository.save(user);
-        mailService.sendEmail(user.getEmail(), model, EnumMailType.RESET);
-    }
+//    @SneakyThrows
+//    public void sendMailResetNewPass(User user) {
+//        String token = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+//        Map<String, Object> model = new HashMap<>();
+//        model.put("token", token);
+//        user.setPassword(passwordEncoder.encode(token));
+//        userRepository.save(user);
+//        mailService.sendEmail(user.getEmail(), model, EnumMailType.RESET);
+//    }
 
 
     public ResponseEntity<?> verifyOTP(VerifyReq req) {
