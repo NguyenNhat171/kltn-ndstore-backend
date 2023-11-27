@@ -7,16 +7,22 @@ import com.example.officepcstore.models.enity.OrderDetail;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.response.GoodsInventoryResponse;
+import com.example.officepcstore.payload.response.SaleResponse;
+import com.example.officepcstore.repository.OrderProductRepository;
 import com.example.officepcstore.repository.OrderRepository;
 import com.example.officepcstore.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +35,8 @@ import java.util.*;
 public class ReportService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
+
+    private final OrderProductRepository orderProductRepository;
     public ResponseEntity<?> getOrderProductSalesReport(String beginDay, String endDay) {
 
         LocalDateTime startDate = LocalDateTime.now();
@@ -76,7 +84,10 @@ public class ReportService {
     }
 
 
-    public ResponseEntity<?> getOrderSale(String beginDay, String endDay) {
+
+
+
+    public ResponseEntity<?> getTotalOrderProductSaleReport(String beginDay, String endDay) {
 
         LocalDateTime startDate = LocalDateTime.now();
         LocalDateTime endDate = LocalDateTime.now();
@@ -96,20 +107,34 @@ public class ReportService {
             for (OrderDetail orderDetail : order.getOrderDetails()) {
                 String productId = orderDetail.getOrderProduct().getId();
                 long quantity = orderDetail.getQuantity();
-                SalesMap.put(productId, SalesMap.getOrDefault(productId, 0L) + quantity);
+                SalesMap.put(productId,SalesMap.getOrDefault(productId, 0L) + quantity);
             }
         }
         List<GoodsInventoryResponse> saleList = new ArrayList<>();
         for (Map.Entry<String, Long> entry : SalesMap.entrySet()) {
             String productId = entry.getKey();
             long count= entry.getValue();
-            Product product = productRepository.findById(productId).orElse(null);
+            BigDecimal totalPrice = BigDecimal.ZERO;
 
+            // Tìm tất cả OrderDetail có productId trong orderList
+            for (Order order : orderList) {
+                for (OrderDetail orderDetail : order.getOrderDetails()) {
+                    if (orderDetail.getOrderProduct().getId().equals(productId)) {
+                        BigDecimal productPr = orderDetail.getProductOrderPrice();
+                        long quantity = orderDetail.getQuantity();
+                        BigDecimal productTotalPrice = productPr.multiply(BigDecimal.valueOf(quantity));
+                        totalPrice = totalPrice.add(productTotalPrice);
+                    }
+                }
+            }
+            Product product = productRepository.findById(productId).orElse(null);
+       //     OrderDetail orderDetail = orderProductRepository.findOrderedProductByOrderProduct_Id(new ObjectId(productId));
             if (product != null) {
                 GoodsInventoryResponse goodsInventoryResponse= new GoodsInventoryResponse();
                 goodsInventoryResponse.setId(productId);
                 goodsInventoryResponse.setName(product.getName());
                 goodsInventoryResponse.setSalable(count);
+                goodsInventoryResponse.setStatPriceProduct(totalPrice);
                 saleList.add(goodsInventoryResponse);
             }
         }
@@ -121,4 +146,66 @@ public class ReportService {
                         new ResponseObjectData(false, "Cant not Statistical ", "")
                 );
     }
+
+
+    public ResponseEntity<?> getTotalSalesRevenue(String from, String to, String type) {
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = LocalDateTime.now();
+        String typeDate = "dd-MM-yyyy";
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
+        try {
+            if (!from.isBlank()) startDate = LocalDate.parse(from, df).atStartOfDay();
+            if (!to.isBlank()) endDate = LocalDate.parse(to, df).atStartOfDay();
+        } catch (DateTimeParseException e) {
+            log.error(e.getMessage());
+            e.printStackTrace();
+            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Incorrect date format");
+        }
+        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_SUCCESS, Pageable.unpaged());
+        switch (type) {
+            case "all" -> {
+                orderList = orderRepository.findAllByStatusOrder(Constant.ORDER_SUCCESS, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastUpdateStateDate").ascending()));
+                typeDate = "";
+            }
+            case "month" -> typeDate = "MM-yyyy";
+            case "year" -> typeDate = "yyyy";
+        }
+        List<SaleResponse> totalSales = getTotalSales(orderList, typeDate);
+        if (totalSales.size()>0)
+            return ResponseEntity.status(HttpStatus.OK).body(new ResponseObjectData(true, "Statistical complete", totalSales));
+        else
+     return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                new ResponseObjectData(false, "Cant not Statistical ", ""));
+//        return totalSales.size() > 0 ? ResponseEntity.status(HttpStatus.OK).body(
+//                new ResponseObjectData(true, "Statistical complete", totalSales)) :
+//                ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                        new ResponseObjectData(false, "Cant not Statistical ", "")
+//                );
+    }
+
+    public List<SaleResponse> getTotalSales(Page<Order> orderList, String pattern) {
+        List<SaleResponse> ordersSaleResList = new ArrayList<>();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern(pattern);
+        if (orderList.getSize() > 0) {
+            SaleResponse ordersSaleRes = new SaleResponse();
+            int quantity = 1;
+            for (int i = 0; i <= orderList.getSize() - 1; i++) {
+                String dateFormat = df.format(orderList.getContent().get(i).getLastUpdateStateDate());
+                if (i == 0 || !ordersSaleRes.getDate().equals(dateFormat)) {
+                    if (i > 0) ordersSaleResList.add(ordersSaleRes);
+                    if (dateFormat.isBlank()) dateFormat = "all";
+                    ordersSaleRes = new SaleResponse(dateFormat,
+                            orderList.getContent().get(i).getTotalPriceOrder(), quantity);
+                } else {
+                    quantity++;
+                    ordersSaleRes.setRevenue(ordersSaleRes.getRevenue().add(orderList.getContent().get(i).getTotalPriceOrder()));
+                    ordersSaleRes.setQuantity(quantity);
+                }
+                if (i == orderList.getSize() - 1) ordersSaleResList.add(ordersSaleRes);
+            }
+        }
+        return ordersSaleResList;
+    }
+
+
 }

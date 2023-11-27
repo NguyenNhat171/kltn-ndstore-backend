@@ -11,6 +11,7 @@ import com.example.officepcstore.models.enums.EnumMailType;
 import com.example.officepcstore.models.enums.AccountType;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.LoginReq;
+import com.example.officepcstore.payload.request.ProviderReq;
 import com.example.officepcstore.payload.request.RegisterReq;
 import com.example.officepcstore.payload.request.VerifyReq;
 import com.example.officepcstore.payload.response.LoginResponse;
@@ -41,7 +42,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Transactional
 @Slf4j
 @AllArgsConstructor
-public class AuthService {
+public class AccountService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -88,6 +89,35 @@ public class AuthService {
         }
     }
 
+
+    public ResponseEntity<?> loginProvider(ProviderReq req)
+    {
+        Optional<User> checkingUser = userRepository.findUserByEmailAndAccountType(req.getEmail(),AccountType.GOOGLE);
+        if(!checkingUser.isPresent()){
+        User user = new User(req.getName(), req.getEmail(), Constant.ROLE_USER, req.getAvatar(), AccountType.GOOGLE,Constant.USER_ACTIVE);
+            if (user != null) {
+                try {
+                    userRepository.save(user);
+                } catch (Exception e) {
+                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
+                }
+            }
+        }
+        Optional<User> getUser = userRepository.findUserByEmailAndStatusUser(req.getEmail(), Constant.USER_ACTIVE);
+        if(getUser.isPresent()) {
+            String tokenLogin= jwtUtils.generateTokenFromUserId(getUser.get());
+            LoginResponse account = userMapper.toLoginRes(getUser.get());
+           account.setAccessToken(tokenLogin);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Successfully ", account)
+            );
+        }
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not Found This Account ", "")
+            );
+
+    }
 
     public ResponseEntity<?> registerAccount(RegisterReq req) {
         if (userRepository.existsByEmail(req.getEmail()))

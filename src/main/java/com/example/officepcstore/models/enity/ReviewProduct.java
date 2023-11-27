@@ -33,9 +33,9 @@ public class ReviewProduct {
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime reviewDate;
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    @LastModifiedDate
-    LocalDateTime reviewUpdateDate;
+//    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+//    @LastModifiedDate
+//    LocalDateTime reviewUpdateDate;
 
     public ReviewProduct(String reviewDescription, double voteProduct, User userReview, Product productReview, LocalDateTime reviewDate) {
         this.reviewDescription = reviewDescription;

@@ -23,8 +23,8 @@ import java.util.Objects;
 public class MailService {
     private JavaMailSender mailSender;
     private Configuration configuration;
-    final String AUTH_TEMPLATE = "verify-template.ftl";
-    final String RESET_TEMPLATE = "reset-template.ftl";
+    final String AUTH_TEMPLATE = "register-email.ftl";
+    final String RESET_TEMPLATE = "reset-email.ftl";
     final String STORE_EMAIL = "officecomputershop@gmail.com";
     final String TYPE_EMAIL = "text/html";
     final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản NDStore Website";

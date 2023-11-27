@@ -8,5 +8,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface OrderProductRepository extends MongoRepository<OrderDetail, String> {
-//    Optional<OrderDetail>findOrderedProductByOrderProduct_Id(ObjectId productId);
+   Optional<OrderDetail>findOrderedProductByOrderProduct_Id(ObjectId productId);
 }

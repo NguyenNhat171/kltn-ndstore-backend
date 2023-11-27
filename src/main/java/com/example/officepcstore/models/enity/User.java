@@ -81,4 +81,13 @@ public class User {
         this.statusUser = statusUser;
         this.accountType = accountType;
     }
+
+    public User(String name, String email, String role, String avatar, AccountType accountType, String statusUser) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
+        this.avatar = avatar;
+        this.accountType = accountType;
+        this.statusUser = statusUser;
+    }
 }
