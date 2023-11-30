@@ -51,16 +51,16 @@ private final CategoryMap categoryMap;
             listCategory = categoryRepository.findAll(pageable);
         else
             listCategory = categoryRepository.findAllByState(state, pageable);
-        List<CategoryResponse> brandResList = listCategory.stream().map(categoryMap::getCategoryResponse).collect(Collectors.toList());
+        List<CategoryResponse> categoryResList = listCategory.stream().map(categoryMap::getCategoryResponse).collect(Collectors.toList());
         Map<String, Object> cateResp = new HashMap<>();
         cateResp.put("totalPage", listCategory.getTotalPages());
         cateResp.put("totalCategory", listCategory.getTotalElements());
-        cateResp.put("listCategory",brandResList);
-        if (brandResList.size() > 0)
+        cateResp.put("listCategory",categoryResList);
+        if (categoryResList.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get all category success", cateResp));
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not Found any category", ""));
     }
 
@@ -79,7 +79,7 @@ private final CategoryMap categoryMap;
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get category success", category));
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not found category"+id, ""));
     }
 
@@ -89,7 +89,7 @@ private final CategoryMap categoryMap;
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get category success", category));
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not found category"+id,""));
     }
 

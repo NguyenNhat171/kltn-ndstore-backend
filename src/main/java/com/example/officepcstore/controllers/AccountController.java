@@ -35,17 +35,9 @@ public class AccountController {
             return accountService.sendMailResetForgetPass(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
-    @PostMapping("/social/account")
-    public ResponseEntity<?> registerSocial(@RequestBody ProviderReq providerReq) {
-        return accountService.loginProvider(providerReq);
-    }
-
-//    @PostMapping("mail/forget/new/pass/account")
-//    public ResponseEntity<?> getResetNewPass( @RequestParam(value ="email") String email)
-//    {
-//        if (!email.isBlank())
-//            return authService.sendMailResetGetNewPass(email);
-//        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
+//    @PostMapping("/social/account")
+//    public ResponseEntity<?> registerSocial(@RequestBody ProviderReq providerReq) {
+//        return accountService.loginProvider(providerReq);
 //    }
 
     @PostMapping("/verifyaccount/account")
@@ -57,9 +49,4 @@ public class AccountController {
         if (!email.isBlank()) return accountService.sendMailGetOTP(email);
         throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
     }
-//    @PostMapping("account/getotp/reset")
-//    public ResponseEntity<?> getOTPMailReset(@RequestParam(value ="email")String email) {
-//        if (!email.isBlank()) return authService.sendMailResetGetOTP(email);
-//        throw new AppException(HttpStatus.BAD_REQUEST.value(), "Email is required");
-//    }
 }

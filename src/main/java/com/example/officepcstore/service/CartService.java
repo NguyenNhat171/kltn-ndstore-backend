@@ -76,7 +76,8 @@ public class CartService {
     @Transactional
     @Synchronized
     ResponseEntity<?> createCart(User user, CartReq req) {
-        if (req.getQuantity() <= 0) throw new AppException(HttpStatus.BAD_REQUEST.value(), "Invalid quantity");
+        if (req.getQuantity() <= 0)
+            throw new AppException(HttpStatus.BAD_REQUEST.value(), "Some thing wrong quantity");
         Optional<Product> product = productRepository.findById(req.getProductId());
         if (product.isPresent()) {
             checkProductQuantityAndStock(product.get(), req);
@@ -89,7 +90,8 @@ public class CartService {
 //                    productOption.get().getProduct().getBrand().getId(), userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ResponseObjectData(true, "Product have add to cart first time complete", res));
-        } else throw new NotFoundException("Not found product with id: "+req.getProductId());
+        } else
+            throw new NotFoundException("Not found product with id: "+req.getProductId());
     }
 
     private ResponseEntity<?> putProductToCartAvailable(Order order, CartReq req) {

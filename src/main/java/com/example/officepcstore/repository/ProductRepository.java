@@ -30,12 +30,17 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
 //    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +
 //            "    'state' : 'enable'}")
+
+
+    Page<Product> findAllBy(TextCriteria textCriteria, Pageable pageable);
 @Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
     Page<Product> findAllByKeyword(String textCriteria, Pageable pageable);
 //    @Query(value = "{ $or: [{'category' : ?0},{'category':{$in: ?1}}] ," +
 //            "    'state' : 'enable'}")
     Page<Product> findAllByCategory_IdAndState(ObjectId id, String state ,Pageable pageable);
+    Page<Product> findAllByCategory_Id(ObjectId id ,Pageable pageable);
     Page<Product>findAllByBrand_IdAndState(ObjectId id, String state ,Pageable pageable);
+    Page<Product>findAllByBrand_Id(ObjectId id ,Pageable pageable);
     List<Product>findAllByBrand_IdAndState(ObjectId id,String state);
     List<Product>findAllByCategory_IdAndState(ObjectId id,String state);
     List<Product> findAllByCategory_IdAndBrand_IdAndState(ObjectId categoryId, ObjectId brandId, String state);

@@ -23,14 +23,12 @@ import java.util.Objects;
 public class MailService {
     private JavaMailSender mailSender;
     private Configuration configuration;
-    final String AUTH_TEMPLATE = "register-email.ftl";
-    final String RESET_TEMPLATE = "reset-email.ftl";
-    final String STORE_EMAIL = "officecomputershop@gmail.com";
     final String TYPE_EMAIL = "text/html";
     final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản NDStore Website";
-    final String TITLE_EMAIL_RESET = "Thiết lập lại mật khẩu NDStore Website";
-
-
+    final String TITLE_EMAIL_RESET = "Mã xác minh để đặt lại mật khẩu NDStore Website";
+    final String VERIFY_MAIL = "register-email.ftl";
+    final String RESET_MAIL = "reset-email.ftl";
+    final String STORE_EMAIL = "officecomputershop@gmail.com";
     public void sendEmail(String toEmail, Map<String,Object> model,
                           EnumMailType type) throws MessagingException, IOException, TemplateException {
         log.info(Thread.currentThread().getName()+ "- send email start");
@@ -39,11 +37,11 @@ public class MailService {
         Template template =null;
         configuration.setClassForTemplateLoading(this.getClass(), "/templates");
         if (type.equals(EnumMailType.AUTH)) {
-            template = configuration.getTemplate(AUTH_TEMPLATE);
+            template = configuration.getTemplate(VERIFY_MAIL);
             model.put("title", TITLE_EMAIL_AUTH);
         }
         else if (type.equals(EnumMailType.RESET)){
-            template = configuration.getTemplate(RESET_TEMPLATE);
+            template = configuration.getTemplate(RESET_MAIL);
             model.put("title", TITLE_EMAIL_RESET);
         }
         model.put("email", toEmail);

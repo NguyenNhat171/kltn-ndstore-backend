@@ -90,34 +90,34 @@ public class AccountService {
     }
 
 
-    public ResponseEntity<?> loginProvider(ProviderReq req)
-    {
-        Optional<User> checkingUser = userRepository.findUserByEmailAndAccountType(req.getEmail(),AccountType.GOOGLE);
-        if(!checkingUser.isPresent()){
-        User user = new User(req.getName(), req.getEmail(), Constant.ROLE_USER, req.getAvatar(), AccountType.GOOGLE,Constant.USER_ACTIVE);
-            if (user != null) {
-                try {
-                    userRepository.save(user);
-                } catch (Exception e) {
-                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-                }
-            }
-        }
-        Optional<User> getUser = userRepository.findUserByEmailAndStatusUser(req.getEmail(), Constant.USER_ACTIVE);
-        if(getUser.isPresent()) {
-            String tokenLogin= jwtUtils.generateTokenFromUserId(getUser.get());
-            LoginResponse account = userMapper.toLoginRes(getUser.get());
-           account.setAccessToken(tokenLogin);
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(true, "Successfully ", account)
-            );
-        }
-        else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObjectData(false, "Not Found This Account ", "")
-            );
-
-    }
+//    public ResponseEntity<?> loginProvider(ProviderReq req)
+//    {
+//        Optional<User> checkingUser = userRepository.findUserByEmailAndAccountType(req.getEmail(),AccountType.GOOGLE);
+//        if(!checkingUser.isPresent()){
+//        User user = new User(req.getName(), req.getEmail(), Constant.ROLE_USER, req.getAvatar(), AccountType.GOOGLE,Constant.USER_ACTIVE);
+//            if (user != null) {
+//                try {
+//                    userRepository.save(user);
+//                } catch (Exception e) {
+//                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
+//                }
+//            }
+//        }
+//        Optional<User> getUser = userRepository.findUserByEmailAndStatusUser(req.getEmail(), Constant.USER_ACTIVE);
+//        if(getUser.isPresent()) {
+//            String tokenLogin= jwtUtils.generateTokenFromUserId(getUser.get());
+//            LoginResponse account = userMapper.toLoginRes(getUser.get());
+//           account.setAccessToken(tokenLogin);
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Successfully ", account)
+//            );
+//        }
+//        else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObjectData(false, "Not Found This Account ", "")
+//            );
+//
+//    }
 
     public ResponseEntity<?> registerAccount(RegisterReq req) {
         if (userRepository.existsByEmail(req.getEmail()))
@@ -250,7 +250,7 @@ public class AccountService {
             } else {
                 user.get().setToken(null);
                 userRepository.save(user.get());
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObjectData(false, "OTP with email: " + email + " is expired" , ""));
             }
         }
@@ -273,7 +273,7 @@ public class AccountService {
             } else {
                 user.get().setToken(null);
                 userRepository.save(user.get());
-                return ResponseEntity.status(HttpStatus.OK).body(
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                         new ResponseObjectData(false, "OTP with email: " + email + " is expired" , ""));
             }
         }
