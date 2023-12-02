@@ -18,9 +18,11 @@ public interface  BrandRepository extends MongoRepository<Brand, String> {
     Optional<Brand> findBrandByIdAndState(String id, String state);
   //@Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
 //  @Query("{$text: {$search: ?0}}")
-//    Page<Brand> getAllBrandByNameDes(String nameBrand,Pageable pageable);
+//    Page<Brand> getAllBrandByNameSort(String nameBrand,Pageable pageable);
     Page<Brand> findAllByName(String name, Pageable pageable);
+    Page<Brand> findAllByNameLikeIgnoreCase(String name, Pageable pageable);
     Page<Brand> findAllByState(String state, Pageable pageable);
+    Page<Brand> findAllByStateAndNameLikeIgnoreCase(String state, String name, Pageable pageable);
     Page<Brand> findAll( Pageable pageable);
 
 }

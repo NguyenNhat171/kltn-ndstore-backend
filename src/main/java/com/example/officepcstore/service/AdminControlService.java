@@ -45,14 +45,22 @@ public class AdminControlService {
     private final CategoryMap categoryMap;
     private final OrderMap orderMap;
 
-    public ResponseEntity<?> searchBrandNameInAdmin(String nameBrand,Pageable pageable) {
+    public ResponseEntity<?> searchBrandNameInAdmin(String nameBrand,String state,Pageable pageable) {
         Page<Brand> brandResult;
-        if(nameBrand.isBlank())
+        if(!nameBrand.isBlank() && state.isBlank())
         {
-            brandResult  = brandRepository.findAll(pageable);
+            brandResult =brandRepository.findAllByNameLikeIgnoreCase(nameBrand, pageable);
+
+        }
+        else if(!nameBrand.isBlank() && !state.isBlank()){
+            brandResult = brandRepository.findAllByStateAndNameLikeIgnoreCase(state,nameBrand,pageable);
+        }
+        else if(!state.isBlank() && nameBrand.isBlank())
+        {
+             brandResult= brandRepository.findAllByState(state,pageable);
         }
         else {
-            brandResult =brandRepository.findAllByName(nameBrand, pageable);
+            brandResult  = brandRepository.findAll(pageable);
         }
         List<BrandResponse> brandResList = brandResult.stream().map(brandMap::getBrandResponse).collect(Collectors.toList());
         Map<String, Object> brandResp = new HashMap<>();
@@ -69,14 +77,20 @@ public class AdminControlService {
     }
 
 
-    public ResponseEntity<?> searchCategoryNameInAdmin(String nameCategory,Pageable pageable) {
+    public ResponseEntity<?> searchCategoryNameInAdmin(String nameCategory,String state,Pageable pageable) {
         Page<Category> resultPageCategory;
-        if(nameCategory.isBlank())
+        if(nameCategory.isBlank() && state.isBlank())
         {
             resultPageCategory  = categoryRepository.findAll(pageable);
         }
+        else if(!state.isBlank() && nameCategory.isBlank())
+        {
+            resultPageCategory =categoryRepository.findAllByState(state,pageable);
+        }
+        else if(!state.isBlank() && !nameCategory.isBlank())
+        { resultPageCategory = categoryRepository.findAllByTitleCategoryLikeIgnoreCaseAndState(nameCategory,state, pageable);}
         else  {
-            resultPageCategory = categoryRepository.findAllByTitleCategory(nameCategory, pageable);
+            resultPageCategory = categoryRepository.findAllByTitleCategoryLikeIgnoreCase(nameCategory, pageable);
         }
         List<CategoryResponse> categoryResList =  resultPageCategory.stream().map(categoryMap::getCategoryResponse).collect(Collectors.toList());
         Map<String, Object> cateResp = new HashMap<>();
@@ -91,23 +105,27 @@ public class AdminControlService {
                     new ResponseObjectData(false, "Get brand success", ""));
     }
 
-
+// email expect
     public ResponseEntity<?> searchUserByOption(String emailUser, String statusUser, String roleUser, Pageable pageable) {
         Page<User> pageFilterUser;
         Map<String,Object>  userHashMap = new HashMap<>();
-        if (!statusUser.isBlank() &&emailUser.isBlank()) {
-            pageFilterUser = userRepository.findAllByStatusUser(statusUser, pageable);
-        } else if (!emailUser.isBlank()&&statusUser.isBlank()) {
-            pageFilterUser = userRepository.findUsersByEmail(emailUser,pageable);
+        if(!emailUser.isBlank())
+        {
+            pageFilterUser = userRepository.findAllByEmailLikeIgnoreCase(emailUser,pageable);
         }
-        else if(!roleUser.isBlank()&& statusUser.isBlank() && emailUser.isBlank()){
+        else if (!statusUser.isBlank() &&emailUser.isBlank()) {
+            if(roleUser.isBlank())
+            pageFilterUser = userRepository.findAllByStatusUser(statusUser, pageable);
+            else
+                pageFilterUser = userRepository.findAllByStatusUserAndRole(statusUser,roleUser,pageable);
+        }
+        else if(!roleUser.isBlank()&& statusUser.isBlank()){
             pageFilterUser = userRepository.findUserByRole(roleUser,pageable);
         }
         else {
             pageFilterUser = userRepository.findAll(pageable);
         }
         List<UserResponse> userSearch = pageFilterUser.stream().map(userMap::toUserRes).collect(Collectors.toList());
-
         userHashMap.put("allPage", pageFilterUser.getTotalPages());
         userHashMap.put("allQuantity", pageFilterUser.getTotalElements());
         userHashMap.put("listUser", userSearch);
@@ -115,22 +133,85 @@ public class AdminControlService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get all account success", userHashMap));
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not Found any account", ""));
     }
 
 
-    public ResponseEntity<?> searchFilterProductAdminPage(String categoryProId, String brandProId, String productName, Pageable pageable) {
+//    public ResponseEntity<?> searchFilterProductAdminPage(String categoryProId, String brandProId, String productName,String status, Pageable pageable) {
+//        Page<Product> getProductResultPage;
+//        Map<String,Object>  productPageMap = new HashMap<>();
+//        if (!categoryProId.isBlank()) {
+//            if(brandProId.isBlank()  && status.isBlank()) {
+//                getProductResultPage = productRepository.findAllByCategory_Id(new ObjectId(categoryProId), pageable);
+//            }
+//            else if(!status.isBlank())
+//            {
+//                getProductResultPage = productRepository.findAllByCategory_IdAndState(new ObjectId(categoryProId),status,pageable);
+//            }
+//            else
+//                getProductResultPage= productRepository.findAllByCategory_IdAndBrand_IdAndState(new ObjectId(categoryProId),new ObjectId(brandProId),status,pageable);
+//        }
+//        else if (!brandProId.isBlank())
+//        {
+//            if(categoryProId.isBlank() &&status.isBlank()) {
+//                getProductResultPage = productRepository.findAllByBrand_Id(new ObjectId(brandProId), pageable);
+//            }
+//            else
+//                getProductResultPage =productRepository.findAllByBrand_IdAndState(new ObjectId(brandProId),status,pageable);
+//
+//        }
+//        else if(!productName.isBlank()&& categoryProId.isBlank()&& brandProId.isBlank()){
+//            getProductResultPage = productRepository.findAllBy(TextCriteria
+//                    .forDefaultLanguage().matchingAny(productName),pageable);
+//        }
+//        else if(!status.isBlank())
+//        {
+//            getProductResultPage = productRepository.findAllByState(status,pageable);
+//        }
+//        else {
+//            getProductResultPage = productRepository.findAll(pageable);
+//        }
+//        List<AllProductResponse>productResponses = getProductResultPage.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+//        productPageMap.put("list",productResponses);
+//        productPageMap.put("totalQuantity", getProductResultPage.getTotalElements());
+//        productPageMap.put("totalPage", getProductResultPage.getTotalPages());
+//        if (productResponses.size() > 0)
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Get all product success",productPageMap));
+//        else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObjectData(false, "Not Found any product", ""));
+//    }
+
+
+    public ResponseEntity<?> searchUpdateFilterProductAdminPage(String categoryProId, String brandProId, String productName, Pageable pageable) {
         Page<Product> getProductResultPage;
         Map<String,Object>  productPageMap = new HashMap<>();
-        if (!categoryProId.isBlank() && brandProId.isBlank()) {
-            getProductResultPage = productRepository.findAllByCategory_Id(new ObjectId(categoryProId), pageable);
-        } else if (!brandProId.isBlank()&& categoryProId.isBlank()) {
-            getProductResultPage = productRepository.findAllByBrand_Id(new ObjectId(brandProId),pageable);
+        if (!categoryProId.isBlank()) {
+            if(brandProId.isBlank()  && productName.isBlank()) {
+                getProductResultPage = productRepository.findAllByCategory_Id(new ObjectId(categoryProId), pageable);
+            }
+            else if(!productName.isBlank() && brandProId.isBlank())
+            {
+                getProductResultPage = productRepository.findAllByCategory_IdAndNameLikeIgnoreCase(new ObjectId(categoryProId),productName,pageable);
+            }
+            else
+                getProductResultPage= productRepository.findAllByCategory_IdAndBrand_IdAndNameLikeIgnoreCase(new ObjectId(categoryProId),new ObjectId(brandProId),productName,pageable);
+        }
+        else if (!brandProId.isBlank())
+        {
+            if(categoryProId.isBlank() &&productName.isBlank()) {
+                getProductResultPage = productRepository.findAllByBrand_Id(new ObjectId(brandProId), pageable);
+            }
+            else
+                getProductResultPage =productRepository.findAllByBrand_IdAndNameLikeIgnoreCase(new ObjectId(brandProId),productName,pageable);
+
         }
         else if(!productName.isBlank()&& categoryProId.isBlank()&& brandProId.isBlank()){
-            getProductResultPage = productRepository.findAllBy(TextCriteria
-                    .forDefaultLanguage().matchingAny(productName),pageable);
+//            getProductResultPage = productRepository.findAllBy(TextCriteria
+//                    .forDefaultLanguage().matchingAny(productName),pageable);
+            getProductResultPage = productRepository.findAllByNameLikeIgnoreCase(productName,pageable);
         }
         else {
             getProductResultPage = productRepository.findAll(pageable);
@@ -143,33 +224,183 @@ public class AdminControlService {
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get all product success",productPageMap));
         else
-            return ResponseEntity.status(HttpStatus.OK).body(
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not Found any product", ""));
     }
 
 
-    public ResponseEntity<?> searchFilterOrderAdminPage(String customerName, String paymentType, String beginDay,String endDay, Pageable pageable) {
+//    public ResponseEntity<?> searchFilterOrderAdminPage(String customerName, String paymentType,String status, String beginDay,String endDay, Pageable pageable) {
+//        Page<Order> getOrderResultPage;
+//        LocalDateTime startDate = LocalDateTime.now();
+//        LocalDateTime endDate = LocalDateTime.now();
+//        String typeDate = "dd-MM-yyyy";
+//        DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
+//            if (!beginDay.isBlank()) startDate = LocalDate.parse(beginDay, df).atStartOfDay();
+//            if (!endDay.isBlank()) endDate = LocalDate.parse(endDay, df).atStartOfDay();
+//        if (!customerName.isBlank()) {
+//            if(!paymentType.isBlank()&&status.isBlank()&& beginDay.isBlank() && endDay.isBlank())
+//            {
+//                getOrderResultPage = orderRepository.findAllByPaymentOrderMethodAndUser_NameLike(paymentType,customerName,pageable);
+//            }
+//            else if(paymentType.isBlank()&&status.isBlank()&& !beginDay.isBlank() && !endDay.isBlank())
+//            {
+//                getOrderResultPage = orderRepository.findAllByUser_NameLikeAndInvoiceDateBetween(customerName,startDate,endDate,pageable);
+//            }
+//            else if(paymentType.isBlank()&&!status.isBlank()&&beginDay.isBlank() && endDay.isBlank())
+//            {
+//                getOrderResultPage = orderRepository.findAllByStatusOrderAndUser_NameLike(status,customerName,pageable);
+//            }
+//            else if(!paymentType.isBlank()&&!status.isBlank()&& beginDay.isBlank() && endDay.isBlank())
+//            {
+//                getOrderResultPage = orderRepository.findAllByPaymentOrderMethodAndStatusOrderAndUser_NameLike(paymentType,status,customerName,pageable);
+//            }
+//            else if(!paymentType.isBlank()&&!status.isBlank()&& !beginDay.isBlank() && !endDay.isBlank()){
+//            getOrderResultPage=orderRepository.findAllByPaymentOrderMethodAndStatusOrderAndUser_NameLikeAndInvoiceDateBetween(paymentType,status,customerName,startDate,endDate,pageable);
+//            }
+//            else {
+//                getOrderResultPage = orderRepository.findAllByUser_NameLike(customerName, pageable);
+//            }
+//        } else if (!paymentType.isBlank()) {
+//            if(customerName.isBlank() && status.isBlank() &&beginDay.isBlank() && endDay.isBlank())
+//            {
+//            getOrderResultPage = orderRepository.findAllByPaymentOrderMethodAndInvoiceDateBetween(paymentType,startDate,endDate,pageable);
+//            }
+//            else if(customerName.isBlank() && !status.isBlank() &&beginDay.isBlank() && endDay.isBlank())
+//            {
+//                getOrderResultPage = orderRepository.findAllByPaymentOrderMethodAndStatusOrder(paymentType,status,pageable);
+//            }
+//            else {
+//                getOrderResultPage = orderRepository.findAllByPaymentOrderMethod(paymentType, pageable);
+//            }
+//        }
+//        else if(!beginDay.isBlank() &&customerName.isBlank() && paymentType.isBlank() &&status.isBlank()){
+//            getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+//        }
+//        else if(!status.isBlank()  && paymentType.isBlank() &&customerName.isBlank())
+//        {
+//            if(!beginDay.isBlank() &&paymentType.isBlank() &&customerName.isBlank()){
+//                getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+//            }
+//            else
+//            getOrderResultPage = orderRepository.findAllByStatusOrder(status,pageable);
+//        }
+//        else {
+//           getOrderResultPage = orderRepository.findAll(pageable);
+//        }
+//        Map<String,Object>  orderPageMap = new HashMap<>();
+//        List<OrderResponse>orderResponses = getOrderResultPage.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
+//        orderPageMap.put("list", orderPageMap);
+//        orderPageMap.put("totalQuantity", getOrderResultPage.getTotalElements());
+//        orderPageMap.put("totalPage", getOrderResultPage.getTotalPages());
+//        if (orderResponses.size() > 0)
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Get order success",orderPageMap));
+//        else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObjectData(false, "Not Found any order", ""));
+//    }
+
+//    public ResponseEntity<?> searchFilterOrderAdminPage(String customerId,String status, String beginDay,String endDay, Pageable pageable) {
+//
+//        Page<Order> getOrderResultPage;
+//
+//    LocalDateTime startDate = LocalDateTime.now();
+//    LocalDateTime endDate = LocalDateTime.now();
+//    String typeDate = "dd-MM-yyyy";
+//    DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
+//    if (!beginDay.isBlank()) startDate = LocalDate.parse(beginDay, df).atStartOfDay();
+//    if (!endDay.isBlank()) endDate = LocalDate.parse(endDay, df).atStartOfDay();
+//
+//        if (!customerId.isBlank()) {
+//           if(status.isBlank()&&beginDay.isBlank() && endDay.isBlank()) {
+//               getOrderResultPage = orderRepository.findOrdersByUser_IdAndStatusOrderNot(new ObjectId(customerId), Constant.ORDER_CART, pageable);
+//           }
+//           else if(!status.isBlank()&&beginDay.isBlank() && endDay.isBlank()){
+//               getOrderResultPage =orderRepository.findAllByStatusOrderAndUser_Id(status,new ObjectId(customerId),pageable);
+//           }
+//               else if(status.isBlank()&&!beginDay.isBlank() && !endDay.isBlank())
+//           {
+//               getOrderResultPage=orderRepository.findAllByUser_IdAndInvoiceDateBetween(new ObjectId(customerId),startDate,endDate,pageable);
+//           }
+//            else {
+//               getOrderResultPage = orderRepository.findAllByStatusOrderAndUser_IdAndInvoiceDateBetween(status, new ObjectId(customerId), startDate, endDate, pageable);
+//           }
+//        }
+//        else if(!status.isBlank() &&customerId.isBlank())
+//        {
+//            if( !beginDay.isBlank() && !endDay.isBlank()){
+//                getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+//            }
+//            else {
+//                getOrderResultPage = orderRepository.findAllByStatusOrder(status, pageable);
+//            }
+//        }
+//        else if(status.isBlank() &&customerId.isBlank()&&!beginDay.isBlank() && !endDay.isBlank()){
+//            getOrderResultPage =orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+//        }
+//        else {
+//            getOrderResultPage = orderRepository.findAll(pageable);
+//        }
+//        Map<String,Object>  orderPageMap = new HashMap<>();
+//        List<OrderResponse>orderResponses = getOrderResultPage.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
+//        orderPageMap.put("list", orderPageMap);
+//        orderPageMap.put("totalQuantity", getOrderResultPage.getTotalElements());
+//        orderPageMap.put("totalPage", getOrderResultPage.getTotalPages());
+//        if (orderResponses.size() > 0)
+//            return ResponseEntity.status(HttpStatus.OK).body(
+//                    new ResponseObjectData(true, "Get order success",orderPageMap));
+//        else
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+//                    new ResponseObjectData(false, "Not Found any order", ""));
+//    }
+
+
+    public ResponseEntity<?> searchFilterOrderAdminPage(String customerId,String status, String beginDay,String endDay, Pageable pageable)
+    {
         Page<Order> getOrderResultPage;
-        LocalDateTime startDate = LocalDateTime.now();
-        LocalDateTime endDate = LocalDateTime.now();
-        String typeDate = "dd-MM-yyyy";
-        DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
-            if (!beginDay.isBlank()) startDate = LocalDate.parse(beginDay, df).atStartOfDay();
-            if (!endDay.isBlank()) endDate = LocalDate.parse(endDay, df).atStartOfDay();
-        if (!customerName.isBlank()) {
-            getOrderResultPage =orderRepository.findOrderByUser_Name(customerName, pageable);
-        } else if (!paymentType.isBlank()) {
-            getOrderResultPage = orderRepository.findOrderByPaymentOrderMethod(paymentType,pageable);
+         if(!beginDay.isBlank() &&!endDay.isBlank()) {
+            LocalDateTime startDate = LocalDateTime.now();
+            LocalDateTime endDate = LocalDateTime.now();
+            String typeDate = "dd-MM-yyyy";
+            DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
+             if (!beginDay.isBlank())  startDate = LocalDate.parse(beginDay, df).atStartOfDay();
+             if (!endDay.isBlank())  endDate = LocalDate.parse(endDay, df).atStartOfDay();
+             if(status.isBlank() && !customerId.isBlank()){
+                 getOrderResultPage=orderRepository.findAllByUser_IdAndInvoiceDateBetween(new ObjectId(customerId),startDate,endDate,pageable);
+             }
+             else if(!status.isBlank() &&customerId.isBlank()){
+                 getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+             }
+             else if(!status.isBlank() &&!customerId.isBlank()){
+                 getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+             }
+             else if(!status.isBlank() &&!customerId.isBlank()){
+                 getOrderResultPage = orderRepository.findAllByStatusOrderAndUser_IdAndInvoiceDateBetween(status, new ObjectId(customerId), startDate, endDate, pageable);
+             }
+             else{
+                 getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+                 }
+         }
+       else if (!customerId.isBlank()) {
+            if(status.isBlank()&&beginDay.isBlank() && endDay.isBlank()) {
+                getOrderResultPage = orderRepository.findOrdersByUser_IdAndStatusOrderNot(new ObjectId(customerId), Constant.ORDER_CART, pageable);
+            }
+            else {
+                getOrderResultPage =orderRepository.findAllByStatusOrderAndUser_Id(status,new ObjectId(customerId),pageable);
+            }
+
         }
-        else if(!beginDay.isBlank()){
-            getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+        else if(!status.isBlank() &&customerId.isBlank()&&beginDay.isBlank() && endDay.isBlank())
+        {
+                getOrderResultPage = orderRepository.findAllByStatusOrder(status, pageable);
         }
+
         else {
-           getOrderResultPage = orderRepository.findAll(pageable);
+            getOrderResultPage = orderRepository.findAll(pageable);
         }
         Map<String,Object>  orderPageMap = new HashMap<>();
         List<OrderResponse>orderResponses = getOrderResultPage.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
-        orderPageMap.put("list", orderPageMap);
+        orderPageMap.put("list", orderResponses);
         orderPageMap.put("totalQuantity", getOrderResultPage.getTotalElements());
         orderPageMap.put("totalPage", getOrderResultPage.getTotalPages());
         if (orderResponses.size() > 0)
@@ -178,6 +409,24 @@ public class AdminControlService {
         else
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not Found any order", ""));
+    }
+    public ResponseEntity<?> searchUserByEmailOrPhone(String keyword, Pageable pageable)
+    {
+        Page<User> pageFilterUser;
+        Map<String,Object>  userHashMap = new HashMap<>();
+            pageFilterUser=userRepository.findAllBy(TextCriteria.forDefaultLanguage().matchingAny(keyword), pageable);
+        List<UserResponse> userSearch = pageFilterUser.stream().map(userMap::toUserRes).collect(Collectors.toList());
+        userHashMap.put("allPage", pageFilterUser.getTotalPages());
+        userHashMap.put("allQuantity", pageFilterUser.getTotalElements());
+        userHashMap.put("listUser", userSearch);
+        if (userSearch.size() > 0)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get all account success", userHashMap));
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not Found any account", ""));
+        //            getProductResultPage = productRepository.findAllBy(TextCriteria
+//                    .forDefaultLanguage().matchingAny(productName),pageable);
     }
 
 //    private ResponseEntity<?> mapPageAndList(Page<> products, List<> resAll) //addPageableToRes

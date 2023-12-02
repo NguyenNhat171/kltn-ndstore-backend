@@ -31,7 +31,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 //    @Query(value = "{ $or: [{'category' : {$in: ?0}},{'brand':{$in: ?1}}] ," +
 //            "    'state' : 'enable'}")
 
-
+Page<Product>findAllByNameLikeIgnoreCase(String name,Pageable pageable);
     Page<Product> findAllBy(TextCriteria textCriteria, Pageable pageable);
 @Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
     Page<Product> findAllByKeyword(String textCriteria, Pageable pageable);
@@ -46,6 +46,13 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     List<Product> findAllByCategory_IdAndBrand_IdAndState(ObjectId categoryId, ObjectId brandId, String state);
 
     Page<Product> findAllByCategory_IdAndBrand_IdAndState(ObjectId categoryId, ObjectId brandId, String state,Pageable pageable);
+
+    Page<Product> findAllByCategory_IdAndBrand_IdAndNameLikeIgnoreCase(ObjectId categoryId, ObjectId brandId, String name,Pageable pageable);
+    Page<Product> findAllByCategory_IdAndNameLikeIgnoreCase(ObjectId categoryId, String name,Pageable pageable);
+
+    Page<Product> findAllByBrand_IdAndNameLikeIgnoreCase( ObjectId brandId, String name,Pageable pageable);
+//    Page<Product> findAllByNameLike( String name,Pageable pageable);
+
 
 
 //@Query(value="{'productConfiguration': { '$elemMatch': { '$and': ?0 } } }")

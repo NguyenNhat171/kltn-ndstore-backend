@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
@@ -27,7 +28,7 @@ import java.util.Map;
 public class User {
     @Id
     private String id;
-
+    @TextIndexed(weight = 8)
     private String name;
     @Indexed(unique = true)
     private String email;
@@ -38,6 +39,7 @@ public class User {
     private int district;
     private int ward;
     private String address;
+    @TextIndexed (weight = 4)
     private String phone;
     private String role;
     private String avatar;

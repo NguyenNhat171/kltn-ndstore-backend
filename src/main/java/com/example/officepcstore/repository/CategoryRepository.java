@@ -14,6 +14,8 @@ public interface CategoryRepository  extends MongoRepository<Category, String> {
     List<Category> findAllByState(String state);
    Page<Category>findAllByState(String state, Pageable pageable);
    Page<Category>findAllByTitleCategory(String name, Pageable pageable);
+    Page<Category>findAllByTitleCategoryLikeIgnoreCase(String name, Pageable pageable);
+   Page<Category>findAllByTitleCategoryLikeIgnoreCaseAndState(String name, String state,Pageable pageable);
     Optional<Category> findCategoryByIdAndState(String id, String state);
 //    @Aggregation("{ $group: { _id : $state, count: { $sum: 1 } } }")
 //    List<StateCountAggregate> countAllByState();
