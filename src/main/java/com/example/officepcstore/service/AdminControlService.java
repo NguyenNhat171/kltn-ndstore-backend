@@ -410,6 +410,64 @@ public class AdminControlService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
                     new ResponseObjectData(false, "Not Found any order", ""));
     }
+
+    public ResponseEntity<?> searchFilterOrderAdminPageAnother(String customerName,String status, String beginDay,String endDay, Pageable pageable)
+    {
+        Page<Order> getOrderResultPage;
+        if(!beginDay.isBlank() &&!endDay.isBlank()) {
+            LocalDateTime startDate = LocalDateTime.now();
+            LocalDateTime endDate = LocalDateTime.now();
+            String typeDate = "dd-MM-yyyy";
+            DateTimeFormatter df = DateTimeFormatter.ofPattern(typeDate);
+            if (!beginDay.isBlank())  startDate = LocalDate.parse(beginDay, df).atStartOfDay();
+            if (!endDay.isBlank())  endDate = LocalDate.parse(endDay, df).atStartOfDay();
+            if(status.isBlank() && !customerName.isBlank()){
+                getOrderResultPage=orderRepository.findAllByShipment_CustomerNameLikeIgnoreCaseAndInvoiceDateBetween(customerName,startDate,endDate,pageable);
+            }
+            else if(!status.isBlank() &&customerName.isBlank()){
+                getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+            }
+            else if(!status.isBlank() &&!customerName.isBlank()){
+                getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
+            }
+            else if(!status.isBlank() &&!customerName.isBlank()){
+                getOrderResultPage = orderRepository.findAllByStatusOrderAndShipment_CustomerNameAndInvoiceDateBetween(status, customerName, startDate, endDate, pageable);
+            }
+            else{
+                getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+            }
+        }
+        else if (!customerName.isBlank()) {
+            if(status.isBlank()&&beginDay.isBlank() && endDay.isBlank()) {
+                getOrderResultPage = orderRepository.findOrdersByShipment_CustomerNameLikeIgnoreCaseAndStatusOrderNot(customerName, Constant.ORDER_CART, pageable);
+            }
+
+            else {
+                getOrderResultPage =orderRepository.findAllByStatusOrderAndShipment_CustomerNameLikeIgnoreCase(status,customerName,pageable);
+            }
+
+        }
+        else if(!status.isBlank() &&customerName.isBlank()&&beginDay.isBlank() && endDay.isBlank())
+        {
+            getOrderResultPage = orderRepository.findAllByStatusOrder(status, pageable);
+        }
+
+        else {
+            getOrderResultPage = orderRepository.findAll(pageable);
+        }
+        Map<String,Object>  orderPageMap = new HashMap<>();
+        List<OrderResponse>orderResponses = getOrderResultPage.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());
+        orderPageMap.put("list", orderResponses);
+        orderPageMap.put("totalQuantity", getOrderResultPage.getTotalElements());
+        orderPageMap.put("totalPage", getOrderResultPage.getTotalPages());
+        if (orderResponses.size() > 0)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get order success",orderPageMap));
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not Found any order", ""));
+    }
+
     public ResponseEntity<?> searchUserByEmailOrPhone(String keyword, Pageable pageable)
     {
         Page<User> pageFilterUser;

@@ -74,6 +74,18 @@ public class AdminSearchController {
 
     }
 
+    @GetMapping(path = "/admin/manage/orders/to/search/another/control/all")
+    public ResponseEntity<?> manageOrderByAdminAnother (@RequestParam(value = "customerName", defaultValue = "") String customerName,
+                                                 @RequestParam(value = "status", defaultValue = "") String status,
+                                                 @RequestParam(value = "beginDate", defaultValue = "") String beginDate,
+                                                 @RequestParam(value = "endDate", defaultValue = "") String endDate,
+                                                 @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC)
+                                                 @ParameterObject Pageable pageable)
+    {
+        return adminControlService.searchFilterOrderAdminPageAnother(customerName,status,beginDate,endDate,pageable);
+
+    }
+
 
 //    @GetMapping(path = "/admin/manage/products/to/search/control/all")
 //    public ResponseEntity<?> manageProductByAdmin (@RequestParam(value = "categoryId", defaultValue = "") String categoryId,
