@@ -229,6 +229,33 @@ public class AdminControlService {
     }
 
 
+    public ResponseEntity<?> sortProductPriceAdminPage( String optionSort,Pageable pageable) {
+        Page<Product> getProductResultPage;
+        Map<String,Object>  productPageMap = new HashMap<>();
+        if (optionSort.equals("asc")) {
+            getProductResultPage = productRepository.findAllByOrderByReducedPriceAsc(pageable);
+
+        }
+        else if (optionSort.equals("desc"))
+        {
+                getProductResultPage = productRepository.findAllByOrderByReducedPriceDesc(pageable);
+        }
+
+        else {
+            getProductResultPage = productRepository.findAll(pageable);
+        }
+        List<AllProductResponse>productResponses = getProductResultPage.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
+        productPageMap.put("list",productResponses);
+        productPageMap.put("totalQuantity", getProductResultPage.getTotalElements());
+        productPageMap.put("totalPage", getProductResultPage.getTotalPages());
+        if (productResponses.size() > 0)
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObjectData(true, "Get all product success",productPageMap));
+        else
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObjectData(false, "Not Found any product", ""));
+    }
+
 //    public ResponseEntity<?> searchFilterOrderAdminPage(String customerName, String paymentType,String status, String beginDay,String endDay, Pageable pageable) {
 //        Page<Order> getOrderResultPage;
 //        LocalDateTime startDate = LocalDateTime.now();
