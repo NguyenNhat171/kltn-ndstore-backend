@@ -20,6 +20,9 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Optional<Product> findProductByIdAndState(String id, String state);
     Page<Product> findAllByState(String state, Pageable pageable);
     List<Product> findAllByState(String state);
+    Page<Product> findAllByOrderBySoldAsc(Pageable pageable);
+    Page<Product> findAllByOrderBySoldDesc(Pageable pageable);
+
     Page<Product> findAllByOrderByReducedPriceAsc(Pageable pageable);
     Page<Product> findAllByOrderByReducedPriceDesc(Pageable pageable);
 

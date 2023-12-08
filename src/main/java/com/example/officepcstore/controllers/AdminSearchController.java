@@ -107,10 +107,11 @@ public class AdminSearchController {
     }
 
 
-    @GetMapping(path = "/admin/manage/products/to/search/control/sort/price/all")
-    public ResponseEntity<?> manageProductSortByAdmin (@RequestParam(value = "sortOption", defaultValue = "") String sortOption,
+    @GetMapping(path = "/admin/manage/products/to/search/control/sort/option/all")
+    public ResponseEntity<?> manageProductSortSoldOrPriceByAdmin (@RequestParam(value = "sortSoldOption", defaultValue = "") String sortSoldOption,
+                                                           @RequestParam(value = "sortPriceOption", defaultValue = "") String sortPriceOption,
                                                          @PageableDefault(size = 15) @ParameterObject Pageable pageable)
     {
-        return adminControlService.sortProductPriceAdminPage(sortOption,pageable);
+        return adminControlService.sortProductSoldOrPriceAdminPage(sortSoldOption,sortPriceOption,pageable);
     }
 }

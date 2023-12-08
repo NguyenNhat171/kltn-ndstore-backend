@@ -229,18 +229,23 @@ public class AdminControlService {
     }
 
 
-    public ResponseEntity<?> sortProductPriceAdminPage( String optionSort,Pageable pageable) {
+    public ResponseEntity<?> sortProductSoldOrPriceAdminPage( String optionSoldSort,String optionPriceSort,Pageable pageable) {
         Page<Product> getProductResultPage;
         Map<String,Object>  productPageMap = new HashMap<>();
-        if (optionSort.equals("asc")) {
+        if (optionSoldSort.equals("asc") && optionPriceSort.isBlank()) {
+            getProductResultPage = productRepository.findAllByOrderBySoldAsc(pageable);
+        }
+        else if (optionPriceSort.equals("asc") && optionSoldSort.isBlank()){
             getProductResultPage = productRepository.findAllByOrderByReducedPriceAsc(pageable);
-
         }
-        else if (optionSort.equals("desc"))
+        else if (optionSoldSort.equals("desc")&& optionPriceSort.isBlank())
         {
-                getProductResultPage = productRepository.findAllByOrderByReducedPriceDesc(pageable);
+                getProductResultPage = productRepository.findAllByOrderBySoldDesc(pageable);
         }
-
+        else if (optionPriceSort.equals("desc")&& optionSoldSort.isBlank())
+        {
+            getProductResultPage = productRepository.findAllByOrderByReducedPriceDesc(pageable);
+        }
         else {
             getProductResultPage = productRepository.findAll(pageable);
         }
