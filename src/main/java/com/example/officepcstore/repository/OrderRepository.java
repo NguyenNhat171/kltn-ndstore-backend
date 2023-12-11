@@ -25,7 +25,7 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     Page<Order> findAllByStatusOrderAndShipment_CustomerNameAndInvoiceDateBetween(String status,String user,LocalDateTime start,LocalDateTime end,Pageable pageable);
   Page<Order> findAllByStatusOrderAndUser_IdAndInvoiceDateBetween(String status,ObjectId user,LocalDateTime start,LocalDateTime end,Pageable pageable);
     Page<Order> findAllByUser_IdAndInvoiceDateBetween(ObjectId userName, LocalDateTime start,LocalDateTime end,Pageable pageable);
-    Page<Order> findAllByShipment_CustomerNameLikeIgnoreCaseAndInvoiceDateBetween(String userName, LocalDateTime start,LocalDateTime end,Pageable pageable);
+    Page<Order> findAllByShipment_CustomerNameLikeIgnoreCaseAndInvoiceDateBetweenAndStatusOrderNot(String userName, LocalDateTime start,LocalDateTime end,String status,Pageable pageable);
 //  Page<Order> findAllByPaymentOrderMethod(String paymentMethod, Pageable pageable);
 
 //
@@ -45,8 +45,9 @@ public interface OrderRepository extends MongoRepository<Order, String> {
   Page<Order> findAllByInvoiceDateBetweenAndStatusOrder(LocalDateTime from, LocalDateTime to, String state, Pageable pageable);
 //    @Aggregation("{ $group: { _id : $state, count: { $sum: 1 } } }")
 //    List<StateCountAggregate> countAllByState();
-Page<Order> findAllByInvoiceDateBetween(LocalDateTime from, LocalDateTime to, Pageable pageable);
+Page<Order> findAllByInvoiceDateBetweenAndStatusOrderNot(LocalDateTime from, LocalDateTime to, String status,Pageable pageable);
     @Query(value=" {statusOrder: {'$nin': ['cart']}}")
     Page<Order> findAllByStatusOrderNoCart( Pageable pageable);
   //  Page<Order>findOrdersByInvoiceDateBetween();
+  Page<Order> findAllByStatusOrderNot( String status,Pageable pageable);
 }

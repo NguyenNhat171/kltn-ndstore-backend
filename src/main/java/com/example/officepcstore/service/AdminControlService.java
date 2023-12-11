@@ -410,7 +410,7 @@ public class AdminControlService {
                  getOrderResultPage = orderRepository.findAllByStatusOrderAndUser_IdAndInvoiceDateBetween(status, new ObjectId(customerId), startDate, endDate, pageable);
              }
              else{
-                 getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+                 getOrderResultPage = orderRepository.findAllByInvoiceDateBetweenAndStatusOrderNot(startDate,endDate,Constant.ORDER_CART,pageable);
                  }
          }
        else if (!customerId.isBlank()) {
@@ -454,7 +454,7 @@ public class AdminControlService {
             if (!beginDay.isBlank())  startDate = LocalDate.parse(beginDay, df).atStartOfDay();
             if (!endDay.isBlank())  endDate = LocalDate.parse(endDay, df).atStartOfDay();
             if(status.isBlank() && !customerName.isBlank()){
-                getOrderResultPage=orderRepository.findAllByShipment_CustomerNameLikeIgnoreCaseAndInvoiceDateBetween(customerName,startDate,endDate,pageable);
+                getOrderResultPage=orderRepository.findAllByShipment_CustomerNameLikeIgnoreCaseAndInvoiceDateBetweenAndStatusOrderNot(customerName,startDate,endDate,Constant.ORDER_CART,pageable);
             }
             else if(!status.isBlank() &&customerName.isBlank()){
                 getOrderResultPage =orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate,endDate,status,pageable);
@@ -466,7 +466,7 @@ public class AdminControlService {
                 getOrderResultPage = orderRepository.findAllByStatusOrderAndShipment_CustomerNameAndInvoiceDateBetween(status, customerName, startDate, endDate, pageable);
             }
             else{
-                getOrderResultPage = orderRepository.findAllByInvoiceDateBetween(startDate,endDate,pageable);
+                getOrderResultPage = orderRepository.findAllByInvoiceDateBetweenAndStatusOrderNot(startDate,endDate,Constant.ORDER_CART,pageable);
             }
         }
         else if (!customerName.isBlank()) {
@@ -485,7 +485,7 @@ public class AdminControlService {
         }
 
         else {
-            getOrderResultPage = orderRepository.findAll(pageable);
+            getOrderResultPage = orderRepository.findAllByStatusOrderNot(Constant.ORDER_CART,pageable);
         }
         Map<String,Object>  orderPageMap = new HashMap<>();
         List<OrderResponse>orderResponses = getOrderResultPage.stream().map(orderMap::getOrderDetailResponse).collect(Collectors.toList());

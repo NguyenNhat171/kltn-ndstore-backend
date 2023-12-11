@@ -67,7 +67,7 @@ public class AdminSearchController {
                                                  @RequestParam(value = "status", defaultValue = "") String status,
                                                  @RequestParam(value = "beginDate", defaultValue = "") String beginDate,
                                                  @RequestParam(value = "endDate", defaultValue = "") String endDate,
-                                                 @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC)
+                                                 @PageableDefault(size = 15, sort = "invoiceDate", direction = Sort.Direction.DESC)
                                                      @ParameterObject Pageable pageable)
     {
         return adminControlService.searchFilterOrderAdminPage(customerId,status,beginDate,endDate,pageable);
@@ -79,7 +79,7 @@ public class AdminSearchController {
                                                  @RequestParam(value = "status", defaultValue = "") String status,
                                                  @RequestParam(value = "beginDate", defaultValue = "") String beginDate,
                                                  @RequestParam(value = "endDate", defaultValue = "") String endDate,
-                                                 @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC)
+                                                 @PageableDefault(size = 15, sort = "invoiceDate", direction = Sort.Direction.DESC)
                                                  @ParameterObject Pageable pageable)
     {
         return adminControlService.searchFilterOrderAdminPageAnother(customerName,status,beginDate,endDate,pageable);
