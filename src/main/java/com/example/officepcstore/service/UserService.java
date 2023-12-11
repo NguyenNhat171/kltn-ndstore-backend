@@ -119,11 +119,11 @@ public class UserService {
         Optional<User> user = userRepository.findUserByIdAndStatusUser(id, Constant.USER_ACTIVE);
         if (user.isPresent()) {
             user.get().setName(userReq.getName());
-            user.get().setPhone(userReq.getPhone());
+            user.get().setPhoneNumber(userReq.getPhone());
             user.get().setProvince(userReq.getProvince());
             user.get().setDistrict(userReq.getDistrict());
             user.get().setWard(userReq.getWard());
-            user.get().setAddress(userReq.getAddress());
+            user.get().setAddressDetail(userReq.getAddress());
             userRepository.save(user.get());
             UserResponse userRes = userMap.toUserRes(user.get());
             return ResponseEntity.status(HttpStatus.OK).body(

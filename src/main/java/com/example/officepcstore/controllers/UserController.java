@@ -27,7 +27,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping(path = "/admin/manage/users/get/all/list")
-    public ResponseEntity<?> findAllUserByAdmin (@PageableDefault(size = 10, sort = "createdDate") @ParameterObject Pageable pageable){
+    public ResponseEntity<?> findAllUserByAdmin (@PageableDefault(size = 10, sort = "registerTime") @ParameterObject Pageable pageable){
         return userService.findAllUserByAdmin( pageable);
     }
     @PutMapping(path = "/users/edit/information/profile/{userId}")

@@ -38,9 +38,9 @@ public class User {
     private int province;
     private int district;
     private int ward;
-    private String address;
+    private String addressDetail;
     @TextIndexed (weight = 4)
-    private String phone;
+    private String phoneNumber;
     private String role;
     private String avatar;
 
@@ -64,20 +64,20 @@ public class User {
     private Map<Object, Integer> suggestedScore = new HashMap<>();
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
-    LocalDateTime createdDate;
+    LocalDateTime registerTime;
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     @LastModifiedDate
     LocalDateTime lastUpdateStatus;
 
-    public User(String name, String email, String password, String phone, Integer province, Integer district, Integer ward, String address, String role, String avatar, String statusUser, AccountType accountType) {
+    public User(String name, String email, String password, String phoneNumber, Integer province, Integer district, Integer ward, String addressDetail, String role, String avatar, String statusUser, AccountType accountType) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.phone = phone;
+        this.phoneNumber = phoneNumber;
         this.province = province;
         this.district = district;
         this.ward = ward;
-        this.address = address;
+        this.addressDetail = addressDetail;
         this.role = role;
         this.avatar = avatar;
         this.statusUser = statusUser;

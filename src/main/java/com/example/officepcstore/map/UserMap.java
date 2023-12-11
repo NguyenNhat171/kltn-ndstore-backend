@@ -41,8 +41,8 @@ public class UserMap {
             userRes.setAvatar(user.getAvatar());
             userRes.setRole(user.getRole());
             userRes.setState(user.getStatusUser());
-            userRes.setPhone(user.getPhone());
-            userRes.setAddress(user.getAddress());
+            userRes.setPhone(user.getPhoneNumber());
+            userRes.setAddress(user.getAddressDetail());
             userRes.setProvince(user.getProvince());
             userRes.setDistrict(user.getDistrict());
             userRes.setWard(user.getWard());

@@ -38,14 +38,14 @@ public class AdminSearchController {
     public ResponseEntity<?> manageUserByAdmin (@RequestParam(value = "accountMail", defaultValue = "") String accountMail,
                                                 @RequestParam(value = "status", defaultValue = "") String status,
                                                 @RequestParam(value = "role", defaultValue = "") String role,
-                                                 @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
+                                                 @PageableDefault(size = 15, sort = "registerTime", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
     {
         return adminControlService.searchUserByOption(accountMail,status,role,pageable);
     }
 
     @GetMapping(path = "/admin/manage/users/to/search/control/key/all")
     public ResponseEntity<?> searchUserPhoneOrEmailByAdmin (@RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                                @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
+                                                @PageableDefault(size = 15, sort = "registerTime", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
     {
         return adminControlService.searchUserByEmailOrPhone(keyword,pageable);
     }
