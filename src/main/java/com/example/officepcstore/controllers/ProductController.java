@@ -113,6 +113,27 @@ public class ProductController {
     }
 
 
+    @GetMapping(path = "/products/find/search/brand/fill/all/enable/price/config")
+    public ResponseEntity<?> searchListProductConfigAndBrandPriceBetween (@RequestParam Map<String, String> query,
+                                                                                     @RequestParam (value = "keyword",defaultValue = "") String keyword,
+                                                                                     @RequestParam (value = "brandId",defaultValue = "") String brandId,
+                                                                                     @RequestParam(value = "priceMin",defaultValue = "0") BigDecimal min,
+                                                                                     @RequestParam(value = "priceMax",defaultValue = "100000000000" ) BigDecimal max){
+        return productService.searchKeyListFilterBrandAndPriceAndProductByConfig(keyword,brandId,query,min,max);
+    }
+
+    @GetMapping(path = "/products/find/search/brand/fill/full/all/enable/price/config")
+    public ResponseEntity<?> searchPageProductConfigAndBrandPriceBetween (@RequestParam Map<String, String> query,
+                                                                          @RequestParam (value = "keyword",defaultValue = "") String keyword,
+                                                                          @RequestParam (value = "brandId",defaultValue = "") String brandId,
+                                                                          @RequestParam(value = "priceMin",defaultValue = "0") BigDecimal min,
+                                                                          @RequestParam(value = "priceMax",defaultValue = "100000000000" ) BigDecimal max,
+                                                                           @PageableDefault(size=20) @ParameterObject Pageable pageable
+    ){
+        return productService.searchKeyPageFilterBrandAndPriceAndProductByConfig(keyword,brandId,query,min,max,pageable);
+    }
+
+
     @GetMapping(path = "/products/get/enable/list/all")
     public ResponseEntity<?> findAllProductByUser (@PageableDefault(size = 20,sort = "createdDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable){
         return productService.findAllProductByUser(pageable);

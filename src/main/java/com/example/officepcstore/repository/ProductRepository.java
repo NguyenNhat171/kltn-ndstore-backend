@@ -97,6 +97,76 @@ Page<Product>findAllByNameLikeIgnoreCase(String name,Pageable pageable);
             long maxPrice);
 
 
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'brand.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }},{$text: {$search: ?4}}]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndBrand_IdAndReducedPriceBetweenAndKeyword(
+            List<Map<String, String>> queryParams,
+            ObjectId brandId,
+            long minPrice,
+            long maxPrice,
+              String keyword
+    );
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'brand.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }},{$text: {$search: ?4}}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndBrand_IdAndReducedPriceBetweenAndKeyword(
+            List<Map<String, String>> queryParams,
+            ObjectId brandId,
+            long minPrice,
+            long maxPrice,
+            String keyword,
+            Pageable page
+    );
+
+    @Query(value="{ $and:[{'reducedPrice': { '$gte': ?0, '$lte': ?1 }},{$text: {$search: ?2}}]," + " 'state' : 'enable'}")
+    List<Product> findAllByPriceBetweenAndKeyword(
+            long minPrice,
+            long maxPrice,
+            String keyword
+    );
+
+    @Query(value="{ $and:[{'reducedPrice': { '$gte': ?0, '$lte': ?1 }},{$text: {$search: ?2}}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByPriceBetweenAndKeyword(
+            long minPrice,
+            long maxPrice,
+            String keyword,
+            Pageable pageable
+    );
+
+
+    @Query(value="{ $and:[{ 'brand.id': ?0 },{'reducedPrice': { '$gte': ?1, '$lte': ?2 }},{$text: {$search: ?3}}]," + " 'state' : 'enable'}")
+    List<Product> findAllByBrand_IdAndReducedPriceBetweenAndKeyword(
+            ObjectId brandId,
+            long minPrice,
+            long maxPrice,
+            String keyword
+    );
+
+    @Query(value="{ $and:[{ 'brand.id': ?0 },{'reducedPrice': { '$gte': ?1, '$lte': ?2 }},{$text: {$search: ?3}}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByBrand_IdAndReducedPriceBetweenAndKeyword(
+            ObjectId brandId,
+            long minPrice,
+            long maxPrice,
+            String keyword,
+            Pageable pageable
+    );
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{'reducedPrice': { '$gte': ?1, '$lte': ?2 }},{$text: {$search: ?3}}]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndReducedPriceBetweenAndKeyword(
+            List<Map<String, String>> queryParams,
+            long minPrice,
+            long maxPrice,
+            String keyword
+    );
+
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{'reducedPrice': { '$gte': ?1, '$lte': ?2 }},{$text: {$search: ?3}}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndReducedPriceBetweenAndKeyword(
+            List<Map<String, String>> queryParams,
+            long minPrice,
+            long maxPrice,
+            String keyword,
+            Pageable p
+    );
+
+
     @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{ 'brand.id': ?2 },{'reducedPrice': { '$gte': ?3, '$lte': ?4 }}]," + " 'state' : 'enable'}")
     Page<Product> findAllByProductConfigurationAndCategory_IdAndBrand_IdAndReducedPriceBetween(
             List<Map<String, String>> queryParams,
@@ -114,6 +184,25 @@ Page<Product>findAllByNameLikeIgnoreCase(String name,Pageable pageable);
             ObjectId brandId,
             long minPrice,
             long maxPrice);
+
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{$text: {$search: ?1}}]," + " 'state' : 'enable'}")
+    List<Product> findAllByProductConfigurationAndKeyword(
+            List<Map<String, String>> queryParams,
+            String keyword
+    );
+
+    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{$text: {$search: ?1}}]," + " 'state' : 'enable'}")
+    Page<Product> findAllByProductConfigurationAndKeyword(
+            List<Map<String, String>> queryParams,
+            String keyword,
+            Pageable pageable
+    );
+    @Query("{$and: [{$text: {$search: ?0}},{ 'brand.id': ?1 }, {'state': 'enable'}]}")
+    List<Product> findAllByKeywordAndBrand_Id( String keyword,ObjectId brandId);
+
+    @Query("{$and: [{$text: {$search: ?0}},{ 'brand.id': ?1 }, {'state': 'enable'}]}")
+    Page<Product> findAllByKeywordAndBrand_Id( String keyword,ObjectId brandId,Pageable pageable);
 //    @Query(value="{ $and:[{'productConfiguration': { '$elemMatch': { '$and': ?0 } } },{ 'category.id': ?1 },{'reducedPrice': { '$gte': ?2, '$lte': ?3 }}]," + " 'state' : 'enable'}")
 //    Page<Product> findAllByProductConfigurationAndCategory_IdAndReducedPriceBetweenOrderByReducedPriceAsc(
 //            List<Map<String, String>> queryParams,
