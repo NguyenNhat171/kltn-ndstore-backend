@@ -13,7 +13,7 @@ public class BrandMap {
     public BrandResponse getBrandResponse(Brand brand)
     {
         return
-                new BrandResponse(brand.getId(), brand.getName(), brand.getImageBrand(),brand.getState());
+                new BrandResponse(brand.getId(), brand.getName(), brand.getImageBrand(),brand.getDisplay());
     }
 
 }

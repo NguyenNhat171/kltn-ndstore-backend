@@ -18,7 +18,8 @@ import java.math.BigDecimal;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
-@Document(collection = "order_detail")
+//@Document(collection = "order_detail")
+@Document(collection = "Order_Detail")
 @Getter
 @Setter
 @NoArgsConstructor

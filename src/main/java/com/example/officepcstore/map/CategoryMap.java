@@ -12,6 +12,6 @@ public class CategoryMap {
     public CategoryResponse getCategoryResponse(Category category)
     {
         return
-                new CategoryResponse(category.getId(),category.getTitleCategory(), category.getImageCategory(),category.getState());
+                new CategoryResponse(category.getId(),category.getTitleCategory(), category.getImageCategory(),category.getDisplay());
     }
 }

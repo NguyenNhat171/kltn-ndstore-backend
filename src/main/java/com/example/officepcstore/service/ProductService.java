@@ -7,7 +7,6 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.ProductMap;
 import com.example.officepcstore.models.enity.Brand;
 import com.example.officepcstore.models.enity.Category;
-import com.example.officepcstore.models.enity.User;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.models.enity.product.ProductImage;
 import com.example.officepcstore.payload.ResponseObjectData;
@@ -17,21 +16,13 @@ import com.example.officepcstore.payload.response.ProductResponse;
 import com.example.officepcstore.repository.BrandRepository;
 import com.example.officepcstore.repository.CategoryRepository;
 import com.example.officepcstore.repository.ProductRepository;
-import com.example.officepcstore.repository.UserRepository;
-import com.example.officepcstore.utils.RecommendProductUtils;
-import com.example.officepcstore.utils.StringUtils;
-import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.TaskScheduler;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -838,7 +829,7 @@ public class ProductService {
     public ResponseEntity<?> findByCategoryId(String id, Pageable pageable) {
         Page<Product> products;
 
-            Optional<Category> category = categoryRepository.findCategoryByIdAndState(id, Constant.ENABLE);
+            Optional<Category> category = categoryRepository.findCategoryByIdAndDisplay(id, Constant.ENABLE);
             if (category.isPresent()) {
                 products = productRepository.findAllByCategory_IdAndState(new ObjectId(id),Constant.ENABLE, pageable);
                 List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
@@ -852,7 +843,7 @@ public class ProductService {
 
 
     public ResponseEntity<?> findByBrandId(String id, Pageable pageable) {
-        Optional<Brand> brand = brandRepository.findBrandByIdAndState(id, Constant.ENABLE);
+        Optional<Brand> brand = brandRepository.findBrandByIdAndDisplay(id, Constant.ENABLE);
         if (brand.isPresent()) {
             Page<Product>   products = productRepository.findAllByBrand_IdAndState(new ObjectId(id),Constant.ENABLE, pageable);
             List<AllProductResponse> resList = products.stream().map(productMap::toGetAllProductRes).collect(Collectors.toList());
@@ -916,7 +907,7 @@ public class ProductService {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent() && productReq != null) {
             product.get().setName(productReq.getName());
-            product.get().setDescription(productReq.getDescription());
+            product.get().setProductDetail(productReq.getDescription());
             product.get().setPrice(productReq.getPrice());
             product.get().setStock(productReq.getStock());
             product.get().setDiscount(productReq.getDiscount());

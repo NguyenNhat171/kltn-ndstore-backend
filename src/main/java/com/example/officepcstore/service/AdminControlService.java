@@ -53,11 +53,11 @@ public class AdminControlService {
 
         }
         else if(!nameBrand.isBlank() && !state.isBlank()){
-            brandResult = brandRepository.findAllByStateAndNameLikeIgnoreCase(state,nameBrand,pageable);
+            brandResult = brandRepository.findAllByDisplayAndNameLikeIgnoreCase(state,nameBrand,pageable);
         }
         else if(!state.isBlank() && nameBrand.isBlank())
         {
-             brandResult= brandRepository.findAllByState(state,pageable);
+             brandResult= brandRepository.findAllByDisplay(state,pageable);
         }
         else {
             brandResult  = brandRepository.findAll(pageable);
@@ -85,10 +85,10 @@ public class AdminControlService {
         }
         else if(!state.isBlank() && nameCategory.isBlank())
         {
-            resultPageCategory =categoryRepository.findAllByState(state,pageable);
+            resultPageCategory =categoryRepository.findAllByDisplay(state,pageable);
         }
         else if(!state.isBlank() && !nameCategory.isBlank())
-        { resultPageCategory = categoryRepository.findAllByTitleCategoryLikeIgnoreCaseAndState(nameCategory,state, pageable);}
+        { resultPageCategory = categoryRepository.findAllByTitleCategoryLikeIgnoreCaseAndDisplay(nameCategory,state, pageable);}
         else  {
             resultPageCategory = categoryRepository.findAllByTitleCategoryLikeIgnoreCase(nameCategory, pageable);
         }

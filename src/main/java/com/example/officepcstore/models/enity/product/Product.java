@@ -25,7 +25,8 @@ import java.util.Map;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
-@Document(collection = "products")
+//@Document(collection = "products")
+@Document(collection = "Product")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class  Product {
     @TextIndexed (weight = 8)
     private String name;
     @TextIndexed (weight = 1)
-    private String description;
+    private String productDetail;
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
 
@@ -83,9 +84,9 @@ public class  Product {
 //    }
 
 
-    public Product(String name, String description, BigDecimal price, int discount, long stock, Category category, Brand brand, List<Map<String, String>> productConfiguration, String state) {
+    public Product(String name, String productDetail, BigDecimal price, int discount, long stock, Category category, Brand brand, List<Map<String, String>> productConfiguration, String state) {
         this.name = name;
-        this.description = description;
+        this.productDetail = productDetail;
         this.price = price;
         this.discount = discount;
         this.stock = stock;

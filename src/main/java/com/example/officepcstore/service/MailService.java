@@ -26,8 +26,10 @@ public class MailService {
     final String TYPE_EMAIL = "text/html";
     final String TITLE_EMAIL_AUTH = "Mã xác minh tài khoản NDStore Website";
     final String TITLE_EMAIL_RESET = "Mã xác minh để đặt lại mật khẩu NDStore Website";
+    final String TITLE_ORDER_SUCCESS ="Cảm ơn bạn đã mua hàng tại NDStore Website";
     final String VERIFY_MAIL = "register-email.ftl";
     final String RESET_MAIL = "reset-email.ftl";
+    final String ORDER_SUCCESS_EMAIL ="order-success.ftl";
     final String STORE_EMAIL = "officecomputershop@gmail.com";
     public void sendEmail(String toEmail, Map<String,Object> model,
                           EnumMailType type) throws MessagingException, IOException, TemplateException {
@@ -43,6 +45,11 @@ public class MailService {
         else if (type.equals(EnumMailType.RESET)){
             template = configuration.getTemplate(RESET_MAIL);
             model.put("title", TITLE_EMAIL_RESET);
+        }
+        else if(type.equals(EnumMailType.ORDER_SUCCESS))
+        {
+            template = configuration.getTemplate(ORDER_SUCCESS_EMAIL);
+            model.put("title", TITLE_ORDER_SUCCESS);
         }
         model.put("email", toEmail);
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(Objects.requireNonNull(template),model);

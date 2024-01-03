@@ -14,15 +14,15 @@ import java.util.Optional;
 
 @Repository
 public interface  BrandRepository extends MongoRepository<Brand, String> {
-    List<Brand> findAllByState(String state);
-    Optional<Brand> findBrandByIdAndState(String id, String state);
+    List<Brand> findAllByDisplay(String state);
+    Optional<Brand> findBrandByIdAndDisplay(String id, String state);
   //@Query("{$and: [{$text: {$search: ?0}}, {'state': 'enable'}]}")
 //  @Query("{$text: {$search: ?0}}")
 //    Page<Brand> getAllBrandByNameSort(String nameBrand,Pageable pageable);
     Page<Brand> findAllByName(String name, Pageable pageable);
     Page<Brand> findAllByNameLikeIgnoreCase(String name, Pageable pageable);
-    Page<Brand> findAllByState(String state, Pageable pageable);
-    Page<Brand> findAllByStateAndNameLikeIgnoreCase(String state, String name, Pageable pageable);
+    Page<Brand> findAllByDisplay(String state, Pageable pageable);
+    Page<Brand> findAllByDisplayAndNameLikeIgnoreCase(String state, String name, Pageable pageable);
     Page<Brand> findAll( Pageable pageable);
 
 }

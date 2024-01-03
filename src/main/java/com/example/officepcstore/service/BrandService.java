@@ -7,12 +7,10 @@ import com.example.officepcstore.excep.AppException;
 import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.map.BrandMap;
 import com.example.officepcstore.models.enity.Brand;
-import com.example.officepcstore.models.enity.Category;
 import com.example.officepcstore.models.enity.product.Product;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.payload.request.BrandReq;
 import com.example.officepcstore.payload.response.BrandResponse;
-import com.example.officepcstore.payload.response.OrderResponse;
 import com.example.officepcstore.repository.BrandRepository;
 import com.example.officepcstore.repository.ProductRepository;
 import com.mongodb.MongoWriteException;
@@ -40,7 +38,7 @@ public class BrandService {
 
 
     public ResponseEntity<ResponseObjectData> findAll() {
-        List<Brand> list = brandRepository.findAllByState(Constant.ENABLE);
+        List<Brand> list = brandRepository.findAllByDisplay(Constant.ENABLE);
         if (list.size() > 0)
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get all brand success", list));
@@ -52,7 +50,7 @@ public class BrandService {
         if(state == null || state.isBlank())
              listBrand = brandRepository.findAll(pageable);
         else
-            listBrand = brandRepository.findAllByState(state, pageable);
+            listBrand = brandRepository.findAllByDisplay(state, pageable);
        // Page<Brand> listBrand = brandRepository.findAll(pageable);
         List<BrandResponse> brandResList = listBrand.stream().map(brandMap::getBrandResponse).collect(Collectors.toList());
         Map<String, Object> brandResp = new HashMap<>();
@@ -71,7 +69,7 @@ public class BrandService {
 
 
     public ResponseEntity<?> findBrandByIdInUser(String id) {
-        Optional<Brand> brand = brandRepository.findBrandByIdAndState(id, Constant.ENABLE);
+        Optional<Brand> brand = brandRepository.findBrandByIdAndDisplay(id, Constant.ENABLE);
         if (brand.isPresent())
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Get brand success", brand));
@@ -116,7 +114,7 @@ public class BrandService {
         Optional<Brand> brandFound = brandRepository.findById(id);
         if (brandFound.isPresent()) {
             brandFound.get().setName(brandReq.getName());
-            brandFound.get().setState(brandReq.getState());
+            brandFound.get().setDisplay(brandReq.getState());
             brandRepository.save(brandFound.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Update Brand complete", brandFound));
@@ -153,7 +151,7 @@ public class BrandService {
             if (products.size()>0)
                 throw new AppException(HttpStatus.CONFLICT.value(),
                         "Have Product Depend On");
-            brand.get().setState(Constant.DISABLE);
+            brand.get().setDisplay(Constant.DISABLE);
             brandRepository.save(brand.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Block brand success with id: " + id, ""));
@@ -164,8 +162,8 @@ public class BrandService {
     @Transactional
     public ResponseEntity<?> changeStateEnableBrand (String id){
         Optional<Brand> brand = brandRepository.findById(id);
-        if (brand.isPresent() &&brand.get().getState().equals(Constant.DISABLE)) {
-            brand.get().setState(Constant.ENABLE);
+        if (brand.isPresent() &&brand.get().getDisplay().equals(Constant.DISABLE)) {
+            brand.get().setDisplay(Constant.ENABLE);
             brandRepository.save(brand.get());
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Enable brand success with id: " + id, ""));

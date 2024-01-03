@@ -13,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import java.time.LocalDateTime;
-
-@Document(collection = "reviews_product")
+//@Document(collection = "review_product")
+@Document(collection = "Review_Product")
 @Data
 @NoArgsConstructor
 public class ReviewProduct {

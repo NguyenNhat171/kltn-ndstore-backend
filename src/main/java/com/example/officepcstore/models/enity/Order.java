@@ -16,7 +16,8 @@ import java.util.List;
 
 import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128;
 
-@Document(collection = "orders")
+//@Document(collection = "orders")
+@Document(collection = "Order")
 @Getter
 @Setter
 @NoArgsConstructor

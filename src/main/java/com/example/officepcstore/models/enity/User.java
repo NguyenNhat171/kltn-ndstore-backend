@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "users")
+//@Document(collection = "users")
+@Document(collection = "User")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
