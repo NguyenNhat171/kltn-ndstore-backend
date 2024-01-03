@@ -50,4 +50,7 @@ Page<Order> findAllByInvoiceDateBetweenAndStatusOrderNot(LocalDateTime from, Loc
     Page<Order> findAllByStatusOrderNoCart( Pageable pageable);
   //  Page<Order>findOrdersByInvoiceDateBetween();
   Page<Order> findAllByStatusOrderNot( String status,Pageable pageable);
+
+
+    Page<Order> countAllByLastUpdateStateDateBetweenAndStatusOrderOrderByLastUpdateStateDateAsc(LocalDateTime from, LocalDateTime to, String state, Pageable pageable);
 }

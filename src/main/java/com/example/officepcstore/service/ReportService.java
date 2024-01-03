@@ -161,7 +161,8 @@ public class ReportService {
             e.printStackTrace();
             throw new AppException(HttpStatus.BAD_REQUEST.value(), "Incorrect date format");
         }
-        Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_SUCCESS, Pageable.unpaged());
+      //  Page<Order> orderList = orderRepository.findAllByInvoiceDateBetweenAndStatusOrder(startDate, endDate, Constant.ORDER_SUCCESS, Pageable.unpaged());
+        Page<Order> orderList = orderRepository.countAllByLastUpdateStateDateBetweenAndStatusOrderOrderByLastUpdateStateDateAsc(startDate, endDate, Constant.ORDER_SUCCESS, Pageable.unpaged());
         switch (type) {
             case "all" -> {
                 orderList = orderRepository.findAllByStatusOrder(Constant.ORDER_SUCCESS, PageRequest.of(0, Integer.MAX_VALUE, Sort.by("lastUpdateStateDate").ascending()));

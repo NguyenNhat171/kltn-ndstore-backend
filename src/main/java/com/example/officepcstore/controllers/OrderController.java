@@ -39,6 +39,11 @@ public class OrderController {
     public ResponseEntity<?> changeStateConfirmDelivery (@PathVariable String orderId){
         return orderService.setStateConfirmDelivery(orderId);
     }
+
+    @PutMapping(path = "/orders/confirm/complete/{orderId}")
+    public ResponseEntity<?> changeStateConfirmDeliveryByUser (@PathVariable String orderId){
+        return orderService.setStateConfirmDelivery(orderId);
+    }
 //    @PutMapping(path = "/admin/manage/orders/process/delivery/{orderId}")
 //    public ResponseEntity<?> changeStateDelivery (@PathVariable String orderId){
 //        return orderService.setStateProcessDelivery(orderId);
