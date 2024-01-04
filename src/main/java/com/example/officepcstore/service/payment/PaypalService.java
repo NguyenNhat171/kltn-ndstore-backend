@@ -7,6 +7,8 @@ import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 
 import com.example.officepcstore.repository.OrderRepository;
+import com.example.officepcstore.service.MailService;
+import com.example.officepcstore.service.OrderSendMail;
 import com.example.officepcstore.service.paymentconfig.PaypalForm;
 import com.example.officepcstore.service.paymentconfig.PaypalMethod;
 
@@ -22,6 +24,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +47,9 @@ public class PaypalService extends PaymentSteps {
     public static final String URL_SUCCESS_PAYPAL = "/api/checkout/paypal/success";
     public static final String URL_CANCEL_PAYPAL = "/api/checkout/paypal/cancel";
     public static final String PATTERN = "&token=";
+    private final TaskScheduler taskScheduler;
+    private final OrderSendMail orderSendMail;
+    private final MailService mailService;
 
     @Override
     @Transactional
@@ -94,6 +101,9 @@ public class PaypalService extends PaymentSteps {
                     order.get().getPaymentOrderMethod().getTransactionInformation().put("fullPayment", true);
                     order.get().setStatusOrder(Constant.ORDER_WAITING);
                     orderRepository.save(order.get());
+                    orderSendMail.setOrderSuccess(order.get());
+                    orderSendMail.setSendMailService(mailService);
+                    taskScheduler.schedule(orderSendMail, new Date(System.currentTimeMillis())) ;
                 } else {
                     response.sendRedirect(SelectPaymentService.URL_PAYMENT + "false&cancel=false");
                     throw new NotFoundException("Can not found order with id: " + id);

@@ -5,9 +5,12 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
+import com.example.officepcstore.service.MailService;
+import com.example.officepcstore.service.OrderSendMail;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,9 @@ import java.util.Objects;
 public class RemakeCod extends RemakePaymentStep{
 
     private final OrderRepository orderRepository;
+    private final TaskScheduler taskScheduler;
+    private final OrderSendMail orderSendMail;
+    private final MailService mailService;
 
     @Override
     @Transactional

@@ -6,6 +6,8 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
+import com.example.officepcstore.service.MailService;
+import com.example.officepcstore.service.OrderSendMail;
 import com.example.officepcstore.service.paymentconfig.VnpayConfig;
 import com.example.officepcstore.utils.PayUtils;
 import com.example.officepcstore.utils.StringUtils;
@@ -13,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,7 +31,9 @@ import java.util.*;
 public class VnpayService extends PaymentSteps{
     private final OrderRepository orderRepository;
     private final PayUtils payUtils;
-
+    private final TaskScheduler taskScheduler;
+    private final OrderSendMail orderSendMail;
+    private final MailService mailService;
 
     @SneakyThrows
     @Override
@@ -89,12 +94,16 @@ public class VnpayService extends PaymentSteps{
             order.get().getPaymentOrderMethod().getTransactionInformation().put("fullPayment", true);
             order.get().setStatusOrder(Constant.ORDER_WAITING);
             orderRepository.save(order.get());
+            orderSendMail.setOrderSuccess(order.get());
+           orderSendMail.setSendMailService(mailService);
+            taskScheduler.schedule(orderSendMail, new Date(System.currentTimeMillis())) ;
             response.sendRedirect(SelectPaymentService.URL_PAYMENT + "true&cancel=false");
             return ResponseEntity.status(HttpStatus.OK).body(
                     new ResponseObjectData(true, "Payment Completed", "")
             );
         } else {
-            order.get().setStatusOrder(Constant.ORDER_CANCEL);
+           order.get().setStatusOrder(Constant.ORDER_CANCEL);
+            // order.get().setStatusOrder(Constant.ORDER_CART);
             orderRepository.save(order.get());
             String putQuantity= payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String putSoldCancel =payUtils.putSold(order.get(),false);

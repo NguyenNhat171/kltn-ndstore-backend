@@ -887,11 +887,7 @@ public class ProductService {
     public ResponseEntity<?> createProduct(ProductReq req) {
         if (req != null) {
             Product product = productMap.putProductModel(req);
-            try {
                 productRepository.save(product);
-            } catch (Exception e) {
-                throw new AppException(HttpStatus.CONFLICT.value(), "Product  already exists");
-            }
             ProductResponse res = productMap.toGetProductRes(product);
             product.setReducedPrice(res.getDiscountPrice());
             productRepository.save(product);

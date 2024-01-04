@@ -5,6 +5,8 @@ import com.example.officepcstore.excep.NotFoundException;
 import com.example.officepcstore.models.enity.Order;
 import com.example.officepcstore.payload.ResponseObjectData;
 import com.example.officepcstore.repository.OrderRepository;
+import com.example.officepcstore.service.MailService;
+import com.example.officepcstore.service.OrderSendMail;
 import com.example.officepcstore.utils.PayUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,6 +27,8 @@ public class CodService extends PaymentSteps {
     private PayUtils payUtils;
     private final OrderRepository orderRepository;
     private final TaskScheduler taskScheduler;
+    private final OrderSendMail orderSendMail;
+    private final MailService mailService;
 
     @Override
     @Transactional
@@ -35,6 +40,9 @@ public class CodService extends PaymentSteps {
                 order.setStatusOrder(Constant.ORDER_WAITING);
                 order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
                 orderRepository.save(order);
+                orderSendMail.setOrderSuccess(order);
+                orderSendMail.setSendMailService(mailService);
+                taskScheduler.schedule(orderSendMail, new Date(System.currentTimeMillis())) ;
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));
             }
