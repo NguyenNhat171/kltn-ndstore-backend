@@ -21,7 +21,7 @@ public class AdminSearchController {
     @GetMapping(path = "/admin/manage/categories/to/search/control/all")
     public ResponseEntity<?> manageCategoryByAdmin (@RequestParam(value = "title", defaultValue = "") String title,
                                                     @RequestParam(value = "state", defaultValue = "") String state,
-                                             @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
+                                             @PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
     {
         return adminControlService.searchCategoryNameInAdmin(title,state,pageable);
     }
@@ -29,7 +29,7 @@ public class AdminSearchController {
     @GetMapping(path = "/admin/manage/brands/to/search/control/all")
     public ResponseEntity<?> manageBrandByAdmin (@RequestParam(value = "title", defaultValue = "") String title,
                                                  @RequestParam(value = "state", defaultValue = "") String state,
-                                             @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
+                                             @PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.ASC) @ParameterObject Pageable pageable)
     {
         return adminControlService.searchBrandNameInAdmin(title,state,pageable);
     }
@@ -101,7 +101,7 @@ public class AdminSearchController {
     public ResponseEntity<?> manageProductUpdateByAdmin (@RequestParam(value = "categoryId", defaultValue = "") String categoryId,
                                                    @RequestParam(value = "brandId", defaultValue = "") String brandId,
                                                    @RequestParam(value = "name", defaultValue = "") String name,
-                                                   @PageableDefault(size = 15, sort = "createDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable)
+                                                   @PageableDefault(size = 15, sort = "createdDate", direction = Sort.Direction.DESC) @ParameterObject Pageable pageable)
     {
         return adminControlService.searchUpdateFilterProductAdminPage(categoryId,brandId,name,pageable);
     }
