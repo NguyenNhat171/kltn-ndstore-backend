@@ -124,7 +124,8 @@ public class RemakePaypal extends  RemakePaymentStep{
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
         Optional<Order> order = orderRepository.findOrderByPaymentOrderMethod_PaymentTokenAndStatusOrder(id, Constant.ORDER_PROCESS);
         if (order.isPresent()) {
-            order.get().setStatusOrder(Constant.ORDER_CANCEL);
+             order.get().setStatusOrder(Constant.ORDER_CART);
+           // order.get().setStatusOrder(Constant.ORDER_CANCEL);
             orderRepository.save(order.get());
             String putQuantity = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
             String putSold =payUtils.putSold(order.get(),false);

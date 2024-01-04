@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.Objects;
 @AllArgsConstructor
 @Service
@@ -33,6 +34,9 @@ public class RemakeCod extends RemakePaymentStep{
                 order.setStatusOrder(Constant.ORDER_WAITING);
                 order.getPaymentOrderMethod().getTransactionInformation().put("fullPayment", false);
                 orderRepository.save(order);
+            orderSendMail.setOrderSuccess(order);
+            orderSendMail.setSendMailService(mailService);
+            taskScheduler.schedule(orderSendMail, new Date(System.currentTimeMillis())) ;
                 return ResponseEntity.status(HttpStatus.OK).body(
                         new ResponseObjectData(true, " Pay by COD successfully", ""));
         }

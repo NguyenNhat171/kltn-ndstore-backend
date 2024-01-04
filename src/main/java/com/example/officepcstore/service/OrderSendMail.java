@@ -58,7 +58,7 @@ public class OrderSendMail implements  Runnable{
       model.put("feeShip",currencyFormatter.format(orderSuccess.getShipment().getServiceShipDetail().get("totalFeeShip")));
       model.put("totalFull",currencyFormatter.format(new BigDecimal(totalPriceOrder)));
         Map<String, String> items = new HashMap<>();
-        orderSuccess.getOrderDetails().forEach(item -> items.put(String.format("%s <br/> <b>Số lượng: %s cái</b>", item.getOrderProduct().getName(), item.getQuantity()), currencyFormatter.format(item.getProductOrderPrice())));
+        orderSuccess.getOrderDetails().forEach(item -> items.put(String.format("<img src = \"%s\" alt= \"\" style=\"width:40px;height:40px;\">  %s <br/> <b>Số lượng: %s cái</b>", item.getOrderProduct().getProductImageList().get(0).getUrl(),item.getOrderProduct().getName(), item.getQuantity()), currencyFormatter.format(item.getProductOrderPrice())));
         model.put("items", items);
         model.put("subTotal", items);
         model.put("imgPro",items);

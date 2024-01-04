@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+
 //@Document(collection = "brands")
 @Document(collection = "Brand")
 @Data
@@ -14,9 +16,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Brand {
     @Id
     private String id;
-
+    @NotBlank
     private String name;
     private String imageBrand;
+    @NotBlank
     private String display;
 
     public Brand(String name, String imageBrand, String display) {

@@ -17,6 +17,8 @@ import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.TextScore;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -34,10 +36,13 @@ import static org.springframework.data.mongodb.core.mapping.FieldType.DECIMAL128
 public class  Product {
     @Id
     private String id;
+    @NotBlank
     @TextIndexed (weight = 8)
+    @Indexed(unique = true)
     private String name;
-    @TextIndexed (weight = 1)
+    @TextIndexed (weight = 4)
     private String productDetail;
+    @NotNull
     @Field(targetType = DECIMAL128)
     private BigDecimal price;
 
@@ -57,6 +62,7 @@ public class  Product {
     @DocumentReference(lookup="{'productReview':?#{#self._id} }", lazy = true)
     @Indexed
     private List<ReviewProduct> reviewProducts;
+    @NotBlank
     @Indexed
     private String state;
     private List<ProductImage> productImageList = new ArrayList<>();

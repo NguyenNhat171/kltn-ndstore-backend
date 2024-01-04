@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,11 @@ import java.util.Map;
 public class User {
     @Id
     private String id;
+    @NotBlank
     @TextIndexed(weight = 8)
     private String name;
+    @NotBlank
+    @Email
     @Indexed(unique = true)
     private String email;
     @JsonIgnore

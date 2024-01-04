@@ -205,7 +205,7 @@
                                                                 TỔNG CỘNG
                                                             </td>
                                                             <td bgcolor="#fff" width="25%" align="left"
-                                                                style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; border-top: 3px solid #eeeeee; border-bottom: 3px solid #eeeeee;color:#1E90FF;">
+                                                                style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 800; line-height: 24px; padding: 10px; color:#1E90FF;">
                                                                 ${totalFull}
                                                             </td>
                                                         </tr>
