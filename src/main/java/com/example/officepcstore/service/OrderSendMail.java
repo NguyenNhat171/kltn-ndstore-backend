@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.time.Instant;
-import java.time.LocalDate;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -25,6 +25,17 @@ public class OrderSendMail implements  Runnable{
     @Override
     @SneakyThrows
     public void run() {
+
+ LocalDateTime  inputDate = orderSuccess.getInvoiceDate();
+
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+
+      //  ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+       // LocalDateTime convertedDateTime = inputDate.atZone(ZoneId.of("UTC")).withZoneSameInstant(zoneId).toLocalDateTime();
+        ZoneId hoChiMinhZone = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZonedDateTime hoChiMinhDateTime = ZonedDateTime.of(inputDate, hoChiMinhZone);
+        String formattedDate = hoChiMinhDateTime.format(outputFormatter);
+
         String orderPay = "Chưa thanh toán hết";
         Map<String, Object> model = new HashMap<>();
         Locale locale = new Locale("vn", "VN");
@@ -43,11 +54,11 @@ public class OrderSendMail implements  Runnable{
         model.put("ward",orderSuccess.getShipment().getCustomerWard());
         model.put("district",orderSuccess.getShipment().getCustomerDistrict());
         model.put("province",orderSuccess.getShipment().getCustomerProvince());
-        model.put("orderDate",orderSuccess.getInvoiceDate());
+        model.put("orderDate",formattedDate);
       model.put("feeShip",currencyFormatter.format(orderSuccess.getShipment().getServiceShipDetail().get("totalFeeShip")));
-      model.put("totalFull",currencyFormatter.format(totalPriceOrder));
+      model.put("totalFull",currencyFormatter.format(new BigDecimal(totalPriceOrder)));
         Map<String, String> items = new HashMap<>();
-        orderSuccess.getOrderDetails().forEach(item -> items.put(String.format("%s <br/> <b>[%s cái]</b>", item.getOrderProduct().getName(), item.getQuantity()), currencyFormatter.format(item.getProductOrderPrice())));
+        orderSuccess.getOrderDetails().forEach(item -> items.put(String.format("%s <br/> <b>Số lượng: %s cái</b>", item.getOrderProduct().getName(), item.getQuantity()), currencyFormatter.format(item.getProductOrderPrice())));
         model.put("items", items);
         model.put("subTotal", items);
         model.put("imgPro",items);
