@@ -13,10 +13,9 @@ import java.util.Optional;
 public interface CategoryRepository  extends MongoRepository<Category, String> {
     List<Category> findAllByDisplay(String state);
    Page<Category>findAllByDisplay(String state, Pageable pageable);
-   Page<Category>findAllByTitleCategory(String name, Pageable pageable);
+
     Page<Category>findAllByTitleCategoryLikeIgnoreCase(String name, Pageable pageable);
    Page<Category>findAllByTitleCategoryLikeIgnoreCaseAndDisplay(String name, String state,Pageable pageable);
     Optional<Category> findCategoryByIdAndDisplay(String id, String state);
-//    @Aggregation("{ $group: { _id : $state, count: { $sum: 1 } } }")
-//    List<StateCountAggregate> countAllByState();
+
 }

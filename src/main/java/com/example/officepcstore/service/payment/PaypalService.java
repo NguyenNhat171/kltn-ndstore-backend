@@ -128,7 +128,6 @@ public class PaypalService extends PaymentSteps {
     public ResponseEntity<?> cancelPayment(String id, String responseCode, HttpServletResponse response) {
         Optional<Order> order = orderRepository.findOrderByPaymentOrderMethod_PaymentTokenAndStatusOrder(id, Constant.ORDER_PROCESS);
         if (order.isPresent()) {
-            //order.get().setStatusOrder(Constant.ORDER_CANCEL);
             order.get().setStatusOrder(Constant.ORDER_CART);
             orderRepository.save(order.get());
             String putQuantityProduct = payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
@@ -150,7 +149,6 @@ public class PaypalService extends PaymentSteps {
                                               PaypalForm paypalForm, String description, String cancelUrl,
                                               String successUrl) throws PayPalRESTException, IOException {
         double TotalMoneyVN= ExchangeMoneyUtils.exchange(order.getTotalPrice().add(new BigDecimal(order.getShipment().getServiceShipDetail().get("totalFeeShip").toString())));
-       // Amount amount = new Amount(currency, String.format("%.2f", TotalMoneyVN));
         Amount amount = new Amount(currency, String.format(String.valueOf(TotalMoneyVN)));
         Transaction transaction = new Transaction();
         transaction.setDescription(description);

@@ -57,34 +57,7 @@ public class ReviewProductService {
                         new ResponseObjectData(true, "All Review Product success ", reviewRes));
         }
     }
- /*   public ResponseEntity<?> createCommentByUser(String customerId, CommentContentReq commentContentReq)
-    {
-        Optional<User> user = userRepository.findUserByIdAndStatusUser(customerId, Constant.USER_ACTIVE);
-        if(user.isPresent())
-            return ResponseEntity.status(HttpStatus.OK).body(
-                    new ResponseObjectData(false, "Not found user "+customerId, ""));
-        Optional<ReviewProduct> checkComment = reviewProductRepository.findCommentProductByUserComment_IdAndProductComment_Id(
-                new ObjectId(customerId), new ObjectId(commentContentReq.getProductBuyOrderId()));
-        Optional<OrderedProduct> checkOrderedProduct=orderProductRepository.findOrderedProductByOrderProduct_Id(new ObjectId(commentContentReq.getProductBuyOrderId()));
-        Optional<Product> checkProduct = productRepository.findProductByIdAndState(checkOrderedProduct.get().getOrderProduct().getId(),Constant.ENABLE);
-        Optional<Order> checkOrder=orderRepository.findOrderByOrderedProducts_Id(new ObjectId(commentContentReq.getProductBuyOrderId()));
-        if(checkComment.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObjectData(false, "You have review this product ", ""));
-        }
-        else {
-            if (checkOrder.isPresent() && checkOrder.get().getStatusOrder().equals(Constant.ORDER_SUCCESS) && checkOrderedProduct.isPresent()) {
-                ReviewProduct createReviewProduct =
-                        new ReviewProduct(commentContentReq.getDescription(), commentContentReq.getVote(), user.get(), checkProduct.get(), LocalDateTime.now());
-                reviewProductRepository.save(createReviewProduct);
-             return    ResponseEntity.status(HttpStatus.OK).body(
-                        new ResponseObjectData(true, "Create comment complete ", createReviewProduct));
 
-            }
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-                    new ResponseObjectData(false, "An error occurred  ", ""));
-        }
-    }*/
 
 
     public ResponseEntity<?> createReviewByUser(String customerId, ReviewContentReq reviewContentReq)

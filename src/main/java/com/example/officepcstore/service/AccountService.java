@@ -90,34 +90,6 @@ public class AccountService {
     }
 
 
-//    public ResponseEntity<?> loginProvider(ProviderReq req)
-//    {
-//        Optional<User> checkingUser = userRepository.findUserByEmailAndAccountType(req.getEmail(),AccountType.GOOGLE);
-//        if(!checkingUser.isPresent()){
-//        User user = new User(req.getName(), req.getEmail(), Constant.ROLE_USER, req.getAvatar(), AccountType.GOOGLE,Constant.USER_ACTIVE);
-//            if (user != null) {
-//                try {
-//                    userRepository.save(user);
-//                } catch (Exception e) {
-//                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), e.getMessage());
-//                }
-//            }
-//        }
-//        Optional<User> getUser = userRepository.findUserByEmailAndStatusUser(req.getEmail(), Constant.USER_ACTIVE);
-//        if(getUser.isPresent()) {
-//            String tokenLogin= jwtUtils.generateTokenFromUserId(getUser.get());
-//            LoginResponse account = userMapper.toLoginRes(getUser.get());
-//           account.setAccessToken(tokenLogin);
-//            return ResponseEntity.status(HttpStatus.OK).body(
-//                    new ResponseObjectData(true, "Successfully ", account)
-//            );
-//        }
-//        else
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-//                    new ResponseObjectData(false, "Not Found This Account ", "")
-//            );
-//
-//    }
 
     public ResponseEntity<?> registerAccount(RegisterReq req) {
         if (userRepository.existsByEmail(req.getEmail()))
@@ -171,24 +143,6 @@ public class AccountService {
         throw new NotFoundException("Can not found user with email " + email + " is activated");
     }
 
-//    public ResponseEntity<?> sendMailResetGetNewPass(String email) {
-//        Optional<User> user = userRepository.findUserByEmailAndStatusUser(email, Constant.USER_ACTIVE);
-//        if (user.isPresent()) {
-//            if (user.get().getAccountType().equals(AccountType.LOCAL)) {
-//                try {
-//                    sendMailResetNewPass(user.get());
-//                    return ResponseEntity.status(HttpStatus.OK).body(
-//                            new ResponseObjectData(true, "Send email reset password success", " "));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    log.error(e.getMessage());
-//                    throw new AppException(HttpStatus.EXPECTATION_FAILED.value(), "Failed");
-//                }
-//            } else throw new AppException(HttpStatus.BAD_REQUEST.value(), "Your account is " +
-//                    user.get().getAccountType() + " account");
-//        }
-//        throw new NotFoundException("Can not found user with email " + email + " is activated");
-//    }
 
 
     @SneakyThrows

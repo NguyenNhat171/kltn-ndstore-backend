@@ -1,7 +1,6 @@
 package com.example.officepcstore.controllers;
 
 import com.example.officepcstore.service.ReportService;
-import com.example.officepcstore.service.StatisticalService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

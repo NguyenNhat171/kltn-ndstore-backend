@@ -102,7 +102,6 @@ public class VnpayService extends PaymentSteps{
                     new ResponseObjectData(true, "Payment Completed", "")
             );
         } else {
-          // order.get().setStatusOrder(Constant.ORDER_CANCEL);
              order.get().setStatusOrder(Constant.ORDER_CART);
             orderRepository.save(order.get());
             String putQuantity= payUtils.checkStockAndQuantityToUpdateProduct(order.get(), false);
